@@ -6,7 +6,7 @@ function DefaultNavbar() {
 		<Navbar isBordered variant="sticky">
 			<Navbar.Brand css={{ mr: "$4" }}>
 				<Text b color="inherit" css={{ mr: "$11" }} hideIn="xs">
-					ACME
+					Crypto Sentiment for Reddit
 				</Text>
 				<Navbar.Content hideIn="xs" variant="highlight">
 					<Navbar.Link isActive href="/">
