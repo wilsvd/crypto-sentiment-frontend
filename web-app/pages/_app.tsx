@@ -12,9 +12,10 @@ import SignedInNavbar from "@/components/SignedInNavbar";
 function MyApp({ Component, pageProps }: AppProps) {
 	const [login, setLogin] = React.useState(false);
 
+	// TODO: Check if user is currently logged in.
+
 	const Navbar = login ? <SignedInNavbar /> : <DefaultNavbar />;
 	return (
-		// 2. Use at the root of your app
 		<NextUIProvider>
 			{Navbar}
 			<Component {...pageProps} />

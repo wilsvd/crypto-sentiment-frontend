@@ -9,7 +9,7 @@ function DefaultNavbar() {
 					ACME
 				</Text>
 				<Navbar.Content hideIn="xs" variant="highlight">
-					<Navbar.Link isActive href="#">
+					<Navbar.Link isActive href="/">
 						Dashboard
 					</Navbar.Link>
 					<Navbar.Link href="/watchlist">Watchlist</Navbar.Link>
@@ -50,11 +50,11 @@ function DefaultNavbar() {
 					/>
 				</Navbar.Item>
 
-				<Navbar.Link color="inherit" href="#">
+				<Navbar.Link color="inherit" href="/login">
 					Login
 				</Navbar.Link>
 				<Navbar.Item>
-					<Button auto flat as={Link} href="#">
+					<Button auto flat as={Link} href="/signup">
 						Sign Up
 					</Button>
 				</Navbar.Item>
@@ -64,5 +64,4 @@ function DefaultNavbar() {
 }
 
 // export default dynamic(() => Promise.resolve(DefaultNavbar), { ssr: false });
-
 export default DefaultNavbar;

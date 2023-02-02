@@ -55,8 +55,13 @@ export default function Login() {
 						<Checkbox>
 							<Text size={14}>Remember me</Text>
 						</Checkbox>
+
+						{/* TODO:  Implement a method to request for forgotten password*/}
 						<Text size={14}>Forgot password?</Text>
 					</Row>
+
+					{/* TODO:  Create a new row which allows users to login with Google*/}
+
 					<Spacer y={1} />
 					<Button>Sign in</Button>
 				</Card>

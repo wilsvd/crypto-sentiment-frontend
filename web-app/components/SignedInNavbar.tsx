@@ -9,11 +9,11 @@ function SignedInNavbar() {
 					ACME
 				</Text>
 				<Navbar.Content hideIn="xs" variant="highlight">
-					<Navbar.Link isActive href="#">
+					<Navbar.Link isActive href="/">
 						Dashboard
 					</Navbar.Link>
-					<Navbar.Link href="#">Watchlist</Navbar.Link>
-					<Navbar.Link href="#">About</Navbar.Link>
+					<Navbar.Link href="/watchlist">Watchlist</Navbar.Link>
+					<Navbar.Link href="/about">About</Navbar.Link>
 				</Navbar.Content>
 			</Navbar.Brand>
 			<Navbar.Content
