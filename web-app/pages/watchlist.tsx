@@ -5,7 +5,14 @@ Text;
 export default function Watchlist() {
 	return (
 		<div>
-			<Text h2>Watchlist</Text>
+			<Text
+				h3
+				css={{
+					padding: "10px 0px 20px 10px",
+				}}
+			>
+				Watchlist
+			</Text>
 			<DefaultTable />
 		</div>
 	);

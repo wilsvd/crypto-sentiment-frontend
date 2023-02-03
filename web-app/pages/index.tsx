@@ -13,12 +13,7 @@ export default function Home() {
 	const text = "Today's Cryptocurrency Sentiment";
 	return (
 		<div>
-			<Text h2>{text}</Text>
 			<Text h3>{text}</Text>
-			<Text h4>{text}</Text>
-			<Text h5>{text}</Text>
-			<Text h6>{text}</Text>
-			<Text>{text}</Text>
 		</div>
 	);
 }

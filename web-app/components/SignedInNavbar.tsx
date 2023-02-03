@@ -1,19 +1,42 @@
 import { Navbar, Text, Avatar, Dropdown, Input } from "@nextui-org/react";
 import dynamic from "next/dynamic";
 
+import { useRouter } from "next/router";
+
 function SignedInNavbar() {
+	const { asPath } = useRouter();
+
 	return (
-		<Navbar isBordered variant="sticky">
+		<Navbar
+			isBordered
+			borderWeight="bold"
+			variant="sticky"
+			aria-label="Navbar for users that have logged in"
+			maxWidth="xl"
+		>
 			<Navbar.Brand css={{ mr: "$4" }}>
 				<Text b color="inherit" css={{ mr: "$11" }} hideIn="xs">
 					Crypto Sentiment for Reddit
 				</Text>
 				<Navbar.Content hideIn="xs" variant="highlight">
-					<Navbar.Link isActive href="/">
+					<Navbar.Link
+						isActive={asPath == "/" ? true : false}
+						href="/"
+					>
 						Dashboard
 					</Navbar.Link>
-					<Navbar.Link href="/watchlist">Watchlist</Navbar.Link>
-					<Navbar.Link href="/about">About</Navbar.Link>
+					<Navbar.Link
+						isActive={asPath == "/watchlist" ? true : false}
+						href="/watchlist"
+					>
+						Watchlist
+					</Navbar.Link>
+					<Navbar.Link
+						isActive={asPath == "/about" ? true : false}
+						href="/about"
+					>
+						About
+					</Navbar.Link>
 				</Navbar.Content>
 			</Navbar.Brand>
 			<Navbar.Content
@@ -27,14 +50,19 @@ function SignedInNavbar() {
 				<Navbar.Item
 					css={{
 						"@xsMax": {
-							w: "100%",
-							jc: "center",
+							width: "200px",
+						},
+						"@xlMax": {
+							width: "400px",
 						},
 					}}
 				>
 					<Input
+						bordered
+						borderWeight="normal"
 						clearable
 						contentLeftStyling={false}
+						fullWidth={true}
 						css={{
 							w: "100%",
 							"@xsMax": {
@@ -46,7 +74,6 @@ function SignedInNavbar() {
 								dflex: "center",
 							},
 						}}
-						id="email"
 						placeholder="Search..."
 					/>
 				</Navbar.Item>
