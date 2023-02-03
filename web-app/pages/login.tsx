@@ -17,6 +17,7 @@ export default function Login() {
 			alignItems="center"
 			justify="center"
 			css={{ minHeight: "100vh" }}
+			aria-label="Login form"
 		>
 			<Card css={{ mw: "420px", p: "20px" }} variant="bordered">
 				<Text

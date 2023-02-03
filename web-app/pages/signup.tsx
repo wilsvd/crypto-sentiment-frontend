@@ -17,6 +17,7 @@ export default function Signup() {
 			alignItems="center"
 			justify="center"
 			css={{ minHeight: "100vh" }}
+			aria-label="Signup form"
 		>
 			<Card css={{ mw: "420px", p: "20px" }} variant="bordered">
 				<Text
