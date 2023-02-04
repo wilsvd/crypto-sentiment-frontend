@@ -5,8 +5,6 @@ import styles from "@/styles/Home.module.css";
 
 import React from "react";
 
-import { Pagination } from "@nextui-org/react";
-
 import { Text } from "@nextui-org/react";
 
 export default function Home() {

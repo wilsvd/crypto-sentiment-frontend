@@ -9,8 +9,42 @@ import {
 	Checkbox,
 	Container,
 } from "@nextui-org/react";
+import Router from "next/router";
+
+import { makeAccount } from "@/utility/pass_auth";
 
 export default function Signup() {
+	const [userDetails, setUserDetails] = React.useState({
+		email: "",
+		password: "",
+		confirmPassword: "",
+	});
+
+	const [loginIsFailure, setLoginIsFailure] = React.useState(false);
+
+	function submitForm() {
+		const email = userDetails.email;
+		const password = userDetails.password;
+		const confirmPassword = userDetails.confirmPassword;
+
+		if (password === confirmPassword) {
+			makeAccount(email, password);
+			setLoginIsFailure(false);
+			Router.replace("/");
+		} else {
+			setLoginIsFailure(true);
+			console.log("FAILURE");
+		}
+	}
+
+	function handleChange(event: { target: { name: string; value: string } }) {
+		const { name, value } = event.target;
+		setUserDetails((prevDetails) => ({
+			...prevDetails,
+			[name]: value,
+		}));
+	}
+
 	return (
 		<Container
 			display="flex"
@@ -30,6 +64,9 @@ export default function Signup() {
 				>
 					Signup
 				</Text>
+				{loginIsFailure && (
+					<Text h5>The passwords you entered do not match.</Text>
+				)}
 				<Input
 					clearable
 					underlined
@@ -37,6 +74,9 @@ export default function Signup() {
 					color="primary"
 					size="lg"
 					placeholder="Email"
+					name="email"
+					value={userDetails.email}
+					onChange={handleChange}
 				/>
 				<Spacer y={1} />
 
@@ -48,6 +88,9 @@ export default function Signup() {
 					size="lg"
 					placeholder="Password"
 					css={{ mb: "6px" }}
+					name="password"
+					value={userDetails.password}
+					onChange={handleChange}
 				/>
 				<Spacer y={1} />
 
@@ -59,6 +102,9 @@ export default function Signup() {
 					size="lg"
 					placeholder="Confirm your password"
 					css={{ mb: "6px" }}
+					name="confirmPassword"
+					value={userDetails.confirmPassword}
+					onChange={handleChange}
 				/>
 				<Spacer y={1.6} />
 
@@ -67,7 +113,7 @@ export default function Signup() {
 				<Row justify="space-between"></Row>
 
 				<Spacer y={1} />
-				<Button>Sign up</Button>
+				<Button onClick={submitForm}>Sign up</Button>
 			</Card>
 		</Container>
 	);
