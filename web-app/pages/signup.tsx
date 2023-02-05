@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import {
 	Card,
 	Spacer,
@@ -12,25 +12,27 @@ import {
 import Router from "next/router";
 
 import { makeAccount } from "@/utility/pass_auth";
+import { AuthContext } from "@/utility/AuthContext";
 
 export default function Signup() {
-	const [userDetails, setUserDetails] = React.useState({
-		email: "",
-		password: "",
-		confirmPassword: "",
-	});
-
+	const { user, setUser } = useContext(AuthContext);
+	const { email, setEmail } = useContext(AuthContext);
+	const { password, setPassword } = useContext(AuthContext);
+	const [confirmPassword, setConfirmPassword] = React.useState("");
 	const [loginIsFailure, setLoginIsFailure] = React.useState(false);
 
 	function submitForm() {
-		const email = userDetails.email;
-		const password = userDetails.password;
-		const confirmPassword = userDetails.confirmPassword;
-
 		if (password === confirmPassword) {
-			makeAccount(email, password);
-			setLoginIsFailure(false);
-			Router.replace("/");
+			makeAccount(email, password).then((success) => {
+				if (success) {
+					setLoginIsFailure(false);
+					setUser(true);
+					Router.replace("/");
+				} else {
+					// Get an better error message
+					console.log("SOMETHING WENT WRONG");
+				}
+			});
 		} else {
 			setLoginIsFailure(true);
 			console.log("FAILURE");
@@ -39,11 +41,16 @@ export default function Signup() {
 
 	function handleChange(event: { target: { name: string; value: string } }) {
 		const { name, value } = event.target;
-		setUserDetails((prevDetails) => ({
-			...prevDetails,
-			[name]: value,
-		}));
+		if (name === "email") {
+			setEmail(value);
+		} else if (name === "password") {
+			setPassword(value);
+		} else {
+			setConfirmPassword(value);
+		}
 	}
+
+	console.log(email, password, confirmPassword);
 
 	return (
 		<Container
@@ -75,7 +82,7 @@ export default function Signup() {
 					size="lg"
 					placeholder="Email"
 					name="email"
-					value={userDetails.email}
+					value={email}
 					onChange={handleChange}
 				/>
 				<Spacer y={1} />
@@ -89,7 +96,7 @@ export default function Signup() {
 					placeholder="Password"
 					css={{ mb: "6px" }}
 					name="password"
-					value={userDetails.password}
+					value={password}
 					onChange={handleChange}
 				/>
 				<Spacer y={1} />
@@ -103,7 +110,7 @@ export default function Signup() {
 					placeholder="Confirm your password"
 					css={{ mb: "6px" }}
 					name="confirmPassword"
-					value={userDetails.confirmPassword}
+					value={confirmPassword}
 					onChange={handleChange}
 				/>
 				<Spacer y={1.6} />

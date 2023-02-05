@@ -10,23 +10,20 @@ import {
 import { auth } from "@/config/firebase";
 
 export function makeAccount(email: string, password: string) {
-	if (auth) {
-		createUserWithEmailAndPassword(auth, email, password)
-			.then((userCredential) => {
-				// Signed in
-				const user = userCredential.user;
-				// ...
-				console.log("You successfuly made an account");
-				return true;
-			})
-			.catch((error) => {
-				const errorCode = error.code;
-				const errorMessage = error.message;
-				// ..
-				return false;
-			});
-	}
-	return false;
+	return createUserWithEmailAndPassword(auth, email, password)
+		.then((userCredential) => {
+			// Signed in
+			const user = userCredential.user;
+			// ...
+			console.log("You successfuly made an account");
+			return true;
+		})
+		.catch((error) => {
+			const errorCode = error.code;
+			const errorMessage = error.message;
+			// ..
+			return false;
+		});
 }
 
 export function signOutAccount() {
@@ -35,24 +32,22 @@ export function signOutAccount() {
 }
 
 export function signInAccount(email: string, password: string) {
-	if (auth) {
-		return signInWithEmailAndPassword(auth, email, password)
-			.then((userCredential) => {
-				// Signed in
-				const user = userCredential.user;
-				// ...
-				console.log("You successfully signed in");
-				return true;
-			})
-			.catch((error) => {
-				const errorCode = error.code;
-				const errorMessage = error.message;
-				console.log(errorCode);
-				console.log(errorMessage);
-				return false;
-			});
-	}
-	return false;
+	return signInWithEmailAndPassword(auth, email, password)
+		.then((userCredential) => {
+			// Signed in
+			const user = userCredential.user;
+			// ...
+			console.log("You successfully signed in");
+			return true;
+		})
+		.catch((error) => {
+			console.log("YO YOU MESSED UP");
+			const errorCode = error.code;
+			const errorMessage = error.message;
+			console.log(errorCode);
+			console.log(errorMessage);
+			return false;
+		});
 }
 
 export function accountObserver() {

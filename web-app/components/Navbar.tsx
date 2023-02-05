@@ -3,8 +3,15 @@ import { Spacer } from "@nextui-org/react";
 
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
+import { useContext } from "react";
+
+import { AuthContext } from "@/utility/AuthContext";
+import UserAuth from "./UserAuth";
+import UserDropdown from "./UserDropdown";
 
 function DefaultNavbar() {
+	const { user, setUser } = useContext(AuthContext);
+
 	const { asPath } = useRouter();
 
 	return (
@@ -47,7 +54,6 @@ function DefaultNavbar() {
 						jc: "space-between",
 					},
 				}}
-				variant="highlight"
 			>
 				<Navbar.Item
 					css={{
@@ -69,24 +75,7 @@ function DefaultNavbar() {
 					/>
 				</Navbar.Item>
 				<Spacer x={1} />
-
-				<Navbar.Link
-					color="inherit"
-					href="/login"
-					isActive={asPath == "/login" ? true : false}
-				>
-					Login
-				</Navbar.Link>
-				<Navbar.Link
-					color="inherit"
-					href="/signup"
-					isActive={asPath == "/signup" ? true : false}
-					css={{
-						whiteSpace: "nowrap",
-					}}
-				>
-					Sign Up
-				</Navbar.Link>
+				{user ? <UserDropdown /> : <UserAuth />}
 			</Navbar.Content>
 		</Navbar>
 	);

@@ -1,21 +1,20 @@
 import "@/styles/globals.css";
 import type { AppProps } from "next/app";
-import React from "react";
 
+import Navbar from "@/components/Navbar";
 // 1. import `NextUIProvider` component
 import { NextUIProvider } from "@nextui-org/react";
 
-import DefaultNavbar from "@/components/DefaultNavbar";
-import SignedInNavbar from "@/components/SignedInNavbar";
+import { AuthProvider } from "@/utility/AuthContext";
 
 function MyApp({ Component, pageProps }: AppProps) {
-	const [login, setLogin] = React.useState(false);
-
-	const Navbar = login ? <SignedInNavbar /> : <DefaultNavbar />;
 	return (
 		<NextUIProvider>
-			{Navbar}
-			<Component {...pageProps} />
+			<AuthProvider>
+				<Navbar />
+				{/* <button onClick={submit}>Testing</button> */}
+				<Component {...pageProps} />
+			</AuthProvider>
 		</NextUIProvider>
 	);
 }

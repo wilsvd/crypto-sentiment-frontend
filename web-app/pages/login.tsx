@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import {
 	Card,
 	Spacer,
@@ -11,35 +11,32 @@ import {
 } from "@nextui-org/react";
 import Image from "next/image";
 import { signInGoogle } from "@/utility/google_auth";
-import { accountObserver, signInAccount } from "@/utility/pass_auth";
-import Router from "next/router";
+import { signInAccount } from "@/utility/pass_auth";
 
+import { AuthContext } from "../utility/AuthContext";
+import Router from "next/router";
 export default function Login() {
-	const [userDetails, setUserDetails] = React.useState({
-		email: "",
-		password: "",
-	});
+	const { user, setUser } = useContext(AuthContext);
+	const { email, setEmail } = useContext(AuthContext);
+	const { password, setPassword } = useContext(AuthContext);
 
 	const [loginIsFailure, setLoginIsFailure] = React.useState(false);
 
 	function submitForm() {
-		const email = userDetails.email;
-		const password = userDetails.password;
-		if (signInAccount(email, password)) {
-			setLoginIsFailure(false);
-			Router.replace("/");
-		} else {
-			setLoginIsFailure(true);
-			console.log("FAILURE");
-		}
+		signInAccount(email, password).then((success) => {
+			if (success) {
+				setLoginIsFailure(false);
+				setUser(true);
+				Router.replace("/");
+			} else {
+				setLoginIsFailure(true);
+			}
+		});
 	}
 
 	function handleChange(event: { target: { name: string; value: string } }) {
 		const { name, value } = event.target;
-		setUserDetails((prevDetails) => ({
-			...prevDetails,
-			[name]: value,
-		}));
+		name === "email" ? setEmail(value) : setPassword(value);
 	}
 
 	return (
@@ -72,7 +69,7 @@ export default function Login() {
 					size="lg"
 					name="email"
 					placeholder="Email"
-					value={userDetails.email}
+					value={email}
 					onChange={handleChange}
 				/>
 				<Spacer y={1} />
@@ -86,7 +83,7 @@ export default function Login() {
 					name="password"
 					placeholder="Password"
 					css={{ mb: "6px" }}
-					value={userDetails.password}
+					value={password}
 					onChange={handleChange}
 				/>
 				<Spacer y={1.6} />
