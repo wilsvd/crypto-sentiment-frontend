@@ -1,10 +1,15 @@
+import { AuthContext } from "@/utility/AuthContext";
 import { Navbar, Text, Avatar, Dropdown, Input } from "@nextui-org/react";
 import dynamic from "next/dynamic";
 
 import { useRouter } from "next/router";
+import { useContext } from "react";
 
 function SignedInNavbar() {
 	const { asPath } = useRouter();
+
+	const { user, setUser } = useContext(AuthContext);
+	const { email, setEmail } = useContext(AuthContext);
 
 	return (
 		<Dropdown placement="bottom-right">
@@ -13,9 +18,9 @@ function SignedInNavbar() {
 					<Avatar
 						bordered
 						as="button"
-						color="primary"
+						color="gradient"
 						size="md"
-						src="https://i.pravatar.cc/150?u=a042581f4e29026704d"
+						// src="https://i.pravatar.cc/150?u=a042581f4e29026704d"
 					/>
 				</Dropdown.Trigger>
 			</Navbar.Item>
@@ -31,20 +36,13 @@ function SignedInNavbar() {
 						Signed in as
 					</Text>
 					<Text b color="inherit" css={{ d: "flex" }}>
-						zoey@example.com
+						{email}
 					</Text>
 				</Dropdown.Item>
 				<Dropdown.Item key="settings" withDivider>
 					My Settings
 				</Dropdown.Item>
-				<Dropdown.Item key="team_settings">Team Settings</Dropdown.Item>
-				<Dropdown.Item key="analytics" withDivider>
-					Analytics
-				</Dropdown.Item>
-				<Dropdown.Item key="system">System</Dropdown.Item>
-				<Dropdown.Item key="configurations">
-					Configurations
-				</Dropdown.Item>
+
 				<Dropdown.Item key="help_and_feedback" withDivider>
 					Help & Feedback
 				</Dropdown.Item>

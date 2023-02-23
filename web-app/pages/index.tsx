@@ -5,13 +5,18 @@ import styles from "@/styles/Home.module.css";
 
 import React from "react";
 
-import { Text } from "@nextui-org/react";
+import { Container, Text } from "@nextui-org/react";
+import DefaultTable from "@/components/DefaultTable";
+// import { db } from "@/config/firebase";
 
 export default function Home() {
 	const text = "Today's Cryptocurrency Sentiment";
+
+	const headings = ["cryptocurrency", "sentiment"];
 	return (
-		<div>
+		<Container fluid>
 			<Text h3>{text}</Text>
-		</div>
+			<DefaultTable></DefaultTable>
+		</Container>
 	);
 }

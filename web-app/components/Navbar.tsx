@@ -20,7 +20,7 @@ function DefaultNavbar() {
 			borderWeight="bold"
 			variant="sticky"
 			aria-label="Navbar for users that have logged in"
-			maxWidth="xl"
+			maxWidth="fluid"
 		>
 			<Navbar.Brand css={{ mr: "$4" }}>
 				<Text b color="inherit" css={{ mr: "$11" }} hideIn="xs">
@@ -55,16 +55,7 @@ function DefaultNavbar() {
 					},
 				}}
 			>
-				<Navbar.Item
-					css={{
-						"@xsMax": {
-							width: "200px",
-						},
-						"@xlMax": {
-							width: "400px",
-						},
-					}}
-				>
+				<Navbar.Item>
 					<Input
 						bordered
 						borderWeight="normal"
@@ -81,5 +72,4 @@ function DefaultNavbar() {
 	);
 }
 
-// export default dynamic(() => Promise.resolve(DefaultNavbar), { ssr: false });
 export default DefaultNavbar;

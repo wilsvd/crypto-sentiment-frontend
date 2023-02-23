@@ -1,10 +1,10 @@
 import DefaultTable from "@/components/DefaultTable";
-import { Text } from "@nextui-org/react";
+import { Container, Text } from "@nextui-org/react";
 
 Text;
 export default function Watchlist() {
 	return (
-		<div>
+		<Container fluid>
 			<Text
 				h3
 				css={{
@@ -14,6 +14,6 @@ export default function Watchlist() {
 				Watchlist
 			</Text>
 			<DefaultTable />
-		</div>
+		</Container>
 	);
 }

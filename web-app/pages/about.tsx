@@ -1,9 +1,10 @@
 import DefaultNavbar from "@/components/DefaultNavbar";
+import { Container } from "@nextui-org/react";
 
 export default function About() {
 	return (
-		<div>
+		<Container fluid>
 			<h1>About this</h1>
-		</div>
+		</Container>
 	);
 }
