@@ -1,9 +1,8 @@
 import { Container, Text } from "@nextui-org/react";
-
-export default function About() {
+export default function Settings() {
 	return (
 		<Container fluid>
-			<Text h3>About this</Text>
+			<Text h3>Settings</Text>;
 		</Container>
 	);
 }

@@ -1,5 +1,5 @@
 import { AuthContext } from "@/utility/AuthContext";
-import { Navbar, Text, Avatar, Dropdown, Input } from "@nextui-org/react";
+import { Navbar, Text, Avatar, Dropdown, Input, Link } from "@nextui-org/react";
 import dynamic from "next/dynamic";
 
 import { useRouter } from "next/router";
@@ -40,7 +40,7 @@ function SignedInNavbar() {
 					</Text>
 				</Dropdown.Item>
 				<Dropdown.Item key="settings" withDivider>
-					My Settings
+					<Link href="/settings">My Settings</Link>
 				</Dropdown.Item>
 
 				<Dropdown.Item key="help_and_feedback" withDivider>

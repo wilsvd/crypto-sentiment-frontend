@@ -9,6 +9,7 @@ import {
 	Checkbox,
 	Container,
 } from "@nextui-org/react";
+import { signInGoogle } from "@/utility/google_auth";
 import Router from "next/router";
 
 import { makeAccount } from "@/utility/pass_auth";
@@ -113,12 +114,14 @@ export default function Signup() {
 					value={confirmPassword}
 					onChange={handleChange}
 				/>
-				<Spacer y={1.6} />
+				<Spacer y={1} />
 
 				{/* TODO:  Create a new row which allows users to signup with Google*/}
 
 				<Row justify="space-between"></Row>
 
+				<Spacer y={1} />
+				<Button onClick={signInGoogle}>Sign up with Google</Button>
 				<Spacer y={1} />
 				<Button onClick={submitForm}>Sign up</Button>
 			</Card>

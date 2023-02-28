@@ -5,8 +5,9 @@ import styles from "@/styles/Home.module.css";
 
 import React from "react";
 
-import { Container, Text } from "@nextui-org/react";
+import { Button, Container, Text } from "@nextui-org/react";
 import DefaultTable from "@/components/DefaultTable";
+
 // import { db } from "@/config/firebase";
 
 export default function Home() {

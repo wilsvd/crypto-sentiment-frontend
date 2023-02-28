@@ -12,7 +12,6 @@ function MyApp({ Component, pageProps }: AppProps) {
 		<NextUIProvider>
 			<AuthProvider>
 				<Navbar />
-				{/* <button onClick={submit}>Testing</button> */}
 				<Component {...pageProps} />
 			</AuthProvider>
 		</NextUIProvider>
