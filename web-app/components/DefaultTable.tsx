@@ -45,47 +45,80 @@ export default function DefaultTable() {
 	};
 	type Rows = Row[];
 
+	const [loading, setLoading] = React.useState(false);
 	const [cryptoData, setCryptoData] = React.useState<Rows>([]);
-	// const [tableData, setTableData] = React.useState<object[]>([]);
-	React.useEffect(() => {}, []);
+
+	React.useEffect(() => {
+		async function getItems() {
+			const resultData = await getDocs(
+				collection(firedb, `sentiments`)
+			).then((querySnapshot) => {
+				const newData = querySnapshot.docs.map(async (doc) => {
+					const crypto: string = doc.id;
+					const q = query(
+						collection(firedb, `sentiments/${crypto}/history`),
+						orderBy("datetime", "desc"),
+						limit(1)
+					);
+					const docResult = await getDocs(q).then(
+						(inQuerySnapshot) => {
+							const info = inQuerySnapshot.docs[0].data();
+							const num_sentiment: number = info["sub_sentiment"];
+							const sub_sentiment = num_sentiment.toFixed(2);
+							return {
+								key: crypto,
+								cryptocurrency: crypto,
+								sentiment: sub_sentiment,
+							};
+						}
+					);
+					return docResult;
+				});
+				Promise.all(newData).then((values) => {
+					setCryptoData(values);
+					setLoading(true);
+				});
+			});
+		}
+		getItems();
+	}, []);
 
 	function updatetable() {
 		async function getItems() {
-			const q = query(collection(firedb, `sentiments`));
-			const querySnapshot = await getDocs(q);
-			var cryptoInfo: Rows = [];
-			querySnapshot.forEach(async (doc) => {
-				// Getting the history of that cryptocurrency
-
-				const crypto = doc.id;
-				const q = query(
-					collection(firedb, `sentiments/${crypto}/history`),
-					orderBy("datetime", "desc"),
-					limit(1)
-				);
-
-				getDocs(q).then((inQuerySnapshot) => {
-					const info = inQuerySnapshot.docs[0].data();
-					const num_sentiment: number = info["sub_sentiment"];
-					const sub_sentiment = num_sentiment.toFixed(2);
-					// const docRes = { [crypto]: info };
-					cryptoInfo.push({
-						key: crypto,
-						cryptocurrency: crypto,
-						sentiment: sub_sentiment,
-					});
+			const resultData = await getDocs(
+				collection(firedb, `sentiments`)
+			).then((querySnapshot) => {
+				const newData = querySnapshot.docs.map(async (doc) => {
+					const crypto: string = doc.id;
+					const q = query(
+						collection(firedb, `sentiments/${crypto}/history`),
+						orderBy("datetime", "desc"),
+						limit(1)
+					);
+					const docResult = await getDocs(q).then(
+						(inQuerySnapshot) => {
+							const info = inQuerySnapshot.docs[0].data();
+							const num_sentiment: number = info["sub_sentiment"];
+							const sub_sentiment = num_sentiment.toFixed(2);
+							return {
+								key: crypto,
+								cryptocurrency: crypto,
+								sentiment: sub_sentiment,
+							};
+						}
+					);
+					return docResult;
+				});
+				Promise.all(newData).then((values) => {
+					setCryptoData(values);
+					setLoading(true);
 				});
 			});
-			return cryptoInfo;
 		}
-		getItems().then((data) => {
-			setCryptoData(data);
-		});
+		getItems();
 	}
-	// console.log(cryptoData);
+	console.log(cryptoData);
 	// Temporary data to experiment with using table component
-
-	const rows: Rows = cryptoData;
 
 	const renderCell = (item: Row, columnKey: React.Key) => {
 		const cellValue = item[columnKey];
@@ -101,7 +134,6 @@ export default function DefaultTable() {
 			// 		/>
 			// 	);
 			case "cryptocurrency":
-				console.log(cellValue);
 				return (
 					<Link
 						style={{ textDecoration: "underline" }}
@@ -114,9 +146,10 @@ export default function DefaultTable() {
 				return cellValue;
 		}
 	};
-	return (
-		<Container>
-			<Button onClick={updatetable}>Update data</Button>
+
+	const renderTable = (liveData: Rows) => {
+		console.log(liveData);
+		return (
 			<Table
 				aria-label="Example table with dynamic content"
 				shadow={false}
@@ -134,7 +167,7 @@ export default function DefaultTable() {
 						</Table.Column>
 					)}
 				</Table.Header>
-				<Table.Body items={rows}>
+				<Table.Body items={liveData}>
 					{(item) => (
 						<Table.Row key={item.key}>
 							{(columnKey) => (
@@ -146,6 +179,14 @@ export default function DefaultTable() {
 					)}
 				</Table.Body>
 			</Table>
+		);
+	};
+
+	return (
+		<Container>
+			<Button onPress={updatetable}>Update data</Button>
+
+			{loading ? renderTable(cryptoData) : <p>Loading</p>}
 		</Container>
 	);
 }
