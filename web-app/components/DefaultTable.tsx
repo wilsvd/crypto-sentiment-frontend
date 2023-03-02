@@ -17,7 +17,18 @@ import {
 	limit,
 	DocumentData,
 } from "firebase/firestore";
-import ReactDOM from "react-dom";
+
+import {
+	selectisActive,
+	setisActive,
+	selectEmail,
+	setEmail,
+	selectFavouriteCoins,
+	setFavouriteCoins,
+} from "@/store/authslice";
+
+import { useDispatch, useSelector } from "react-redux";
+import { wrapper } from "@/store/store";
 
 export default function DefaultTable() {
 	type Col = {
@@ -29,6 +40,10 @@ export default function DefaultTable() {
 
 	const columns: Cols = [
 		{
+			key: "favourite",
+			label: "Favourite",
+		},
+		{
 			key: "cryptocurrency",
 			label: "Cryptocurrency",
 		},
@@ -39,7 +54,8 @@ export default function DefaultTable() {
 	];
 
 	type Row = {
-		[key: string]: string;
+		[key: string]: any;
+		favourite: boolean;
 		cryptocurrency: string;
 		sentiment: string;
 	};
@@ -48,7 +64,28 @@ export default function DefaultTable() {
 	const [loading, setLoading] = React.useState(false);
 	const [cryptoData, setCryptoData] = React.useState<Rows>([]);
 
+	const [favourites, setFavourites] = React.useState<string[]>([]);
+
+	const email = useSelector(selectEmail);
+	const isActive = useSelector(selectisActive);
+
 	React.useEffect(() => {
+		async function getFavourites() {
+			if (isActive) {
+				const docRef = doc(firedb, `users/${email}`);
+
+				const docSnap = await getDoc(docRef).then((docSnap) => {
+					if (docSnap.exists()) {
+						const userData = docSnap.data();
+						const userFavourites: [] = userData["favourites"];
+						setFavourites([...userFavourites]);
+					}
+				});
+			} else {
+				console.log("Account not logged in cannot retrieve favourites");
+			}
+		}
+
 		async function getItems() {
 			const resultData = await getDocs(
 				collection(firedb, `sentiments`)
@@ -65,10 +102,15 @@ export default function DefaultTable() {
 							const info = inQuerySnapshot.docs[0].data();
 							const num_sentiment: number = info["sub_sentiment"];
 							const sub_sentiment = num_sentiment.toFixed(2);
+							console.log("Favourites: " + favourites);
+							const isFavourite = favourites.includes(crypto);
+							console.log("IsFavourite: " + isFavourite);
+
 							return {
 								key: crypto,
 								cryptocurrency: crypto,
 								sentiment: sub_sentiment,
+								favourite: isFavourite,
 							};
 						}
 					);
@@ -80,59 +122,39 @@ export default function DefaultTable() {
 				});
 			});
 		}
+
+		getFavourites();
 		getItems();
 	}, []);
 
-	function updatetable() {
-		async function getItems() {
-			const resultData = await getDocs(
-				collection(firedb, `sentiments`)
-			).then((querySnapshot) => {
-				const newData = querySnapshot.docs.map(async (doc) => {
-					const crypto: string = doc.id;
-					const q = query(
-						collection(firedb, `sentiments/${crypto}/history`),
-						orderBy("datetime", "desc"),
-						limit(1)
-					);
-					const docResult = await getDocs(q).then(
-						(inQuerySnapshot) => {
-							const info = inQuerySnapshot.docs[0].data();
-							const num_sentiment: number = info["sub_sentiment"];
-							const sub_sentiment = num_sentiment.toFixed(2);
-							return {
-								key: crypto,
-								cryptocurrency: crypto,
-								sentiment: sub_sentiment,
-							};
-						}
-					);
-					return docResult;
-				});
-				Promise.all(newData).then((values) => {
-					setCryptoData(values);
-					setLoading(true);
-				});
-			});
-		}
-		getItems();
-	}
-	console.log(cryptoData);
 	// Temporary data to experiment with using table component
 
 	const renderCell = (item: Row, columnKey: React.Key) => {
 		const cellValue = item[columnKey];
 		switch (columnKey) {
-			// case "favourite":
-			// 	return (
-			// 		<Image
-			// 			src="/iconmonstr-heart-thin.svg"
-			// 			alt="me"
-			// 			width="32"
-			// 			height="32"
-			// 			color="red"
-			// 		/>
-			// 	);
+			case "favourite":
+				console.log(cellValue);
+
+				if (cellValue) {
+					return (
+						<Image
+							src="/red-heart-icon.svg"
+							alt="me"
+							width="32"
+							height="32"
+						/>
+					);
+				} else {
+					return (
+						<Image
+							src="/iconmonstr-heart-thin.svg"
+							alt="me"
+							width="32"
+							height="32"
+						/>
+					);
+				}
+
 			case "cryptocurrency":
 				return (
 					<Link
@@ -184,8 +206,6 @@ export default function DefaultTable() {
 
 	return (
 		<Container>
-			<Button onPress={updatetable}>Update data</Button>
-
 			{loading ? renderTable(cryptoData) : <p>Loading</p>}
 		</Container>
 	);

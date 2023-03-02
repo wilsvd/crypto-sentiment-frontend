@@ -13,10 +13,10 @@ import DefaultTable from "@/components/DefaultTable";
 export default function Home() {
 	const text = "Today's Cryptocurrency Sentiment";
 
-	const headings = ["cryptocurrency", "sentiment"];
 	return (
 		<Container fluid>
 			<Text h3>{text}</Text>
+
 			<DefaultTable></DefaultTable>
 		</Container>
 	);

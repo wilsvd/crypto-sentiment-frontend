@@ -5,17 +5,20 @@ import Navbar from "@/components/Navbar";
 // 1. import `NextUIProvider` component
 import { NextUIProvider } from "@nextui-org/react";
 
-import { AuthProvider } from "@/utility/AuthContext";
+import { wrapper } from "@/store/store";
+import { PersistGate } from "redux-persist/integration/react";
+import { useStore } from "react-redux";
 
 function MyApp({ Component, pageProps }: AppProps) {
+	const store: any = useStore();
 	return (
-		<NextUIProvider>
-			<AuthProvider>
+		<PersistGate persistor={store.__persistor} loading={<div>Loading</div>}>
+			<NextUIProvider>
 				<Navbar />
 				<Component {...pageProps} />
-			</AuthProvider>
-		</NextUIProvider>
+			</NextUIProvider>
+		</PersistGate>
 	);
 }
 
-export default MyApp;
+export default wrapper.withRedux(MyApp);

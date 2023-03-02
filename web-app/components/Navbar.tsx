@@ -9,11 +9,26 @@ import { AuthContext } from "@/utility/AuthContext";
 import UserAuth from "./UserAuth";
 import UserDropdown from "./UserDropdown";
 
+import {
+	selectisActive,
+	setisActive,
+	selectDisplayName,
+	setDisplayName,
+	selectEmail,
+	setEmail,
+	selectEmailVerified,
+	setEmailVerified,
+	selectPhoneNumber,
+	setPhoneNumber,
+	selectPhotoURL,
+	setPhotoURL,
+} from "@/store/authslice";
+import { useDispatch, useSelector } from "react-redux";
+import { wrapper } from "@/store/store";
+
 function DefaultNavbar() {
-	const { user, setUser } = useContext(AuthContext);
-
 	const { asPath } = useRouter();
-
+	const accountActive = useSelector(selectisActive);
 	return (
 		<Navbar
 			isBordered
@@ -66,7 +81,7 @@ function DefaultNavbar() {
 					/>
 				</Navbar.Item>
 				<Spacer x={1} />
-				{user ? <UserDropdown /> : <UserAuth />}
+				{accountActive ? <UserDropdown /> : <UserAuth />}
 			</Navbar.Content>
 		</Navbar>
 	);
