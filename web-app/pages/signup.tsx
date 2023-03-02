@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import { useContext, useState } from "react";
 import {
 	Card,
 	Spacer,
@@ -13,21 +13,18 @@ import { signInGoogle } from "@/utility/google_auth";
 import Router from "next/router";
 
 import { makeAccount } from "@/utility/pass_auth";
-import { AuthContext } from "@/utility/AuthContext";
 
 export default function Signup() {
-	const { user, setUser } = useContext(AuthContext);
-	const { email, setEmail } = useContext(AuthContext);
-	const { password, setPassword } = useContext(AuthContext);
-	const [confirmPassword, setConfirmPassword] = React.useState("");
-	const [loginIsFailure, setLoginIsFailure] = React.useState(false);
+	const [email, setEmail] = useState("");
+	const [password, setPassword] = useState("");
+	const [confirmPassword, setConfirmPassword] = useState("");
+	const [loginIsFailure, setLoginIsFailure] = useState(false);
 
 	function submitForm() {
 		if (password === confirmPassword) {
 			makeAccount(email, password).then((success) => {
 				if (success) {
 					setLoginIsFailure(false);
-					setUser(true);
 					Router.replace("/");
 				} else {
 					// Get an better error message

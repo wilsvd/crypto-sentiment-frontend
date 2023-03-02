@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import {
 	Card,
 	Spacer,
@@ -13,30 +13,83 @@ import Image from "next/image";
 import { signInGoogle } from "@/utility/google_auth";
 import { signInAccount } from "@/utility/pass_auth";
 
-import { AuthContext } from "../utility/AuthContext";
 import Router from "next/router";
-export default function Login() {
-	const { user, setUser } = useContext(AuthContext);
-	const { email, setEmail } = useContext(AuthContext);
-	const { password, setPassword } = useContext(AuthContext);
+import {
+	selectisActive,
+	setisActive,
+	selectDisplayName,
+	setDisplayName,
+	selectEmail,
+	setEmail,
+	selectEmailVerified,
+	setEmailVerified,
+	selectPhoneNumber,
+	setPhoneNumber,
+	selectPhotoURL,
+	setPhotoURL,
+} from "@/store/authslice";
+import { useDispatch, useSelector } from "react-redux";
+import { wrapper } from "@/store/store";
+import { auth } from "@/config/firebase";
+import { onAuthStateChanged } from "@firebase/auth";
 
+export default function Login() {
+	const [emailInput, setEmailInput] = useState("");
+	const [password, setPassword] = useState("");
 	const [loginIsFailure, setLoginIsFailure] = React.useState(false);
 
+	const isActive = useSelector(selectisActive);
+	const displayName = useSelector(selectDisplayName);
+	const email = useSelector(selectEmail);
+	const dispatch = useDispatch();
+
+	console.log(email);
 	function submitForm() {
-		signInAccount(email, password).then((success) => {
+		console.log(emailInput);
+		signInAccount(emailInput, password).then((success) => {
 			if (success) {
-				setLoginIsFailure(false);
-				setUser(true);
-				Router.replace("/");
+				const user = auth.currentUser;
+				if (user) {
+					setLoginIsFailure(false);
+					dispatch(setisActive(true));
+					dispatch(setDisplayName(user.displayName));
+					dispatch(setEmail(user.email));
+					dispatch(setEmailVerified(user.phoneNumber));
+					dispatch(setPhoneNumber(user.emailVerified));
+					dispatch(setPhotoURL(user.photoURL));
+					// Router.replace("/");
+					// console.log(isActive);
+					// console.log(displayName);
+					// console.log(email);
+				}
 			} else {
 				setLoginIsFailure(true);
 			}
 		});
 	}
 
+	function submitGoogle() {
+		signInGoogle();
+		onAuthStateChanged(auth, (user) => {
+			if (user) {
+				// User is signed in, see docs for a list of available properties
+				// https://firebase.google.com/docs/reference/js/firebase.User
+				setLoginIsFailure(false);
+				dispatch(setisActive(true));
+				dispatch(setDisplayName(user.displayName));
+				dispatch(setEmail(user.email));
+				dispatch(setEmailVerified(user.phoneNumber));
+				dispatch(setPhoneNumber(user.emailVerified));
+				dispatch(setPhotoURL(user.photoURL));
+				// ...
+			} else {
+				setLoginIsFailure(true);
+			}
+		});
+	}
 	function handleChange(event: { target: { name: string; value: string } }) {
 		const { name, value } = event.target;
-		name === "email" ? setEmail(value) : setPassword(value);
+		name === "emailInput" ? setEmailInput(value) : setPassword(value);
 	}
 
 	return (
@@ -67,9 +120,9 @@ export default function Login() {
 					fullWidth
 					color="primary"
 					size="lg"
-					name="email"
+					name="emailInput"
 					placeholder="Email"
-					value={email}
+					value={emailInput}
 					onChange={handleChange}
 				/>
 				<Spacer y={1} />
