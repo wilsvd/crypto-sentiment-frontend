@@ -1,5 +1,6 @@
 import "@/styles/globals.css";
 import type { AppProps } from "next/app";
+import { Provider } from "react-redux";
 
 import Navbar from "@/components/Navbar";
 // 1. import `NextUIProvider` component
@@ -16,15 +17,17 @@ import { useStore } from "react-redux";
 // 									---- block the UI while rehydration is happening ----
 
 function MyApp({ Component, pageProps }: AppProps) {
-	const store: any = useStore();
+	const { store, props } = wrapper.useWrappedStore(pageProps);
 	return (
 		<PersistGate persistor={store.__persistor} loading={<div>Loading</div>}>
-			<NextUIProvider>
-				<Navbar />
-				<Component {...pageProps} />
-			</NextUIProvider>
+			<Provider store={store}>
+				<NextUIProvider>
+					<Navbar />
+					<Component {...props} />
+				</NextUIProvider>
+			</Provider>
 		</PersistGate>
 	);
 }
 
-export default wrapper.withRedux(MyApp);
+export default MyApp;
