@@ -1,27 +1,20 @@
-import { createSlice } from "@reduxjs/toolkit";
+// The object notation for `createSlice.extraReducers` is deprecated, and will be removed in RTK 2.0.
+// Please use the 'builder callback' notation instead: https://redux-toolkit.js.org/api/createSlice
+
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { AppState } from "./store";
-import { HYDRATE } from "next-redux-wrapper";
+import { User } from "firebase/auth";
 
 // Type for our state
 export interface AuthState {
-	isActive: boolean;
-	displayName: string;
-	email: string;
-	phoneNumber: string;
-	emailVerified: boolean;
-	photoURL: string;
-	favouriteCoins: [];
+	user: User | null;
+	value: number;
 }
 
 // Initial state
 const initialState: AuthState = {
-	isActive: false,
-	displayName: "",
-	email: "",
-	phoneNumber: "",
-	emailVerified: false,
-	photoURL: "",
-	favouriteCoins: [],
+	user: null,
+	value: 0,
 };
 
 // Actual Slice
@@ -30,58 +23,29 @@ export const authSlice = createSlice({
 	initialState,
 	reducers: {
 		// Action to set the authentication status
-		setisActive(state, action) {
-			state.isActive = action.payload;
+		setUser(state, action) {
+			state.user = action.payload;
 		},
-		setDisplayName(state, action) {
-			state.displayName = action.payload;
+		increment: (state) => {
+			// Redux Toolkit allows us to write "mutating" logic in reducers. It
+			// doesn't actually mutate the state because it uses the Immer library,
+			// which detects changes to a "draft state" and produces a brand new
+			// immutable state based off those changes
+			state.value += 1;
 		},
-		setEmail(state, action) {
-			state.email = action.payload;
+		decrement: (state) => {
+			state.value -= 1;
 		},
-		setPhoneNumber(state, action) {
-			state.phoneNumber = action.payload;
-		},
-		setEmailVerified(state, action) {
-			state.emailVerified = action.payload;
-		},
-		setPhotoURL(state, action) {
-			state.photoURL = action.payload;
-		},
-		setFavouriteCoins(state, action) {
-			state.favouriteCoins = action.payload;
-		},
-	},
-
-	// Special reducer for hydrating the state. Special case for next-redux-wrapper
-	extraReducers: {
-		[HYDRATE]: (state, action) => {
-			return {
-				...state,
-				...action.payload.auth,
-			};
+		// Use the PayloadAction type to declare the contents of `action.payload`
+		incrementByAmount: (state, action: PayloadAction<number>) => {
+			state.value += action.payload;
 		},
 	},
 });
 
-export const {
-	setisActive,
-	setDisplayName,
-	setEmail,
-	setPhoneNumber,
-	setEmailVerified,
-	setPhotoURL,
-	setFavouriteCoins,
-} = authSlice.actions;
-
-export const selectisActive = (state: AppState) => state.auth.isActive;
-export const selectDisplayName = (state: AppState) => state.auth.displayName;
-export const selectEmail = (state: AppState) => state.auth.email;
-export const selectPhoneNumber = (state: AppState) => state.auth.phoneNumber;
-export const selectEmailVerified = (state: AppState) =>
-	state.auth.emailVerified;
-export const selectPhotoURL = (state: AppState) => state.auth.photoURL;
-export const selectFavouriteCoins = (state: AppState) =>
-	state.auth.favouriteCoins;
-
+export const { setUser, increment, decrement, incrementByAmount } =
+	authSlice.actions;
 export default authSlice.reducer;
+
+export const selectUser = (state: AppState) => state.auth.user;
+export const selectCount = (state: AppState) => state.auth.value;

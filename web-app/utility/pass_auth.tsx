@@ -1,20 +1,4 @@
 import {
-	selectisActive,
-	setisActive,
-	selectDisplayName,
-	setDisplayName,
-	selectEmail,
-	setEmail,
-	selectEmailVerified,
-	setEmailVerified,
-	selectPhoneNumber,
-	setPhoneNumber,
-	selectPhotoURL,
-	setPhotoURL,
-} from "@/store/authslice";
-import { useDispatch, useSelector } from "react-redux";
-
-import {
 	createUserWithEmailAndPassword,
 	signInWithEmailAndPassword,
 	onAuthStateChanged,

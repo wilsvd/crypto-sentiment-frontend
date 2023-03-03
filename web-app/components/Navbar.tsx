@@ -1,34 +1,14 @@
-import { Navbar, Text, Button, Link, Input } from "@nextui-org/react";
+import { Navbar, Text, Button, Input } from "@nextui-org/react";
+import NextLink from "next/link";
+
 import { Spacer } from "@nextui-org/react";
 
-import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
-import { useContext } from "react";
-
-import { AuthContext } from "@/utility/AuthContext";
-import UserAuth from "./UserAuth";
 import UserDropdown from "./UserDropdown";
-
-import {
-	selectisActive,
-	setisActive,
-	selectDisplayName,
-	setDisplayName,
-	selectEmail,
-	setEmail,
-	selectEmailVerified,
-	setEmailVerified,
-	selectPhoneNumber,
-	setPhoneNumber,
-	selectPhotoURL,
-	setPhotoURL,
-} from "@/store/authslice";
-import { useDispatch, useSelector } from "react-redux";
-import { wrapper } from "@/store/store";
+import UserAuth from "./UserAuth";
 
 function DefaultNavbar() {
 	const { asPath } = useRouter();
-	const accountActive = useSelector(selectisActive);
 	return (
 		<Navbar
 			isBordered
@@ -43,18 +23,21 @@ function DefaultNavbar() {
 				</Text>
 				<Navbar.Content hideIn="xs" variant="highlight">
 					<Navbar.Link
+						as={NextLink}
 						isActive={asPath == "/" ? true : false}
 						href="/"
 					>
 						Dashboard
 					</Navbar.Link>
 					<Navbar.Link
+						as={NextLink}
 						isActive={asPath == "/watchlist" ? true : false}
 						href="/watchlist"
 					>
 						Watchlist
 					</Navbar.Link>
 					<Navbar.Link
+						as={NextLink}
 						isActive={asPath == "/about" ? true : false}
 						href="/about"
 					>
@@ -81,7 +64,8 @@ function DefaultNavbar() {
 					/>
 				</Navbar.Item>
 				<Spacer x={1} />
-				{accountActive ? <UserDropdown /> : <UserAuth />}
+				{/* Is Account Active */}
+				{false ? <UserDropdown /> : <UserAuth />}
 			</Navbar.Content>
 		</Navbar>
 	);

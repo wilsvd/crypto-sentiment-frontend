@@ -18,18 +18,6 @@ import {
 	DocumentData,
 } from "firebase/firestore";
 
-import {
-	selectisActive,
-	setisActive,
-	selectEmail,
-	setEmail,
-	selectFavouriteCoins,
-	setFavouriteCoins,
-} from "@/store/authslice";
-
-import { useDispatch, useSelector } from "react-redux";
-import { wrapper } from "@/store/store";
-
 export default function DefaultTable() {
 	type Col = {
 		[key: string]: string;
@@ -66,25 +54,22 @@ export default function DefaultTable() {
 
 	const [favourites, setFavourites] = React.useState<string[]>([]);
 
-	const email = useSelector(selectEmail);
-	const isActive = useSelector(selectisActive);
-
 	React.useEffect(() => {
-		async function getFavourites() {
-			if (isActive) {
-				const docRef = doc(firedb, `users/${email}`);
+		// async function getFavourites() {
+		// 	if (isActive) {
+		// 		const docRef = doc(firedb, `users/${email}`);
 
-				const docSnap = await getDoc(docRef).then((docSnap) => {
-					if (docSnap.exists()) {
-						const userData = docSnap.data();
-						const userFavourites: [] = userData["favourites"];
-						setFavourites([...userFavourites]);
-					}
-				});
-			} else {
-				console.log("Account not logged in cannot retrieve favourites");
-			}
-		}
+		// 		const docSnap = await getDoc(docRef).then((docSnap) => {
+		// 			if (docSnap.exists()) {
+		// 				const userData = docSnap.data();
+		// 				const userFavourites: [] = userData["favourites"];
+		// 				setFavourites([...userFavourites]);
+		// 			}
+		// 		});
+		// 	} else {
+		// 		console.log("Account not logged in cannot retrieve favourites");
+		// 	}
+		// }
 
 		async function getItems() {
 			const resultData = await getDocs(
@@ -123,7 +108,7 @@ export default function DefaultTable() {
 			});
 		}
 
-		getFavourites();
+		// getFavourites();
 		getItems();
 	}, []);
 
