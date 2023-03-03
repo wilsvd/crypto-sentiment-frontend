@@ -1,4 +1,6 @@
-import { Navbar, Link } from "@nextui-org/react";
+import { Navbar } from "@nextui-org/react";
+
+import NextLink from "next/link";
 
 import { useRouter } from "next/router";
 
@@ -10,6 +12,7 @@ export default function UserAuth() {
 			<Navbar.Link
 				color="inherit"
 				href="/login"
+				as={NextLink}
 				isActive={asPath == "/login" ? true : false}
 			>
 				Login
@@ -17,6 +20,7 @@ export default function UserAuth() {
 			<Navbar.Link
 				color="inherit"
 				href="/signup"
+				as={NextLink}
 				isActive={asPath == "/signup" ? true : false}
 				css={{
 					whiteSpace: "nowrap",
