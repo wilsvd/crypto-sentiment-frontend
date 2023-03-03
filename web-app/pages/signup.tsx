@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import {
 	Card,
 	Spacer,
@@ -10,22 +10,28 @@ import {
 	Container,
 } from "@nextui-org/react";
 import { signInGoogle } from "@/utility/google_auth";
-import Router from "next/router";
+import { useRouter } from "next/router";
 
 import { makeAccount } from "@/utility/pass_auth";
 
 export default function Signup() {
+	const router = useRouter();
+
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	const [confirmPassword, setConfirmPassword] = useState("");
 	const [loginIsFailure, setLoginIsFailure] = useState(false);
+
+	useEffect(() => {
+		router.prefetch("/");
+	}, []);
 
 	function submitForm() {
 		if (password === confirmPassword) {
 			makeAccount(email, password).then((success) => {
 				if (success) {
 					setLoginIsFailure(false);
-					Router.replace("/");
+					router.push("/");
 				} else {
 					// Get an better error message
 					console.log("SOMETHING WENT WRONG");

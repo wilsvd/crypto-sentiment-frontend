@@ -15,6 +15,14 @@ export default function Home() {
 
 	return (
 		<Container fluid>
+			<Head>
+				<title>Dashboard</title>
+				<meta
+					property="og:dashboard"
+					content="Dashboard"
+					key="dashboard"
+				/>
+			</Head>
 			<Text h3>{text}</Text>
 
 			<DefaultTable></DefaultTable>

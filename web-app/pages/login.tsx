@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
 	Card,
 	Spacer,
@@ -9,41 +9,28 @@ import {
 	Checkbox,
 	Container,
 } from "@nextui-org/react";
+import { useRouter } from "next/router";
 import Image from "next/image";
 import { signInGoogle } from "@/utility/google_auth";
 import { signInAccount } from "@/utility/pass_auth";
 
-import Router from "next/router";
-import {
-	selectisActive,
-	setisActive,
-	selectDisplayName,
-	setDisplayName,
-	selectEmail,
-	setEmail,
-	selectEmailVerified,
-	setEmailVerified,
-	selectPhoneNumber,
-	setPhoneNumber,
-	selectPhotoURL,
-	setPhotoURL,
-} from "@/store/authslice";
 import { useDispatch, useSelector } from "react-redux";
-import { wrapper } from "@/store/store";
+
 import { auth } from "@/config/firebase";
 import { onAuthStateChanged } from "@firebase/auth";
 
 export default function Login() {
+	const router = useRouter();
+	const dispatch = useDispatch();
+
 	const [emailInput, setEmailInput] = useState("");
 	const [password, setPassword] = useState("");
 	const [loginIsFailure, setLoginIsFailure] = React.useState(false);
 
-	const isActive = useSelector(selectisActive);
-	const displayName = useSelector(selectDisplayName);
-	const email = useSelector(selectEmail);
-	const dispatch = useDispatch();
+	useEffect(() => {
+		router.prefetch("/");
+	}, []);
 
-	console.log(email);
 	function submitForm() {
 		console.log(emailInput);
 		signInAccount(emailInput, password).then((success) => {
@@ -51,16 +38,8 @@ export default function Login() {
 				const user = auth.currentUser;
 				if (user) {
 					setLoginIsFailure(false);
-					dispatch(setisActive(true));
-					dispatch(setDisplayName(user.displayName));
-					dispatch(setEmail(user.email));
-					dispatch(setEmailVerified(user.phoneNumber));
-					dispatch(setPhoneNumber(user.emailVerified));
-					dispatch(setPhotoURL(user.photoURL));
-					// Router.replace("/");
-					// console.log(isActive);
-					// console.log(displayName);
-					// console.log(email);
+					console.log("Success");
+					router.push("/");
 				}
 			} else {
 				setLoginIsFailure(true);
@@ -75,12 +54,7 @@ export default function Login() {
 				// User is signed in, see docs for a list of available properties
 				// https://firebase.google.com/docs/reference/js/firebase.User
 				setLoginIsFailure(false);
-				dispatch(setisActive(true));
-				dispatch(setDisplayName(user.displayName));
-				dispatch(setEmail(user.email));
-				dispatch(setEmailVerified(user.phoneNumber));
-				dispatch(setPhoneNumber(user.emailVerified));
-				dispatch(setPhotoURL(user.photoURL));
+
 				// ...
 			} else {
 				setLoginIsFailure(true);
