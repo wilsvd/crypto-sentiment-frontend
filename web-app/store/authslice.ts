@@ -1,51 +1,39 @@
-// The object notation for `createSlice.extraReducers` is deprecated, and will be removed in RTK 2.0.
-// Please use the 'builder callback' notation instead: https://redux-toolkit.js.org/api/createSlice
-
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { AppState } from "./store";
 import { User } from "firebase/auth";
+import { AppState } from "./store";
 
-// Type for our state
-export interface AuthState {
+interface AuthState {
 	user: User | null;
-	value: number;
+	loading: boolean;
+	error: string | null;
 }
 
-// Initial state
 const initialState: AuthState = {
 	user: null,
-	value: 0,
+	loading: true,
+	error: null,
 };
 
-// Actual Slice
 export const authSlice = createSlice({
 	name: "auth",
 	initialState,
 	reducers: {
-		// Action to set the authentication status
-		setUser(state, action) {
+		setUser: (state, action: PayloadAction<User | null>) => {
 			state.user = action.payload;
+			state.loading = false;
+			state.error = null;
 		},
-		increment: (state) => {
-			// Redux Toolkit allows us to write "mutating" logic in reducers. It
-			// doesn't actually mutate the state because it uses the Immer library,
-			// which detects changes to a "draft state" and produces a brand new
-			// immutable state based off those changes
-			state.value += 1;
+		setLoading: (state) => {
+			state.loading = true;
 		},
-		decrement: (state) => {
-			state.value -= 1;
-		},
-		// Use the PayloadAction type to declare the contents of `action.payload`
-		incrementByAmount: (state, action: PayloadAction<number>) => {
-			state.value += action.payload;
+		setError: (state, action: PayloadAction<string>) => {
+			state.loading = false;
+			state.error = action.payload;
 		},
 	},
 });
 
-export const { setUser, increment, decrement, incrementByAmount } =
-	authSlice.actions;
+export const { setUser } = authSlice.actions;
 export default authSlice.reducer;
 
 export const selectUser = (state: AppState) => state.auth.user;
-export const selectCount = (state: AppState) => state.auth.value;
