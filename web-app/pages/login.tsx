@@ -10,18 +10,11 @@ import {
 	Container,
 } from "@nextui-org/react";
 import { useRouter } from "next/router";
-import Image from "next/image";
 import { signInGoogle } from "@/utility/google_auth";
 import { signInAccount } from "@/utility/pass_auth";
 
-import { useDispatch, useSelector } from "react-redux";
-
-import { auth } from "@/config/firebase";
-import { onAuthStateChanged } from "@firebase/auth";
-
 export default function Login() {
 	const router = useRouter();
-	const dispatch = useDispatch();
 
 	const [emailInput, setEmailInput] = useState("");
 	const [password, setPassword] = useState("");
@@ -30,17 +23,10 @@ export default function Login() {
 	useEffect(() => {
 		router.prefetch("/");
 	}, []);
-
 	function submitForm() {
-		console.log(emailInput);
 		signInAccount(emailInput, password).then((success) => {
 			if (success) {
-				const user = auth.currentUser;
-				if (user) {
-					setLoginIsFailure(false);
-					console.log("Success");
-					router.push("/");
-				}
+				router.push("/");
 			} else {
 				setLoginIsFailure(true);
 			}
@@ -49,17 +35,6 @@ export default function Login() {
 
 	function submitGoogle() {
 		signInGoogle();
-		onAuthStateChanged(auth, (user) => {
-			if (user) {
-				// User is signed in, see docs for a list of available properties
-				// https://firebase.google.com/docs/reference/js/firebase.User
-				setLoginIsFailure(false);
-
-				// ...
-			} else {
-				setLoginIsFailure(true);
-			}
-		});
 	}
 	function handleChange(event: { target: { name: string; value: string } }) {
 		const { name, value } = event.target;

@@ -6,7 +6,6 @@ import {
 	Text,
 	Input,
 	Row,
-	Checkbox,
 	Container,
 } from "@nextui-org/react";
 import { signInGoogle } from "@/utility/google_auth";
