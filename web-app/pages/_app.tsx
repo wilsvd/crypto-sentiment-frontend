@@ -4,9 +4,15 @@ import type { AppProps } from "next/app";
 import Navbar from "@/components/Navbar";
 import { NextUIProvider } from "@nextui-org/react";
 import { Provider } from "react-redux";
+import { useEffect } from "react";
 import store from "@/store/store";
+import { listenForAuthChanges } from "@/store/hooks";
 
 function MyApp({ Component, pageProps }: AppProps) {
+	useEffect(() => {
+		store.dispatch(listenForAuthChanges());
+	}, []);
+
 	return (
 		<Provider store={store}>
 			<NextUIProvider>

@@ -1,11 +1,13 @@
+import { signOutAccount } from "@/utility/pass_auth";
 import { Navbar, Text, Avatar, Dropdown, Input, Link } from "@nextui-org/react";
 
 import NextLink from "next/link";
 
-import { useRouter } from "next/router";
+import { selectUser } from "@/store/authslice";
+import { useAppSelector } from "@/store/hooks";
 
 function SignedInNavbar() {
-	const { asPath } = useRouter();
+	const user = useAppSelector(selectUser);
 
 	return (
 		<Dropdown placement="bottom-right">
@@ -23,7 +25,9 @@ function SignedInNavbar() {
 			<Dropdown.Menu
 				aria-label="User menu actions"
 				color="secondary"
-				onAction={(actionKey) => console.log(actionKey)}
+				onAction={(actionKey) =>
+					actionKey == "logout" ? signOutAccount() : null
+				}
 			>
 				{/* TODO: Refactor this code to use user context */}
 
@@ -32,12 +36,12 @@ function SignedInNavbar() {
 						Signed in as
 					</Text>
 					<Text b color="inherit" css={{ d: "flex" }}>
-						{"email"}
+						{user?.email}
 					</Text>
 				</Dropdown.Item>
 				<Dropdown.Item key="settings" withDivider>
 					<Link as={NextLink} href="/settings">
-						My Settings
+						Account Settings
 					</Link>
 				</Dropdown.Item>
 

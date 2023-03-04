@@ -87,9 +87,7 @@ export default function DefaultTable() {
 							const info = inQuerySnapshot.docs[0].data();
 							const num_sentiment: number = info["sub_sentiment"];
 							const sub_sentiment = num_sentiment.toFixed(2);
-							console.log("Favourites: " + favourites);
 							const isFavourite = favourites.includes(crypto);
-							console.log("IsFavourite: " + isFavourite);
 
 							return {
 								key: crypto,
@@ -118,8 +116,6 @@ export default function DefaultTable() {
 		const cellValue = item[columnKey];
 		switch (columnKey) {
 			case "favourite":
-				console.log(cellValue);
-
 				if (cellValue) {
 					return (
 						<Image
@@ -155,7 +151,6 @@ export default function DefaultTable() {
 	};
 
 	const renderTable = (liveData: Rows) => {
-		console.log(liveData);
 		return (
 			<Table
 				aria-label="Example table with dynamic content"

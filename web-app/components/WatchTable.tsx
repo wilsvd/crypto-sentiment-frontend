@@ -111,7 +111,6 @@ export default function DefaultTable() {
 	// 	getItems();
 	// }, []);
 
-	console.log(cryptoData);
 	// Temporary data to experiment with using table component
 
 	const renderCell = (item: Row, columnKey: React.Key) => {
@@ -142,7 +141,6 @@ export default function DefaultTable() {
 	};
 
 	const renderTable = (liveData: Rows) => {
-		console.log(liveData);
 		return (
 			<Table
 				aria-label="Example table with dynamic content"
