@@ -7,8 +7,12 @@ import { useRouter } from "next/router";
 import UserDropdown from "./UserDropdown";
 import UserAuth from "./UserAuth";
 
+import { selectUser } from "@/store/authslice";
+import { useAppSelector } from "@/store/hooks";
+
 function DefaultNavbar() {
 	const { asPath } = useRouter();
+	const user = useAppSelector(selectUser);
 	return (
 		<Navbar
 			isBordered
@@ -64,8 +68,7 @@ function DefaultNavbar() {
 					/>
 				</Navbar.Item>
 				<Spacer x={1} />
-				{/* Is Account Active */}
-				{false ? <UserDropdown /> : <UserAuth />}
+				{user ? <UserDropdown /> : <UserAuth />}
 			</Navbar.Content>
 		</Navbar>
 	);
