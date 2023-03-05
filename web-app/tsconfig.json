@@ -19,14 +19,6 @@
 			"@/*": ["./*"]
 		}
 	},
-	"include": [
-		"next-env.d.ts",
-		"**/*.ts",
-		"**/*.tsx",
-		"pages/_app.jsx",
-		"components/Content.js",
-		"components/Layout.js",
-		"components/AcmeLogo.js"
-	],
+	"include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
 	"exclude": ["node_modules"]
 }

@@ -1,15 +1,13 @@
-import { AuthContext } from "@/utility/AuthContext";
-import { Navbar, Text, Avatar, Dropdown, Input } from "@nextui-org/react";
-import dynamic from "next/dynamic";
+import { signOutAccount } from "@/utility/pass_auth";
+import { Navbar, Text, Avatar, Dropdown, Input, Link } from "@nextui-org/react";
 
-import { useRouter } from "next/router";
-import { useContext } from "react";
+import NextLink from "next/link";
+
+import { selectUser } from "@/store/authslice";
+import { useAppSelector } from "@/store/hooks";
 
 function SignedInNavbar() {
-	const { asPath } = useRouter();
-
-	const { user, setUser } = useContext(AuthContext);
-	const { email, setEmail } = useContext(AuthContext);
+	const user = useAppSelector(selectUser);
 
 	return (
 		<Dropdown placement="bottom-right">
@@ -27,7 +25,9 @@ function SignedInNavbar() {
 			<Dropdown.Menu
 				aria-label="User menu actions"
 				color="secondary"
-				onAction={(actionKey) => console.log({ actionKey })}
+				onAction={(actionKey) =>
+					actionKey == "logout" ? signOutAccount() : null
+				}
 			>
 				{/* TODO: Refactor this code to use user context */}
 
@@ -36,11 +36,13 @@ function SignedInNavbar() {
 						Signed in as
 					</Text>
 					<Text b color="inherit" css={{ d: "flex" }}>
-						{email}
+						{user?.email}
 					</Text>
 				</Dropdown.Item>
 				<Dropdown.Item key="settings" withDivider>
-					My Settings
+					<Link as={NextLink} href="/settings">
+						Account Settings
+					</Link>
 				</Dropdown.Item>
 
 				<Dropdown.Item key="help_and_feedback" withDivider>
@@ -54,4 +56,4 @@ function SignedInNavbar() {
 	);
 }
 
-export default dynamic(() => Promise.resolve(SignedInNavbar), { ssr: false });
+export default SignedInNavbar;

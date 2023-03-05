@@ -2,20 +2,24 @@ import "@/styles/globals.css";
 import type { AppProps } from "next/app";
 
 import Navbar from "@/components/Navbar";
-// 1. import `NextUIProvider` component
 import { NextUIProvider } from "@nextui-org/react";
-
-import { AuthProvider } from "@/utility/AuthContext";
+import { Provider } from "react-redux";
+import { useEffect } from "react";
+import store from "@/store/store";
+import { listenForAuthChanges } from "@/store/hooks";
 
 function MyApp({ Component, pageProps }: AppProps) {
+	useEffect(() => {
+		store.dispatch(listenForAuthChanges());
+	}, []);
+
 	return (
-		<NextUIProvider>
-			<AuthProvider>
+		<Provider store={store}>
+			<NextUIProvider>
 				<Navbar />
-				{/* <button onClick={submit}>Testing</button> */}
 				<Component {...pageProps} />
-			</AuthProvider>
-		</NextUIProvider>
+			</NextUIProvider>
+		</Provider>
 	);
 }
 

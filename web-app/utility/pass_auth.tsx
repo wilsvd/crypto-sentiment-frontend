@@ -9,45 +9,54 @@ import {
 } from "firebase/auth";
 import { auth } from "@/config/firebase";
 
-export function makeAccount(email: string, password: string) {
-	return createUserWithEmailAndPassword(auth, email, password)
-		.then((userCredential) => {
-			// Signed in
-			const user = userCredential.user;
-			// ...
-			console.log("You successfuly made an account");
-			return true;
-		})
-		.catch((error) => {
-			const errorCode = error.code;
-			const errorMessage = error.message;
-			// ..
-			return false;
-		});
+export async function makeAccount(email: string, password: string) {
+	try {
+		const userCredential = await createUserWithEmailAndPassword(
+			auth,
+			email,
+			password
+		);
+		// Signed in
+		const user = userCredential.user;
+		// ...
+		console.log("You successfuly made an account");
+		return true;
+	} catch (error) {
+		console.log("Make account error");
+		console.log(error);
+		return false;
+	}
 }
 
 export function signOutAccount() {
-	signOut(auth);
-	console.log("Account signed out");
-}
-
-export function signInAccount(email: string, password: string) {
-	return signInWithEmailAndPassword(auth, email, password)
-		.then((userCredential) => {
-			// Signed in
-			const user = userCredential.user;
-			// ...
-			console.log("You successfully signed in");
-			return true;
+	signOut(auth)
+		.then(() => {
+			console.log("Sign out successful");
 		})
 		.catch((error) => {
-			console.log("YO YOU MESSED UP");
-			const errorCode = error.code;
-			const errorMessage = error.message;
-			console.log(errorCode);
-			console.log(errorMessage);
-			return false;
+			console.log("Signing out error");
+			console.log(error);
 		});
+}
+
+export async function signInAccount(email: string, password: string) {
+	try {
+		const userCredential = await signInWithEmailAndPassword(
+			auth,
+			email,
+			password
+		);
+		// Signed in
+		const user = userCredential.user;
+		// ...
+		console.log("You successfully signed in");
+		return true;
+	} catch (error) {
+		console.log("Sign in error");
+
+		console.log(error);
+		return false;
+	}
 }
 
 export function accountObserver() {
@@ -55,6 +64,12 @@ export function accountObserver() {
 		if (user) {
 			// User is signed in, see docs for a list of available properties
 			// https://firebase.google.com/docs/reference/js/firebase.User
+			user.displayName;
+			user.phoneNumber;
+			user.email;
+			user.emailVerified;
+			user.photoURL;
+
 			user.providerData.forEach((profile) => {
 				console.log("  Sign-in provider: " + profile.providerId);
 				console.log("  Provider-specific UID: " + profile.uid);

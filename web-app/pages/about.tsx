@@ -1,10 +1,14 @@
-import DefaultNavbar from "@/components/DefaultNavbar";
-import { Container } from "@nextui-org/react";
+import { Button, Container, Text } from "@nextui-org/react";
+import Head from "next/head";
 
 export default function About() {
 	return (
 		<Container fluid>
-			<h1>About this</h1>
+			<Head>
+				<title>About</title>
+				<meta property="og:About" content="About" key="about" />
+			</Head>
+			<Text h3>About this</Text>
 		</Container>
 	);
 }

@@ -1,19 +1,18 @@
-import { Navbar, Text, Button, Link, Input } from "@nextui-org/react";
+import { Navbar, Text, Button, Input } from "@nextui-org/react";
+import NextLink from "next/link";
+
 import { Spacer } from "@nextui-org/react";
 
-import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
-import { useContext } from "react";
-
-import { AuthContext } from "@/utility/AuthContext";
-import UserAuth from "./UserAuth";
 import UserDropdown from "./UserDropdown";
+import UserAuth from "./UserAuth";
+
+import { selectUser } from "@/store/authslice";
+import { useAppSelector } from "@/store/hooks";
 
 function DefaultNavbar() {
-	const { user, setUser } = useContext(AuthContext);
-
 	const { asPath } = useRouter();
-
+	const user = useAppSelector(selectUser);
 	return (
 		<Navbar
 			isBordered
@@ -28,18 +27,21 @@ function DefaultNavbar() {
 				</Text>
 				<Navbar.Content hideIn="xs" variant="highlight">
 					<Navbar.Link
+						as={NextLink}
 						isActive={asPath == "/" ? true : false}
 						href="/"
 					>
 						Dashboard
 					</Navbar.Link>
 					<Navbar.Link
+						as={NextLink}
 						isActive={asPath == "/watchlist" ? true : false}
 						href="/watchlist"
 					>
 						Watchlist
 					</Navbar.Link>
 					<Navbar.Link
+						as={NextLink}
 						isActive={asPath == "/about" ? true : false}
 						href="/about"
 					>

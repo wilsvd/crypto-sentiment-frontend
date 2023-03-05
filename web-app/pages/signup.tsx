@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import {
 	Card,
 	Spacer,
@@ -6,28 +6,31 @@ import {
 	Text,
 	Input,
 	Row,
-	Checkbox,
 	Container,
 } from "@nextui-org/react";
-import Router from "next/router";
+import { signInGoogle } from "@/utility/google_auth";
+import { useRouter } from "next/router";
 
 import { makeAccount } from "@/utility/pass_auth";
-import { AuthContext } from "@/utility/AuthContext";
 
 export default function Signup() {
-	const { user, setUser } = useContext(AuthContext);
-	const { email, setEmail } = useContext(AuthContext);
-	const { password, setPassword } = useContext(AuthContext);
-	const [confirmPassword, setConfirmPassword] = React.useState("");
-	const [loginIsFailure, setLoginIsFailure] = React.useState(false);
+	const router = useRouter();
+
+	const [email, setEmail] = useState("");
+	const [password, setPassword] = useState("");
+	const [confirmPassword, setConfirmPassword] = useState("");
+	const [loginIsFailure, setLoginIsFailure] = useState(false);
+
+	useEffect(() => {
+		router.prefetch("/");
+	}, []);
 
 	function submitForm() {
 		if (password === confirmPassword) {
 			makeAccount(email, password).then((success) => {
 				if (success) {
 					setLoginIsFailure(false);
-					setUser(true);
-					Router.replace("/");
+					router.push("/");
 				} else {
 					// Get an better error message
 					console.log("SOMETHING WENT WRONG");
@@ -113,12 +116,14 @@ export default function Signup() {
 					value={confirmPassword}
 					onChange={handleChange}
 				/>
-				<Spacer y={1.6} />
+				<Spacer y={1} />
 
 				{/* TODO:  Create a new row which allows users to signup with Google*/}
 
 				<Row justify="space-between"></Row>
 
+				<Spacer y={1} />
+				<Button onClick={signInGoogle}>Sign up with Google</Button>
 				<Spacer y={1} />
 				<Button onClick={submitForm}>Sign up</Button>
 			</Card>

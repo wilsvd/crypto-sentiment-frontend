@@ -1,9 +1,10 @@
 import { Button, Container, Table } from "@nextui-org/react";
-import React, { useEffect, useRef, useState } from "react";
+import React, { ReactNode, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import Badge from "@nextui-org/react";
-// import { getLatestCryptoHistory } from "@/utility/firestore_helper";
+
+import { useDispatch, useSelector } from "react-redux";
 import { firedb } from "@/config/firebase";
 import {
 	collection,
@@ -17,15 +18,15 @@ import {
 	limit,
 	DocumentData,
 } from "firebase/firestore";
+import { Cols, columns, Row, Rows } from "@/types";
 import { useAppSelector } from "@/store/hooks";
 import { selectUser } from "@/store/authslice";
 import {
 	addFavouriteCryptocurrency,
 	getFavouriteCryptocurrencies,
-	LatestSentiment,
+	getFavouriteLatestSentiments,
 	removeFavouriteCryptocurrency,
 } from "@/utility/firestore";
-import { columns, Row, Rows } from "@/types";
 
 export default function DefaultTable() {
 	const user = useAppSelector(selectUser);
@@ -63,29 +64,17 @@ export default function DefaultTable() {
 		prevFavouritesRef.current = favourites;
 
 		async function getItems() {
-			console.log("Getting items");
-			const querySnapshot = await getDocs(
-				collection(firedb, "sentiments")
+			const favouriteSentiments = await getFavouriteLatestSentiments(
+				favourites
 			);
-
-			const newData = querySnapshot.docs.map(async (doc) => {
-				const crypto: string = doc.id;
-				const q = query(
-					collection(firedb, `sentiments/${crypto}/history`),
-					orderBy("datetime", "desc"),
-					limit(1)
-				);
-				const inQuerySnapshot = await getDocs(q);
-				const info = inQuerySnapshot.docs[0].data();
-				const num_sentiment: number = info["sub_sentiment"];
+			const newData = favouriteSentiments.map((crypto) => {
+				const num_sentiment: number = crypto.latestSentiment;
 				const sub_sentiment = num_sentiment.toFixed(2);
-				const isFavourite = favourites.includes(crypto);
-
 				return {
-					key: crypto,
-					cryptocurrency: crypto,
+					key: crypto.id,
+					cryptocurrency: crypto.id,
 					sentiment: sub_sentiment,
-					favourite: isFavourite,
+					favourite: true,
 				};
 			});
 
@@ -97,6 +86,8 @@ export default function DefaultTable() {
 
 		getItems();
 	}, [favouritesLoaded, favourites]);
+
+	// Temporary data to experiment with using table component
 
 	const toggleFavorite = (crypto: string) => {
 		if (!user || !user.email) {
@@ -211,9 +202,22 @@ export default function DefaultTable() {
 		);
 	};
 
-	return (
-		<Container>
-			{loading ? renderTable(cryptoData) : <p>Loading</p>}
-		</Container>
-	);
+	function handleDisplayLogic(): ReactNode {
+		if (cryptoData.length > 0) {
+			if (loading) {
+				return renderTable(cryptoData);
+			} else {
+				return <p>Loading</p>;
+			}
+		} else if (!user) {
+			return (
+				<p>You must have an account to be able to keep a watchlist</p>
+			);
+		} else {
+			return (
+				<p>You have not added any cryptocurrencies to your watchlist</p>
+			);
+		}
+	}
+	return <Container>{handleDisplayLogic()}</Container>;
 }

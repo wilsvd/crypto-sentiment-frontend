@@ -1,3 +1,5 @@
+// UPDATE CODE TO MAKE USE OF THE DATA FROM FIRESTORE
+
 import { GetStaticProps, GetStaticPaths } from "next";
 import { useRouter } from "next/router";
 import CryptoCoin from "@/components/CryptoCoin";
@@ -10,61 +12,62 @@ interface cryptoInterface {
 }
 
 export const getStaticProps: GetStaticProps = async (context) => {
-	const itemID = context.params?.crypto;
-	const response = await fetch("http://localhost:3000/api/tryFirebaseadmin");
-	const res = await response.json();
-	let data = res["data"];
+	// const itemID = context.params?.crypto;
+	// const response = await fetch("http://localhost:3000/api/tryFirebaseadmin");
+	// const res = await response.json();
+	// let data = res["data"];
 
-	let cryptocurrencies = Object.keys(data);
+	// let cryptocurrencies = Object.keys(data);
 
-	let table = cryptocurrencies.map((crypto) => {
-		var sentimentVal: string = data[crypto]["sentiment"];
-		return {
-			key: crypto,
-			cryptocurrency: crypto,
-			sentiment: sentimentVal,
-		};
-	});
-	const foundItem = table.find(
-		(item: cryptoInterface) => itemID === item.key
-	);
+	// let table = cryptocurrencies.map((crypto) => {
+	// 	var sentimentVal: string = data[crypto]["sentiment"];
+	// 	return {
+	// 		key: crypto,
+	// 		cryptocurrency: crypto,
+	// 		sentiment: sentimentVal,
+	// 	};
+	// });
+	// const foundItem = table.find(
+	// 	(item: cryptoInterface) => itemID === item.key
+	// );
 
-	if (!foundItem) {
-		return {
-			props: { hasError: true },
-		};
-	}
+	// if (!foundItem) {
 
 	return {
-		props: {
-			specificCryptoData: foundItem,
-		},
+		props: { hasError: true },
 	};
+	// }
+
+	// return {
+	// 	props: {
+	// 		specificCryptoData: foundItem,
+	// 	},
+	// };
 };
 
 export const getStaticPaths: GetStaticPaths = async () => {
-	const response = await fetch("http://localhost:3000/api/tryFirebaseadmin");
+	// const response = await fetch("http://localhost:3000/api/tryFirebaseadmin");
 
-	const res = await response.json();
-	let data1 = res["data"];
+	// const res = await response.json();
+	// let data1 = res["data"];
 
-	let cryptocurrencies = Object.keys(data1);
+	// let cryptocurrencies = Object.keys(data1);
 
-	let table = cryptocurrencies.map((crypto) => {
-		var sentimentVal: string = data1[crypto]["sentiment"];
-		return {
-			key: crypto,
-			cryptocurrency: crypto,
-			sentiment: sentimentVal,
-		};
-	});
+	// let table = cryptocurrencies.map((crypto) => {
+	// 	var sentimentVal: string = data1[crypto]["sentiment"];
+	// 	return {
+	// 		key: crypto,
+	// 		cryptocurrency: crypto,
+	// 		sentiment: sentimentVal,
+	// 	};
+	// });
 
-	const pathsWithParams = table.map((crypto: cryptoInterface) => ({
-		params: { crypto: crypto.key },
-	}));
+	// const pathsWithParams = table.map((crypto: cryptoInterface) => ({
+	// 	params: { crypto: crypto.key },
+	// }));
 
 	return {
-		paths: pathsWithParams,
+		paths: [],
 		fallback: false,
 	};
 };

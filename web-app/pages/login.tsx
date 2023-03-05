@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
 	Card,
 	Spacer,
@@ -9,34 +9,36 @@ import {
 	Checkbox,
 	Container,
 } from "@nextui-org/react";
-import Image from "next/image";
+import { useRouter } from "next/router";
 import { signInGoogle } from "@/utility/google_auth";
 import { signInAccount } from "@/utility/pass_auth";
 
-import { AuthContext } from "../utility/AuthContext";
-import Router from "next/router";
 export default function Login() {
-	const { user, setUser } = useContext(AuthContext);
-	const { email, setEmail } = useContext(AuthContext);
-	const { password, setPassword } = useContext(AuthContext);
+	const router = useRouter();
 
+	const [emailInput, setEmailInput] = useState("");
+	const [password, setPassword] = useState("");
 	const [loginIsFailure, setLoginIsFailure] = React.useState(false);
 
+	useEffect(() => {
+		router.prefetch("/");
+	}, []);
 	function submitForm() {
-		signInAccount(email, password).then((success) => {
+		signInAccount(emailInput, password).then((success) => {
 			if (success) {
-				setLoginIsFailure(false);
-				setUser(true);
-				Router.replace("/");
+				router.push("/");
 			} else {
 				setLoginIsFailure(true);
 			}
 		});
 	}
 
+	function submitGoogle() {
+		signInGoogle();
+	}
 	function handleChange(event: { target: { name: string; value: string } }) {
 		const { name, value } = event.target;
-		name === "email" ? setEmail(value) : setPassword(value);
+		name === "emailInput" ? setEmailInput(value) : setPassword(value);
 	}
 
 	return (
@@ -67,9 +69,9 @@ export default function Login() {
 					fullWidth
 					color="primary"
 					size="lg"
-					name="email"
+					name="emailInput"
 					placeholder="Email"
-					value={email}
+					value={emailInput}
 					onChange={handleChange}
 				/>
 				<Spacer y={1} />
