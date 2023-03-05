@@ -1,14 +1,11 @@
 import Head from "next/head";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 import { Button, Container, Text } from "@nextui-org/react";
 import DefaultTable from "@/components/DefaultTable";
-import { selectUser } from "@/store/authslice";
-import { useAppSelector } from "@/store/hooks";
 
 export default function Home() {
-	const user = useAppSelector(selectUser);
 	const text = "Today's Cryptocurrency Sentiment";
 	return (
 		<Container fluid>
@@ -22,7 +19,7 @@ export default function Home() {
 			</Head>
 			<Text h3>{text}</Text>
 
-			{/* <DefaultTable></DefaultTable> */}
+			<DefaultTable></DefaultTable>
 		</Container>
 	);
 }
