@@ -25,36 +25,7 @@ import {
 	LatestSentiment,
 	removeFavouriteCryptocurrency,
 } from "@/utility/firestore";
-
-type Col = {
-	[key: string]: string;
-	label: string;
-};
-
-type Cols = Col[];
-
-const columns: Cols = [
-	{
-		key: "favourite",
-		label: "Favourite",
-	},
-	{
-		key: "cryptocurrency",
-		label: "Cryptocurrency",
-	},
-	{
-		key: "sentiment",
-		label: "Sentiment",
-	},
-];
-
-type Row = {
-	[key: string]: any;
-	favourite: boolean;
-	cryptocurrency: string;
-	sentiment: string;
-};
-type Rows = Row[];
+import { columns, Row, Rows } from "@/types";
 
 export default function DefaultTable() {
 	const user = useAppSelector(selectUser);

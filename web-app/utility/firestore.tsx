@@ -81,6 +81,10 @@ export async function getAllLatestSentiments(): Promise<LatestSentiment[]> {
 export async function getFavouriteLatestSentiments(
 	favouriteCryptos: string[]
 ): Promise<LatestSentiment[]> {
+	if (!favouriteCryptos || favouriteCryptos.length == 0) {
+		return [];
+	}
+	console.log("Favourite cryptos" + favouriteCryptos);
 	const sentimentsRef = collection(firedb, "sentiments");
 	const filteredSentimentsRef = query(
 		sentimentsRef,

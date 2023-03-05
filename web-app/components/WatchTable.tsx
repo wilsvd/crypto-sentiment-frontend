@@ -1,5 +1,5 @@
 import { Button, Container, Table } from "@nextui-org/react";
-import React, { ReactNode } from "react";
+import React, { ReactNode, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import Badge from "@nextui-org/react";
@@ -18,114 +18,142 @@ import {
 	limit,
 	DocumentData,
 } from "firebase/firestore";
+import { Cols, columns, Row, Rows } from "@/types";
+import { useAppSelector } from "@/store/hooks";
+import { selectUser } from "@/store/authslice";
+import {
+	addFavouriteCryptocurrency,
+	getFavouriteCryptocurrencies,
+	getFavouriteLatestSentiments,
+	removeFavouriteCryptocurrency,
+} from "@/utility/firestore";
 
 export default function DefaultTable() {
-	type Col = {
-		[key: string]: string;
-		label: string;
-	};
-
-	type Cols = Col[];
-
-	const columns: Cols = [
-		{
-			key: "cryptocurrency",
-			label: "Cryptocurrency",
-		},
-		{
-			key: "sentiment",
-			label: "Sentiment",
-		},
-	];
-
-	type Row = {
-		[key: string]: string;
-		cryptocurrency: string;
-		sentiment: string;
-	};
-	type Rows = Row[];
+	const user = useAppSelector(selectUser);
 
 	const [loading, setLoading] = React.useState(false);
 	const [cryptoData, setCryptoData] = React.useState<Rows>([]);
 
-	// const email = useSelector(selectEmail);
-	// const isActive = useSelector(selectisActive);
+	const [favourites, setFavourites] = React.useState<string[]>([]);
+	const [favouritesLoaded, setFavouritesLoaded] = useState(false);
 
-	// function addNewUser(email: string) {
-	// 	const usersRef = doc(firedb, "users", email);
-	// 	setDoc(usersRef, { favourites: [] });
-	// 	console.log("New user added");
-	// }
+	const prevFavouritesRef = useRef<string[]>([]);
+	useEffect(() => {
+		async function getFavourites() {
+			if (user && user.email) {
+				const userFavourites = await getFavouriteCryptocurrencies(
+					user.email
+				);
+				console.log(userFavourites);
+				setFavourites(userFavourites);
+				setFavouritesLoaded(true);
+			} else {
+				console.log(
+					"Account not logged in, cannot retrieve favourites"
+				);
+				setFavourites([]);
+				setFavouritesLoaded(true);
+			}
+		}
+		getFavourites();
+	}, [user]);
 
-	// React.useEffect(() => {
-	// 	async function getItems() {
-	// 		if (email) {
-	// 			const docRef = doc(firedb, `users/${email}`);
+	useEffect(() => {
+		if (!favouritesLoaded) return;
+		if (prevFavouritesRef.current === favourites) return;
+		prevFavouritesRef.current = favourites;
 
-	// 			const docSnap = await getDoc(docRef);
-	// 			if (docSnap.exists()) {
-	// 				const userData = docSnap.data();
-	// 				const userFavourites: [] = userData["favourites"];
+		async function getItems() {
+			const favouriteSentiments = await getFavouriteLatestSentiments(
+				favourites
+			);
+			const newData = favouriteSentiments.map((crypto) => {
+				const num_sentiment: number = crypto.latestSentiment;
+				const sub_sentiment = num_sentiment.toFixed(2);
+				return {
+					key: crypto.id,
+					cryptocurrency: crypto.id,
+					sentiment: sub_sentiment,
+					favourite: true,
+				};
+			});
 
-	// 				const newData = userFavourites.map(async (crypto) => {
-	// 					const q = query(
-	// 						collection(firedb, `sentiments/${crypto}/history`),
-	// 						orderBy("datetime", "desc"),
-	// 						limit(1)
-	// 					);
-	// 					console.log(q);
-	// 					var newData = {
-	// 						key: "",
-	// 						cryptocurrency: "",
-	// 						sentiment: "0.0",
-	// 					};
-	// 					const querySnapshot = await getDocs(q);
-	// 					querySnapshot.forEach((doc) => {
-	// 						const cryptoInfo = doc.data();
-	// 						const num_sentiment: number =
-	// 							cryptoInfo["sub_sentiment"];
-	// 						const sub_sentiment = num_sentiment.toFixed(2);
+			Promise.all(newData).then((values) => {
+				setCryptoData(values);
+				setLoading(true);
+			});
+		}
 
-	// 						newData = {
-	// 							key: crypto,
-	// 							cryptocurrency: crypto,
-	// 							sentiment: sub_sentiment,
-	// 						};
-	// 					});
-
-	// 					return newData;
-	// 				});
-	// 				Promise.all(newData).then((values) => {
-	// 					setCryptoData(values);
-	// 					setLoading(true);
-	// 					console.log("Final data: " + cryptoData);
-	// 				});
-	// 			} else {
-	// 				addNewUser(email);
-	// 				console.log("Doesn't exist");
-	// 			}
-	// 		} else {
-	// 			setCryptoData({} as Rows);
-	// 		}
-	// 	}
-	// 	getItems();
-	// }, []);
+		getItems();
+	}, [favouritesLoaded, favourites]);
 
 	// Temporary data to experiment with using table component
+
+	const toggleFavorite = (crypto: string) => {
+		if (!user || !user.email) {
+			console.log("You are not logged in");
+			return;
+		}
+
+		const isFavorited = favourites.includes(crypto);
+
+		const updateFavoritedCrypto = () => {
+			setCryptoData((prevCryptoData) =>
+				prevCryptoData.map((data) => {
+					if (data.cryptocurrency === crypto) {
+						return {
+							...data,
+							favourite: !isFavorited,
+						};
+					}
+					return data;
+				})
+			);
+
+			if (isFavorited) {
+				setFavourites((prevFavourites) =>
+					prevFavourites.filter((favourite) => favourite !== crypto)
+				);
+				removeFavouriteCryptocurrency(user.email!, crypto);
+			} else {
+				setFavourites((prevFavourites) => [...prevFavourites, crypto]);
+				addFavouriteCryptocurrency(user.email!, crypto);
+			}
+		};
+
+		updateFavoritedCrypto();
+	};
 
 	const renderCell = (item: Row, columnKey: React.Key) => {
 		const cellValue = item[columnKey];
 		switch (columnKey) {
 			case "favourite":
-				return (
-					<Image
-						src="/iconmonstr-heart-thin.svg"
-						alt="me"
-						width="32"
-						height="32"
-						color="red"
-					/>
-				);
+				if (cellValue) {
+					return (
+						<Image
+							src="/red-heart-icon.svg"
+							alt="me"
+							width="32"
+							height="32"
+							onClick={() =>
+								toggleFavorite(item["cryptocurrency"])
+							}
+						/>
+					);
+				} else {
+					return (
+						<Image
+							src="/iconmonstr-heart-thin.svg"
+							alt="me"
+							width="32"
+							height="32"
+							onClick={() =>
+								toggleFavorite(item["cryptocurrency"])
+							}
+						/>
+					);
+				}
+
 			case "cryptocurrency":
 				return (
 					<Link
@@ -181,7 +209,7 @@ export default function DefaultTable() {
 			} else {
 				return <p>Loading</p>;
 			}
-		} else if (!false /*isActive*/) {
+		} else if (!user) {
 			return (
 				<p>You must have an account to be able to keep a watchlist</p>
 			);
