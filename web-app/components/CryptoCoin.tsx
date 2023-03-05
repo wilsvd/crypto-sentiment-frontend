@@ -1,21 +1,18 @@
-interface cryptoInterface {
-	key: string;
-	cryptocurrency: string;
-	sentiment: string;
-}
-
+import { LatestSentiment } from "@/utility/firestore";
 import { Container, Text } from "@nextui-org/react";
 import { Grid, Row, Col, Card } from "@nextui-org/react";
 import { Textarea, Spacer } from "@nextui-org/react";
 
 export default function CryptoCoin(props: {
-	specificCryptoData: cryptoInterface;
+	specificCryptoData: LatestSentiment;
 	hasError: boolean;
 }) {
 	return (
 		<Container fluid alignItems="center" justify="space-between">
-			<Text h3>{props.specificCryptoData.cryptocurrency}</Text>
-			<Text h4>Sentiment : {props.specificCryptoData.sentiment}</Text>
+			<Text h3>{props.specificCryptoData.id}</Text>
+			<Text h4>
+				Sentiment : {props.specificCryptoData.latestSentiment}
+			</Text>
 
 			<Text h4>Testimonials</Text>
 			<Spacer y={0.5} />

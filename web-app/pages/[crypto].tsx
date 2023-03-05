@@ -4,80 +4,41 @@ import { GetStaticProps, GetStaticPaths } from "next";
 import { useRouter } from "next/router";
 import CryptoCoin from "@/components/CryptoCoin";
 import { Container } from "@nextui-org/react";
-
-interface cryptoInterface {
-	key: string;
-	cryptocurrency: string;
-	sentiment: string;
-}
+import { getAllLatestSentiments, LatestSentiment } from "@/utility/firestore";
 
 export const getStaticProps: GetStaticProps = async (context) => {
-	// const itemID = context.params?.crypto;
-	// const response = await fetch("http://localhost:3000/api/tryFirebaseadmin");
-	// const res = await response.json();
-	// let data = res["data"];
+	const itemID = context.params?.crypto;
+	const sentiments = await getAllLatestSentiments();
 
-	// let cryptocurrencies = Object.keys(data);
-
-	// let table = cryptocurrencies.map((crypto) => {
-	// 	var sentimentVal: string = data[crypto]["sentiment"];
-	// 	return {
-	// 		key: crypto,
-	// 		cryptocurrency: crypto,
-	// 		sentiment: sentimentVal,
-	// 	};
-	// });
-	// const foundItem = table.find(
-	// 	(item: cryptoInterface) => itemID === item.key
-	// );
-
-	// if (!foundItem) {
-
+	const foundItem = sentiments.find(
+		(item: LatestSentiment) => itemID === item.id
+	);
 	return {
-		props: { hasError: true },
+		props: {
+			specificCryptoData: foundItem,
+		},
 	};
-	// }
-
-	// return {
-	// 	props: {
-	// 		specificCryptoData: foundItem,
-	// 	},
-	// };
 };
 
 export const getStaticPaths: GetStaticPaths = async () => {
-	// const response = await fetch("http://localhost:3000/api/tryFirebaseadmin");
+	const sentiments = await getAllLatestSentiments();
 
-	// const res = await response.json();
-	// let data1 = res["data"];
-
-	// let cryptocurrencies = Object.keys(data1);
-
-	// let table = cryptocurrencies.map((crypto) => {
-	// 	var sentimentVal: string = data1[crypto]["sentiment"];
-	// 	return {
-	// 		key: crypto,
-	// 		cryptocurrency: crypto,
-	// 		sentiment: sentimentVal,
-	// 	};
-	// });
-
-	// const pathsWithParams = table.map((crypto: cryptoInterface) => ({
-	// 	params: { crypto: crypto.key },
-	// }));
+	const pathsWithParams = sentiments.map((crypto: LatestSentiment) => {
+		return {
+			params: { crypto: crypto.id },
+		};
+	});
 
 	return {
-		paths: [],
+		paths: pathsWithParams,
 		fallback: false,
 	};
 };
 
-function projectPage(props: {
-	specificCryptoData: cryptoInterface;
-	hasError: boolean;
-}) {
+function CryptoPage(props: { specificCryptoData: any; hasError: boolean }) {
 	const router = useRouter();
 
+	console.log(props.specificCryptoData);
 	if (props.hasError) {
 		return <h1>Error - please try another parameter</h1>;
 	}
@@ -96,4 +57,4 @@ function projectPage(props: {
 	);
 }
 
-export default projectPage;
+export default CryptoPage;
