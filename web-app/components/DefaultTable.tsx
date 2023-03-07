@@ -167,7 +167,7 @@ export default function DefaultTable() {
 				return (
 					<Link
 						style={{ textDecoration: "underline" }}
-						href={`/${cellValue}`}
+						href={`currencies/${cellValue}`}
 					>
 						{cellValue}
 					</Link>

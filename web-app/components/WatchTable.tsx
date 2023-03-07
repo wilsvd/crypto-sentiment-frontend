@@ -2,22 +2,7 @@ import { Button, Container, Table } from "@nextui-org/react";
 import React, { ReactNode, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import Badge from "@nextui-org/react";
 
-import { useDispatch, useSelector } from "react-redux";
-import { firedb } from "@/config/firebase";
-import {
-	collection,
-	doc,
-	getDoc,
-	setDoc,
-	getDocs,
-	query,
-	where,
-	orderBy,
-	limit,
-	DocumentData,
-} from "firebase/firestore";
 import { Cols, columns, Row, Rows } from "@/types";
 import { useAppSelector } from "@/store/hooks";
 import { selectUser } from "@/store/authslice";
@@ -158,7 +143,7 @@ export default function DefaultTable() {
 				return (
 					<Link
 						style={{ textDecoration: "underline" }}
-						href={`/${cellValue}`}
+						href={`currencies/${cellValue}`}
 					>
 						{cellValue}
 					</Link>
