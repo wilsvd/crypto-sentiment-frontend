@@ -1,4 +1,5 @@
 import { firedb } from "@/config/firebase";
+import { faker } from "@faker-js/faker";
 import {
 	collection,
 	doc,
@@ -13,6 +14,7 @@ import {
 	limit,
 	updateDoc,
 	setDoc,
+	addDoc,
 } from "firebase/firestore";
 
 async function getUserDocument(userId: string): Promise<DocumentData | null> {
@@ -32,17 +34,17 @@ export async function getFavouriteCryptocurrencies(
 	return userDoc?.favourites || [];
 }
 
-export async function getAllSentimentHistory() {
-	const sentimentsRef = collection(firedb, "sentiments");
-	const sentimentsSnapshot = await getDocs(sentimentsRef);
-	const historyPromises = sentimentsSnapshot.docs.map(async (doc) => {
-		const historyRef = collection(doc.ref, "history");
-		const historySnapshot = await getDocs(historyRef);
-		return historySnapshot.docs.map((doc) => doc.data());
-	});
-	const history = await Promise.all(historyPromises);
-	return history;
-}
+// export async function getAllSentimentHistory() {
+// 	const sentimentsRef = collection(firedb, "sentiments");
+// 	const sentimentsSnapshot = await getDocs(sentimentsRef);
+// 	const historyPromises = sentimentsSnapshot.docs.map(async (doc) => {
+// 		const historyRef = collection(doc.ref, "history");
+// 		const historySnapshot = await getDocs(historyRef);
+// 		return historySnapshot.docs.map((doc) => doc.data());
+// 	});
+// 	const history = await Promise.all(historyPromises);
+// 	return history;
+// }
 
 export interface LatestSentiment {
 	id: string;
@@ -106,9 +108,11 @@ export async function getFavouriteLatestSentiments(
 
 		if (latestSentimentSnapshot.docs.length > 0) {
 			const latestSentimentDoc = latestSentimentSnapshot.docs[0];
+			const info = latestSentimentDoc.data();
 			sentiments.push({
 				id: doc.id,
-				latestSentiment: latestSentimentDoc.data().sub_sentiment,
+				latestSentiment: info.sub_sentiment,
+				datetime: info.datetime,
 			});
 		}
 	}
@@ -162,3 +166,82 @@ export async function removeFavouriteCryptocurrency(
 		await setDoc(userRef, { favourites: [] });
 	}
 }
+
+type SentimentHistory = {
+	datetime: string;
+	sub_sentiment: number;
+};
+
+export async function getSentimentHistoryInRange(
+	crypto: string,
+	startTime: Date,
+	endTime: Date
+): Promise<SentimentHistory[]> {
+	const historyRef = collection(firedb, `sentiments/${crypto}/history`);
+	const sentimentQuery = query(
+		historyRef,
+		where("datetime", ">=", startTime),
+		where("datetime", "<=", endTime)
+	);
+	const snapshot = await getDocs(sentimentQuery);
+
+	const history: SentimentHistory[] = [];
+	snapshot.forEach((doc) => {
+		const datetime: Date = doc.data().datetime.toDate();
+		const formDatetime = datetime.toISOString();
+		history.push({
+			datetime: formDatetime,
+			sub_sentiment: doc.data().sub_sentiment,
+		});
+	});
+	return history;
+}
+
+export type Posts = {
+	datetime: string;
+	sentiment: number;
+	title: string;
+}[];
+
+export async function getAllPosts(crypto: string): Promise<Posts> {
+	const historyRef = collection(firedb, `sentiments/${crypto}/posts`);
+	const sentimentQuery = query(historyRef, orderBy("datetime", "desc"));
+	const snapshot = await getDocs(sentimentQuery);
+
+	const posts: Posts = [];
+	snapshot.forEach((doc) => {
+		const datetime: Date = doc.data().datetime.toDate();
+		const formDatetime = datetime.toISOString();
+		posts.push({
+			datetime: formDatetime,
+			sentiment: doc.data().sentiment,
+			title: doc.data().title,
+		});
+	});
+	return posts;
+}
+
+// export async function generateFakeHistoricalData() {
+// 	const nEndTime = new Date();
+// 	const nStartTime = new Date("2023-01-01T00:30:00Z");
+
+// 	const crypto = "0xPolygon";
+// 	async function printDates(startDate: Date, endDate: Date) {
+// 		let currentDate = startDate;
+// 		while (currentDate <= endDate) {
+// 			console.log(currentDate);
+// 			const sentiment = faker.datatype.number({
+// 				min: -1,
+// 				max: 1,
+// 				precision: 0.01,
+// 			});
+// 			const ref = collection(firedb, `sentiments/${crypto}/history`);
+// 			const res = await addDoc(ref, {
+// 				datetime: currentDate,
+// 				sub_sentiment: sentiment,
+// 			});
+// 			currentDate.setDate(currentDate.getDate() + 1);
+// 		}
+// 	}
+// 	printDates(nStartTime, nEndTime);
+// }
