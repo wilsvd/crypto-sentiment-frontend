@@ -1,5 +1,5 @@
 import { getAllPosts, LatestSentiment, Posts } from "@/utility/firestore";
-import { Container, Row, Textarea } from "@nextui-org/react";
+import { Container, Divider, Row, Spacer, Textarea } from "@nextui-org/react";
 import { useEffect, useState } from "react";
 
 type Props = {
@@ -39,9 +39,34 @@ export default function CryptoTestimonials({ crypto }: Props) {
 
 	const textAreas = posts
 		? posts.map((postData) => {
-				return <Textarea readOnly initialValue={postData.title} />;
+				return (
+					<>
+						<Textarea
+							css={{
+								width: "400px",
+							}}
+							readOnly
+							initialValue={postData.title}
+						/>
+						{/* <Divider /> */}
+						<Spacer y={0.5} />
+					</>
+				);
 		  })
 		: null;
 
-	return <Container direction="column">{textAreas}</Container>;
+	return (
+		<Container
+			style={{
+				overflowY: "auto",
+				maxHeight: "600px",
+				display: "flex",
+				flexGrow: 1,
+				flexDirection: "row",
+				justifyItems: "flex-end",
+			}}
+		>
+			{textAreas}
+		</Container>
+	);
 }
