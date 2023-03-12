@@ -38,6 +38,11 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
 
 import { Grid } from "@nextui-org/react";
 import CryptoGauge from "@/components/CryptoGauge";
+import dynamic from "next/dynamic";
+
+const DCryptoGauge = dynamic(() => import("@/components/CryptoGauge"), {
+	ssr: false,
+});
 
 function CryptoPage(props: { specificCryptoData: LatestSentiment }) {
 	const router = useRouter();
@@ -51,7 +56,12 @@ function CryptoPage(props: { specificCryptoData: LatestSentiment }) {
 			<Text h4>
 				Sentiment : {props.specificCryptoData.latestSentiment}
 			</Text>
-			<CryptoGauge crypto={props.specificCryptoData}></CryptoGauge>
+			<Container
+				style={{ float: "left", maxHeight: "200px", maxWidth: "500px" }}
+			>
+				<DCryptoGauge crypto={props.specificCryptoData}></DCryptoGauge>
+			</Container>
+
 			<Container
 				display="flex"
 				justify="center"
@@ -63,6 +73,7 @@ function CryptoPage(props: { specificCryptoData: LatestSentiment }) {
 				}}
 			>
 				<Text h4>Testimonials</Text>
+
 				<CryptoTestimonials
 					crypto={props.specificCryptoData}
 				></CryptoTestimonials>

@@ -47,6 +47,12 @@ const CryptoChart = ({ crypto }: Props) => {
 	const [options, setOptions] = useState<ChartOptions<"line">>({
 		responsive: true,
 		maintainAspectRatio: true,
+		scales: {
+			y: {
+				min: -1,
+				max: 1,
+			},
+		},
 	});
 
 	useEffect(() => {

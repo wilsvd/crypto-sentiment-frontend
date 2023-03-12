@@ -31,30 +31,17 @@ export default function CryptoGauge({ crypto }: Props) {
 
 	const [gauge, setGauge] = useState<number>(crypto.latestSentiment);
 
-	const chartStyle = {
-		height: 250,
-	};
-
-	const gaugeContainerStyle = {
-		float: "left",
-		height: "200",
-		width: "400",
-	};
-
 	return (
-		<Container style={gaugeContainerStyle}>
-			<GaugeChart
-				nrOfLevels={100}
-				arcPadding={0}
-				cornerRadius={0}
-				animDelay={100}
-				hideText={true}
-				style={chartStyle}
-				textColor="#000"
-				colors={["#FF0000", "#00FF00"]}
-				formatTextValue={(value) => value}
-				percent={mapping(gauge)}
-			/>
-		</Container>
+		<GaugeChart
+			nrOfLevels={100}
+			arcPadding={0}
+			cornerRadius={0}
+			animDelay={100}
+			hideText={true}
+			textColor="#000"
+			colors={["#FF0000", "#00FF00"]}
+			formatTextValue={(value) => value}
+			percent={mapping(gauge)}
+		/>
 	);
 }

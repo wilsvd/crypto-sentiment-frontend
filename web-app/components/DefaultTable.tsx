@@ -1,9 +1,8 @@
-import { Button, Container, Table } from "@nextui-org/react";
+import { Button, Container, Table, Text } from "@nextui-org/react";
 import React, { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import Badge from "@nextui-org/react";
-// import { getLatestCryptoHistory } from "@/utility/firestore_helper";
 import { firedb } from "@/config/firebase";
 import {
 	collection,
@@ -26,6 +25,11 @@ import {
 	removeFavouriteCryptocurrency,
 } from "@/utility/firestore";
 import { columns, Row, Rows } from "@/types";
+import dynamic from "next/dynamic";
+
+const DCryptoGauge = dynamic(() => import("@/components/CryptoGauge"), {
+	ssr: false,
+});
 
 export default function DefaultTable() {
 	const user = useAppSelector(selectUser);
@@ -169,11 +173,42 @@ export default function DefaultTable() {
 						style={{ textDecoration: "underline" }}
 						href={`currencies/${cellValue}`}
 					>
-						{cellValue}
+						<Text h5>{cellValue}</Text>
 					</Link>
 				);
-			default:
-				return cellValue;
+			case "sentiment":
+				return (
+					<Container
+						fluid
+						display="flex"
+						style={{
+							height: "50px",
+							width: "200px",
+							float: "left",
+							alignContent: "space-between",
+						}}
+					>
+						<Text h5 css={{ float: "left" }}>
+							{cellValue}
+						</Text>
+						<Container
+							style={{
+								marginRight: "0px",
+								height: "50px",
+								width: "110px",
+							}}
+						>
+							<DCryptoGauge
+								crypto={{
+									id: item["cryptocurrency"],
+									latestSentiment: parseFloat(
+										item["sentiment"]
+									),
+								}}
+							></DCryptoGauge>
+						</Container>
+					</Container>
+				);
 		}
 	};
 
@@ -200,7 +235,7 @@ export default function DefaultTable() {
 					{(item) => (
 						<Table.Row key={item.key}>
 							{(columnKey) => (
-								<Table.Cell>
+								<Table.Cell css={{ maxWidth: "200px" }}>
 									{renderCell(item, columnKey)}
 								</Table.Cell>
 							)}
