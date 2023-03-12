@@ -10,9 +10,8 @@ import {
 	GetServerSidePropsContext,
 } from "next";
 import { useRouter } from "next/router";
-import { Container, Text, Spacer, Textarea } from "@nextui-org/react";
+import { Container, Text, Spacer, Textarea, Divider } from "@nextui-org/react";
 import {
-	generateFakeHistoricalData,
 	getAllLatestSentiments,
 	getSentimentHistoryInRange,
 	LatestSentiment,
@@ -37,6 +36,14 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
 	};
 };
 
+import { Grid } from "@nextui-org/react";
+import CryptoGauge from "@/components/CryptoGauge";
+import dynamic from "next/dynamic";
+
+const DCryptoGauge = dynamic(() => import("@/components/CryptoGauge"), {
+	ssr: false,
+});
+
 function CryptoPage(props: { specificCryptoData: LatestSentiment }) {
 	const router = useRouter();
 
@@ -44,24 +51,42 @@ function CryptoPage(props: { specificCryptoData: LatestSentiment }) {
 		return <h1>Loading...</h1>;
 	}
 	return (
-		<Container fluid alignItems="center" justify="space-between">
+		<Container>
 			<Text h3>{props.specificCryptoData.id}</Text>
 			<Text h4>
 				Sentiment : {props.specificCryptoData.latestSentiment}
 			</Text>
+			<Container
+				style={{ float: "left", maxHeight: "200px", maxWidth: "500px" }}
+			>
+				<DCryptoGauge crypto={props.specificCryptoData}></DCryptoGauge>
+			</Container>
 
-			<Text h4>Testimonials</Text>
-			<CryptoTestimonials
-				crypto={props.specificCryptoData}
-			></CryptoTestimonials>
-			<Spacer y={0.5} />
-			<Textarea
-				readOnly
-				initialValue="Almost before we knew it, we had left the ground."
-			/>
+			<Container
+				display="flex"
+				justify="center"
+				alignItems="center"
+				css={{
+					float: "right",
+					maxHeight: "600px",
+					maxWidth: "30%",
+				}}
+			>
+				<Text h4>Testimonials</Text>
 
-			<Text h4>Historical Data</Text>
-			{/* <CryptoChart crypto={props.specificCryptoData}></CryptoChart> */}
+				<CryptoTestimonials
+					crypto={props.specificCryptoData}
+				></CryptoTestimonials>
+			</Container>
+			<Container
+				css={{
+					float: "left",
+					maxWidth: "900px",
+				}}
+			>
+				<Text h4>Historical Data</Text>
+				<CryptoChart crypto={props.specificCryptoData}></CryptoChart>
+			</Container>
 		</Container>
 	);
 }

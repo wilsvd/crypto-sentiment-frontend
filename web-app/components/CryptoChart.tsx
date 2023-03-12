@@ -47,14 +47,10 @@ const CryptoChart = ({ crypto }: Props) => {
 	const [options, setOptions] = useState<ChartOptions<"line">>({
 		responsive: true,
 		maintainAspectRatio: true,
-
-		plugins: {
-			legend: {
-				position: "top" as const,
-			},
-			title: {
-				display: true,
-				text: "Chart.js Line Chart",
+		scales: {
+			y: {
+				min: -1,
+				max: 1,
 			},
 		},
 	});
@@ -63,7 +59,6 @@ const CryptoChart = ({ crypto }: Props) => {
 		async function getNewHistory() {
 			getSentimentHistoryInRange(crypto.id, startTime, endTime).then(
 				(history) => {
-					console.log(history);
 					setHistory(history);
 					setData({
 						labels: history.map((value) => value.datetime),
@@ -84,7 +79,8 @@ const CryptoChart = ({ crypto }: Props) => {
 		getNewHistory();
 	}, [startTime, endTime]);
 	return (
-		<div>
+		<Container fluid>
+			{data ? <Line options={options} data={data} /> : null}
 			<select
 				onChange={(e) => {
 					console.log(e.target.value);
@@ -103,13 +99,8 @@ const CryptoChart = ({ crypto }: Props) => {
 				<option value={7}>7 days</option>
 				<option value={1}>1 day</option>
 			</select>
-
-			<Container fluid>
-				{data ? <Line options={options} data={data} /> : null}
-			</Container>
-		</div>
+		</Container>
 	);
 };
 
 export default CryptoChart;
-// export default dynamic(() => Promise.resolve(CryptoChart), { ssr: false });
