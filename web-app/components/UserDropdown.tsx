@@ -5,12 +5,13 @@ import NextLink from "next/link";
 
 import { selectUser } from "@/store/authslice";
 import { useAppSelector } from "@/store/hooks";
+import { useRouter } from "next/router";
 
 function SignedInNavbar() {
 	const user = useAppSelector(selectUser);
-
+	const router = useRouter();
 	return (
-		<Dropdown placement="bottom-right">
+		<Dropdown aria-labelledby="dropdown-user" placement="bottom-right">
 			<Navbar.Item>
 				<Dropdown.Trigger>
 					<Avatar
@@ -23,15 +24,17 @@ function SignedInNavbar() {
 				</Dropdown.Trigger>
 			</Navbar.Item>
 			<Dropdown.Menu
-				aria-label="User menu actions"
+				aria-labelledby="dropdown-user-menu"
 				color="secondary"
 				onAction={(actionKey) =>
 					actionKey == "logout" ? signOutAccount() : null
 				}
 			>
-				{/* TODO: Refactor this code to use user context */}
-
-				<Dropdown.Item key="profile" css={{ height: "$18" }}>
+				<Dropdown.Item
+					textValue="dropdown-user-account"
+					key="profile"
+					css={{ height: "$18" }}
+				>
 					<Text b color="inherit" css={{ d: "flex" }}>
 						Signed in as
 					</Text>
@@ -39,16 +42,21 @@ function SignedInNavbar() {
 						{user?.email}
 					</Text>
 				</Dropdown.Item>
-				<Dropdown.Item key="settings" withDivider>
+				<Dropdown.Item
+					textValue="dropdown-user-settings"
+					key="settings"
+					withDivider
+				>
 					<Link as={NextLink} href="/settings">
 						Account Settings
 					</Link>
 				</Dropdown.Item>
-
-				<Dropdown.Item key="help_and_feedback" withDivider>
-					Help & Feedback
-				</Dropdown.Item>
-				<Dropdown.Item key="logout" withDivider color="error">
+				<Dropdown.Item
+					textValue="dropdown-user-logout"
+					key="logout"
+					withDivider
+					color="error"
+				>
 					Log Out
 				</Dropdown.Item>
 			</Dropdown.Menu>

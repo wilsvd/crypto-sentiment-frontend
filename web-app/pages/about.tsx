@@ -3,8 +3,8 @@ import Head from "next/head";
 
 export default function About() {
 	return (
-		<Container fluid>
-			<Head>
+		<Container fluid aria-labelledby="about-container">
+			<Head aria-labelledby="about-metadata">
 				<title>About</title>
 				<meta property="og:About" content="About" key="about" />
 			</Head>

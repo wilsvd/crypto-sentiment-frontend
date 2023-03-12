@@ -43,6 +43,7 @@ export default function Login() {
 
 	return (
 		<Container
+			aria-labelledby="login-container"
 			display="flex"
 			alignItems="center"
 			justify="center"
@@ -64,6 +65,7 @@ export default function Login() {
 					<Text h5>You entered an incorrect email or password</Text>
 				)}
 				<Input
+					aria-labelledby="login-email-input"
 					clearable
 					underlined
 					fullWidth
@@ -77,6 +79,7 @@ export default function Login() {
 				<Spacer y={1} />
 
 				<Input.Password
+					aria-labelledby="login-pass-input"
 					clearable
 					underlined
 					fullWidth
@@ -101,7 +104,7 @@ export default function Login() {
 				<Spacer y={1.6} />
 
 				{/* TODO:  Create a new row which allows users to login with Google*/}
-				<Button onClick={signInGoogle}>Sign in with Google</Button>
+				<Button onPress={signInGoogle}>Sign in with Google</Button>
 				{/* <Row justify="space-between">
 					<Image
 						src="/google-icon.svg"
@@ -113,7 +116,7 @@ export default function Login() {
 				</Row> */}
 
 				<Spacer y={1} />
-				<Button onClick={submitForm}>Sign in</Button>
+				<Button onPress={submitForm}>Sign in</Button>
 			</Card>
 		</Container>
 	);

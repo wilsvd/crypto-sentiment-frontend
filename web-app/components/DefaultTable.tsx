@@ -144,6 +144,7 @@ export default function DefaultTable() {
 				if (cellValue) {
 					return (
 						<Image
+							aria-labelledby="dashboard-table-favourite"
 							src="/red-heart-icon.svg"
 							alt="me"
 							width="32"
@@ -156,6 +157,7 @@ export default function DefaultTable() {
 				} else {
 					return (
 						<Image
+							aria-labelledby="dashboard-table-unfavourite"
 							src="/iconmonstr-heart-thin.svg"
 							alt="me"
 							width="32"
@@ -170,6 +172,7 @@ export default function DefaultTable() {
 			case "cryptocurrency":
 				return (
 					<Link
+						aria-labelledby="dashboard-table-crypto-link"
 						style={{ textDecoration: "underline" }}
 						href={`currencies/${cellValue}`}
 					>
@@ -179,6 +182,7 @@ export default function DefaultTable() {
 			case "sentiment":
 				return (
 					<Container
+						aria-labelledby="dashboard-table-sentiment-container-1"
 						fluid
 						display="flex"
 						style={{
@@ -192,6 +196,7 @@ export default function DefaultTable() {
 							{cellValue}
 						</Text>
 						<Container
+							aria-labelledby="dashboard-table-sentiment-container-2"
 							style={{
 								marginRight: "0px",
 								height: "50px",
@@ -215,7 +220,7 @@ export default function DefaultTable() {
 	const renderTable = (liveData: Rows) => {
 		return (
 			<Table
-				aria-label="Example table with dynamic content"
+				aria-labelledby="dashboard-table"
 				shadow={false}
 				css={{
 					height: "auto",
