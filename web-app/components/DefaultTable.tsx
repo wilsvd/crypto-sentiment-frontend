@@ -225,13 +225,22 @@ export default function DefaultTable() {
 				css={{
 					height: "auto",
 					minWidth: "100%",
+
 					padding: "10px",
 					zIndex: "0",
 				}}
 			>
 				<Table.Header columns={columns}>
 					{(column) => (
-						<Table.Column key={column.key}>
+						<Table.Column
+							key={column.key}
+							// align="start"
+							// maxWidth={50}
+							// width={50}
+							css={{
+								width: "50",
+							}}
+						>
 							{column.label}
 						</Table.Column>
 					)}
@@ -240,7 +249,7 @@ export default function DefaultTable() {
 					{(item) => (
 						<Table.Row key={item.key}>
 							{(columnKey) => (
-								<Table.Cell css={{ maxWidth: "200px" }}>
+								<Table.Cell>
 									{renderCell(item, columnKey)}
 								</Table.Cell>
 							)}

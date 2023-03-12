@@ -9,6 +9,7 @@ import UserAuth from "./UserAuth";
 
 import { selectUser } from "@/store/authslice";
 import { useAppSelector } from "@/store/hooks";
+import NavbarSearch from "./NavbarSearch";
 
 function DefaultNavbar() {
 	const { asPath } = useRouter();
@@ -61,15 +62,7 @@ function DefaultNavbar() {
 				}}
 			>
 				<Navbar.Item>
-					<Input
-						aria-labelledby="navbar-search"
-						bordered
-						borderWeight="normal"
-						clearable
-						contentLeftStyling={false}
-						fullWidth={true}
-						placeholder="Search..."
-					/>
+					<NavbarSearch />
 				</Navbar.Item>
 				<Spacer x={1} />
 				{user ? <UserDropdown /> : <UserAuth />}
