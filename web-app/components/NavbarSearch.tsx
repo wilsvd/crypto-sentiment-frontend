@@ -59,6 +59,7 @@ export default function NavbarSearch() {
 		}
 	}
 
+	console.log(searchedCrypto);
 	return (
 		<Container
 			display="flex"
@@ -88,21 +89,28 @@ export default function NavbarSearch() {
 				<Col>
 					{searchedCrypto && (
 						<Table
-							aria-label="Example table with dynamic content"
+							compact
+							border={0}
+							aria-labelledby="search-results"
 							containerCss={{
 								backgroundColor: "White",
 								maxWidth: "300px",
-								width: "300px",
+								maxHeight: "500px",
+								overflowY: "scroll",
+								borderRadius: "0px",
 							}}
 							css={{
-								height: "auto",
 								minWidth: "50%",
-								maxWidth: "91%",
+								maxWidth: "89%",
+								width: "300px",
 							}}
 						>
 							<Table.Header columns={columns}>
 								{(column) => (
-									<Table.Column key={column.key}>
+									<Table.Column
+										key={column.key}
+										css={{ borderRadius: "0px" }}
+									>
 										{column.label}
 									</Table.Column>
 								)}
