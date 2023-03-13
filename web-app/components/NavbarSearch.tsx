@@ -43,7 +43,6 @@ export default function NavbarSearch() {
 				setCryptocurrencies(crypto)
 			);
 		}
-		console.log("RUN TIME");
 		getItems();
 	}, []);
 
@@ -59,7 +58,6 @@ export default function NavbarSearch() {
 		}
 	}
 
-	console.log(searchedCrypto);
 	return (
 		<Container
 			display="flex"

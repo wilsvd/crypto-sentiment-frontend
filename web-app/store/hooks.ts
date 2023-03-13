@@ -12,6 +12,7 @@ export const useAppSelector: TypedUseSelectorHook<AppState> = useSelector;
 export const listenForAuthChanges = () => {
 	return (dispatch: any) => {
 		auth.onAuthStateChanged((user) => {
+			console.log("AUTH CHANGING");
 			dispatch(setUser(user));
 		});
 	};

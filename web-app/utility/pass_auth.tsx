@@ -64,11 +64,6 @@ export function accountObserver() {
 		if (user) {
 			// User is signed in, see docs for a list of available properties
 			// https://firebase.google.com/docs/reference/js/firebase.User
-			user.displayName;
-			user.phoneNumber;
-			user.email;
-			user.emailVerified;
-			user.photoURL;
 
 			user.providerData.forEach((profile) => {
 				console.log("  Sign-in provider: " + profile.providerId);
@@ -86,11 +81,12 @@ export function accountObserver() {
 	});
 }
 
-export function updateUserProfile() {
+export function updateUserProfile(newProfile: {
+	displayName: string;
+	photoURL: string;
+}) {
 	if (auth.currentUser) {
-		updateProfile(auth.currentUser, {
-			displayName: "Wil",
-		})
+		updateProfile(auth.currentUser, newProfile)
 			.then(() => {
 				// Profile updated!
 				// ...
@@ -103,6 +99,7 @@ export function updateUserProfile() {
 }
 
 export function updateEmailAddress(newEmail: string) {
+	console.log("Trying to update");
 	if (auth.currentUser) {
 		updateEmail(auth.currentUser, newEmail)
 			.then(() => {
@@ -111,6 +108,7 @@ export function updateEmailAddress(newEmail: string) {
 				// ...
 			})
 			.catch((error) => {
+				console.log(error);
 				// An error occurred
 				// ...
 			});

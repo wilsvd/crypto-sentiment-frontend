@@ -1,6 +1,10 @@
 import { selectUser } from "@/store/authslice";
 import { useAppSelector } from "@/store/hooks";
-import { removeUser } from "@/utility/pass_auth";
+import {
+	removeUser,
+	updateEmailAddress,
+	updateUserProfile,
+} from "@/utility/pass_auth";
 import {
 	Container,
 	Text,
@@ -12,21 +16,20 @@ import {
 	Row,
 } from "@nextui-org/react";
 import Head from "next/head";
-import { useState } from "react";
+import { use, useState } from "react";
 
 export default function AccountSettings() {
 	const user = useAppSelector(selectUser)!;
-
 	const [name, setName] = useState(() => {
 		return user.displayName ? user.displayName : "N/A";
 	});
 	const [email, setEmail] = useState(() => {
 		return user.email ? user.email : "N/A";
 	});
-	const [phone, setPhone] = useState(() => {
-		return user.phoneNumber ? user.phoneNumber : "N/A";
-	});
-	const [readOnly, setReadOnly] = useState(false);
+	// const [phone, setPhone] = useState(() => {
+	// 	return user.phoneNumber ? user.phoneNumber : "N/A";
+	// });
+	const [readOnly, setReadOnly] = useState(true);
 
 	const [deleteDisabled, setDeleteDisabled] = useState(true);
 
@@ -40,9 +43,9 @@ export default function AccountSettings() {
 			case "email":
 				setEmail(value);
 				break;
-			case "phone":
-				setPhone(value);
-				break;
+			// case "phone":
+			// 	setPhone(value);
+			// 	break;
 			case "confirmDelete":
 				value == "DELETE"
 					? setDeleteDisabled(false)
@@ -54,7 +57,7 @@ export default function AccountSettings() {
 	}
 
 	const [visible, setVisible] = useState(false);
-	const handler = () => setVisible(true);
+	const modalHandler = () => setVisible(true);
 	const closeHandler = () => {
 		setVisible(false);
 		console.log("closed");
@@ -74,7 +77,7 @@ export default function AccountSettings() {
 
 			{/* TODO: Improve UI for user account */}
 			{user ? (
-				<>
+				<Container>
 					<Text h5>Display Name</Text>
 					<Input
 						aria-labelledby="setting-name"
@@ -92,7 +95,7 @@ export default function AccountSettings() {
 						value={email}
 						onChange={handleChange}
 					/>
-					<Spacer y={1}></Spacer>
+					{/* <Spacer y={1}></Spacer>
 					<Text h5>Phone Number</Text>
 					<Input
 						aria-labelledby="setting-phone"
@@ -100,11 +103,41 @@ export default function AccountSettings() {
 						name="phone"
 						value={phone}
 						onChange={handleChange}
-					/>
+					/> */}
 					<Spacer y={1}></Spacer>
-					<Button auto color="error" shadow onPress={handler}>
-						Delete Account
-					</Button>
+
+					<Container display="flex" justify="space-between">
+						<Button
+							auto
+							ghost
+							color="warning"
+							onPress={() => setReadOnly(false)}
+						>
+							Edit Account
+						</Button>
+						<Button
+							auto
+							ghost
+							color="secondary"
+							onPress={() => {
+								updateUserProfile({
+									displayName: name,
+									photoURL: "",
+								});
+								user.email === email
+									? console.log("No change")
+									: updateEmailAddress(email);
+
+								setReadOnly(true);
+							}}
+						>
+							Save Account
+						</Button>
+						<Button auto ghost color="error" onPress={modalHandler}>
+							Delete Account
+						</Button>
+					</Container>
+
 					<Modal
 						closeButton
 						blur
@@ -145,7 +178,7 @@ export default function AccountSettings() {
 							</Button>
 						</Modal.Footer>
 					</Modal>
-				</>
+				</Container>
 			) : (
 				<>
 					<Text h5>
