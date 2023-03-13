@@ -57,6 +57,7 @@ export default function CryptoTestimonials({ crypto }: Props) {
 
 	return (
 		<Container
+			aria-labelledby="testimonials-container"
 			style={{
 				overflowY: "auto",
 				maxHeight: "600px",

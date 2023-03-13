@@ -9,6 +9,7 @@ import UserAuth from "./UserAuth";
 
 import { selectUser } from "@/store/authslice";
 import { useAppSelector } from "@/store/hooks";
+import NavbarSearch from "./NavbarSearch";
 
 function DefaultNavbar() {
 	const { asPath } = useRouter();
@@ -18,7 +19,7 @@ function DefaultNavbar() {
 			isBordered
 			borderWeight="bold"
 			variant="sticky"
-			aria-label="Navbar for users that have logged in"
+			aria-labelledby="navbar-base"
 			maxWidth="fluid"
 		>
 			<Navbar.Brand css={{ mr: "$4" }}>
@@ -27,6 +28,7 @@ function DefaultNavbar() {
 				</Text>
 				<Navbar.Content hideIn="xs" variant="highlight">
 					<Navbar.Link
+						aria-labelledby="dashboard-link-dashboard"
 						as={NextLink}
 						isActive={asPath == "/" ? true : false}
 						href="/"
@@ -34,6 +36,7 @@ function DefaultNavbar() {
 						Dashboard
 					</Navbar.Link>
 					<Navbar.Link
+						aria-labelledby="dashboard-link-watchlist"
 						as={NextLink}
 						isActive={asPath == "/watchlist" ? true : false}
 						href="/watchlist"
@@ -41,6 +44,7 @@ function DefaultNavbar() {
 						Watchlist
 					</Navbar.Link>
 					<Navbar.Link
+						aria-labelledby="dashboard-link-about"
 						as={NextLink}
 						isActive={asPath == "/about" ? true : false}
 						href="/about"
@@ -58,14 +62,7 @@ function DefaultNavbar() {
 				}}
 			>
 				<Navbar.Item>
-					<Input
-						bordered
-						borderWeight="normal"
-						clearable
-						contentLeftStyling={false}
-						fullWidth={true}
-						placeholder="Search..."
-					/>
+					<NavbarSearch />
 				</Navbar.Item>
 				<Spacer x={1} />
 				{user ? <UserDropdown /> : <UserAuth />}

@@ -57,13 +57,18 @@ export default function Signup() {
 
 	return (
 		<Container
+			aria-labelledby="signup-container"
 			display="flex"
 			alignItems="center"
 			justify="center"
 			css={{ minHeight: "100vh" }}
 			aria-label="Signup form"
 		>
-			<Card css={{ mw: "420px", p: "20px" }} variant="bordered">
+			<Card
+				aria-labelledby="signup-card"
+				css={{ mw: "420px", p: "20px" }}
+				variant="bordered"
+			>
 				<Text
 					size={24}
 					weight="bold"
@@ -78,6 +83,7 @@ export default function Signup() {
 					<Text h5>The passwords you entered do not match.</Text>
 				)}
 				<Input
+					aria-labelledby="signup-email-input"
 					clearable
 					underlined
 					fullWidth
@@ -91,6 +97,7 @@ export default function Signup() {
 				<Spacer y={1} />
 
 				<Input.Password
+					aria-labelledby="signup-pass-input"
 					clearable
 					underlined
 					fullWidth
@@ -105,6 +112,7 @@ export default function Signup() {
 				<Spacer y={1} />
 
 				<Input.Password
+					aria-labelledby="signup-confirm-pass-input"
 					clearable
 					underlined
 					fullWidth
@@ -123,9 +131,9 @@ export default function Signup() {
 				<Row justify="space-between"></Row>
 
 				<Spacer y={1} />
-				<Button onClick={signInGoogle}>Sign up with Google</Button>
+				<Button onPress={signInGoogle}>Sign up with Google</Button>
 				<Spacer y={1} />
-				<Button onClick={submitForm}>Sign up</Button>
+				<Button onPress={submitForm}>Sign up</Button>
 			</Card>
 		</Container>
 	);

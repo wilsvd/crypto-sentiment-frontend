@@ -144,6 +144,7 @@ export default function DefaultTable() {
 				if (cellValue) {
 					return (
 						<Image
+							aria-labelledby="dashboard-table-favourite"
 							src="/red-heart-icon.svg"
 							alt="me"
 							width="32"
@@ -156,6 +157,7 @@ export default function DefaultTable() {
 				} else {
 					return (
 						<Image
+							aria-labelledby="dashboard-table-unfavourite"
 							src="/iconmonstr-heart-thin.svg"
 							alt="me"
 							width="32"
@@ -170,6 +172,7 @@ export default function DefaultTable() {
 			case "cryptocurrency":
 				return (
 					<Link
+						aria-labelledby="dashboard-table-crypto-link"
 						style={{ textDecoration: "underline" }}
 						href={`currencies/${cellValue}`}
 					>
@@ -179,6 +182,7 @@ export default function DefaultTable() {
 			case "sentiment":
 				return (
 					<Container
+						aria-labelledby="dashboard-table-sentiment-container-1"
 						fluid
 						display="flex"
 						style={{
@@ -192,6 +196,7 @@ export default function DefaultTable() {
 							{cellValue}
 						</Text>
 						<Container
+							aria-labelledby="dashboard-table-sentiment-container-2"
 							style={{
 								marginRight: "0px",
 								height: "50px",
@@ -215,18 +220,27 @@ export default function DefaultTable() {
 	const renderTable = (liveData: Rows) => {
 		return (
 			<Table
-				aria-label="Example table with dynamic content"
+				aria-labelledby="dashboard-table"
 				shadow={false}
 				css={{
 					height: "auto",
 					minWidth: "100%",
+
 					padding: "10px",
 					zIndex: "0",
 				}}
 			>
 				<Table.Header columns={columns}>
 					{(column) => (
-						<Table.Column key={column.key}>
+						<Table.Column
+							key={column.key}
+							// align="start"
+							// maxWidth={50}
+							// width={50}
+							css={{
+								width: "50",
+							}}
+						>
 							{column.label}
 						</Table.Column>
 					)}
@@ -235,7 +249,7 @@ export default function DefaultTable() {
 					{(item) => (
 						<Table.Row key={item.key}>
 							{(columnKey) => (
-								<Table.Cell css={{ maxWidth: "200px" }}>
+								<Table.Cell>
 									{renderCell(item, columnKey)}
 								</Table.Cell>
 							)}
