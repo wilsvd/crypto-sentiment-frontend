@@ -4,26 +4,20 @@ import Link from "next/link";
 import Image from "next/image";
 import Badge from "@nextui-org/react";
 import { firedb } from "@/config/firebase";
-import {
-	collection,
-	doc,
-	getDoc,
-	setDoc,
-	getDocs,
-	query,
-	where,
-	orderBy,
-	limit,
-	DocumentData,
-} from "firebase/firestore";
-import { useAppSelector } from "@/store/hooks";
+import { collection, getDocs, query, orderBy, limit } from "firebase/firestore";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { selectUser } from "@/store/authslice";
 import {
 	addFavouriteCryptocurrency,
 	getFavouriteCryptocurrencies,
-	LatestSentiment,
 	removeFavouriteCryptocurrency,
 } from "@/utility/firestore";
+
+import {
+	selectFavLoaded,
+	selectFavourites,
+	setFavourites,
+} from "@/store/cryptoslice";
 import { columns, Row, Rows } from "@/types";
 import dynamic from "next/dynamic";
 
@@ -33,12 +27,13 @@ const DCryptoGauge = dynamic(() => import("@/components/CryptoGauge"), {
 
 export default function DefaultTable() {
 	const user = useAppSelector(selectUser);
+	const favourites = useAppSelector(selectFavourites);
+	const isFavLoaded = useAppSelector(selectFavLoaded);
+
+	const dispatch = useAppDispatch();
 
 	const [loading, setLoading] = React.useState(false);
 	const [cryptoData, setCryptoData] = React.useState<Rows>([]);
-
-	const [favourites, setFavourites] = React.useState<string[]>([]);
-	const [favouritesLoaded, setFavouritesLoaded] = useState(false);
 
 	const prevFavouritesRef = useRef<string[]>([]);
 	useEffect(() => {
@@ -47,22 +42,21 @@ export default function DefaultTable() {
 				const userFavourites = await getFavouriteCryptocurrencies(
 					user.email
 				);
-				console.log(userFavourites);
-				setFavourites(userFavourites);
-				setFavouritesLoaded(true);
+				dispatch(setFavourites(userFavourites));
 			} else {
 				console.log(
 					"Account not logged in, cannot retrieve favourites"
 				);
-				setFavourites([]);
-				setFavouritesLoaded(true);
+				dispatch(setFavourites([]));
 			}
 		}
 		getFavourites();
 	}, [user]);
 
 	useEffect(() => {
-		if (!favouritesLoaded) return;
+		console.log(isFavLoaded);
+		if (!isFavLoaded) return;
+
 		if (prevFavouritesRef.current === favourites) return;
 		prevFavouritesRef.current = favourites;
 
@@ -100,7 +94,7 @@ export default function DefaultTable() {
 		}
 
 		getItems();
-	}, [favouritesLoaded, favourites]);
+	}, [isFavLoaded, favourites]);
 
 	const toggleFavorite = (crypto: string) => {
 		if (!user || !user.email) {
@@ -124,12 +118,14 @@ export default function DefaultTable() {
 			);
 
 			if (isFavorited) {
-				setFavourites((prevFavourites) =>
-					prevFavourites.filter((favourite) => favourite !== crypto)
+				dispatch(
+					setFavourites(
+						favourites.filter((favourite) => favourite !== crypto)
+					)
 				);
 				removeFavouriteCryptocurrency(user.email!, crypto);
 			} else {
-				setFavourites((prevFavourites) => [...prevFavourites, crypto]);
+				dispatch(setFavourites([...favourites, crypto]));
 				addFavouriteCryptocurrency(user.email!, crypto);
 			}
 		};
@@ -221,6 +217,7 @@ export default function DefaultTable() {
 		return (
 			<Table
 				aria-labelledby="dashboard-table"
+				bordered={true}
 				shadow={false}
 				css={{
 					height: "auto",
@@ -234,9 +231,6 @@ export default function DefaultTable() {
 					{(column) => (
 						<Table.Column
 							key={column.key}
-							// align="start"
-							// maxWidth={50}
-							// width={50}
 							css={{
 								width: "50",
 							}}
@@ -256,6 +250,13 @@ export default function DefaultTable() {
 						</Table.Row>
 					)}
 				</Table.Body>
+				<Table.Pagination
+					shadow
+					noMargin
+					align="center"
+					rowsPerPage={8}
+					onPageChange={(page) => console.log({ page })}
+				/>
 			</Table>
 		);
 	};

@@ -1,5 +1,4 @@
 import { firedb } from "@/config/firebase";
-import { faker } from "@faker-js/faker";
 import {
 	collection,
 	doc,
@@ -17,6 +16,22 @@ import {
 	addDoc,
 } from "firebase/firestore";
 
+export type LatestSentiment = {
+	id: string;
+	latestSentiment: number;
+};
+
+export type SentimentHistory = {
+	datetime: string;
+	sub_sentiment: number;
+};
+
+export type Posts = {
+	datetime: string;
+	sentiment: number;
+	title: string;
+}[];
+
 async function getUserDocument(userId: string): Promise<DocumentData | null> {
 	const userRef = doc(firedb, "users", userId);
 	const userDoc = await getDoc(userRef);
@@ -33,30 +48,6 @@ export async function getFavouriteCryptocurrencies(
 	const userDoc = await getUserDocument(userId);
 	return userDoc?.favourites || [];
 }
-
-export interface LatestSentiment {
-	id: string;
-	latestSentiment: number;
-}
-
-// const historyRef = collection(firedb, `sentiments/${crypto}/history`);
-// 	const sentimentQuery = query(
-// 		historyRef,
-// 		where("datetime", ">=", startTime),
-// 		where("datetime", "<=", endTime)
-// 	);
-// 	const snapshot = await getDocs(sentimentQuery);
-
-// 	const history: SentimentHistory[] = [];
-// 	snapshot.forEach((doc) => {
-// 		const datetime: Date = doc.data().datetime.toDate();
-// 		const formDatetime = datetime.toISOString();
-// 		history.push({
-// 			datetime: formDatetime,
-// 			sub_sentiment: doc.data().sub_sentiment,
-// 		});
-// 	});
-// 	return history;
 
 export async function getCryptoLatestSentiment(
 	crypto: string
@@ -201,11 +192,6 @@ export async function removeFavouriteCryptocurrency(
 	}
 }
 
-type SentimentHistory = {
-	datetime: string;
-	sub_sentiment: number;
-};
-
 export async function getSentimentHistoryInRange(
 	crypto: string,
 	startTime: Date,
@@ -230,12 +216,6 @@ export async function getSentimentHistoryInRange(
 	});
 	return history;
 }
-
-export type Posts = {
-	datetime: string;
-	sentiment: number;
-	title: string;
-}[];
 
 export async function getAllPosts(crypto: string): Promise<Posts> {
 	const historyRef = collection(firedb, `sentiments/${crypto}/posts`);

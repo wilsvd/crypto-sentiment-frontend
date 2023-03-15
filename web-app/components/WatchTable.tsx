@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 
 import { Cols, columns, Row, Rows } from "@/types";
-import { useAppSelector } from "@/store/hooks";
+import { useAppSelector, useAppDispatch } from "@/store/hooks";
 import { selectUser } from "@/store/authslice";
 import {
 	addFavouriteCryptocurrency,
@@ -13,6 +13,11 @@ import {
 	removeFavouriteCryptocurrency,
 } from "@/utility/firestore";
 import dynamic from "next/dynamic";
+import {
+	selectFavLoaded,
+	selectFavourites,
+	setFavourites,
+} from "@/store/cryptoslice";
 
 const DCryptoGauge = dynamic(() => import("@/components/CryptoGauge"), {
 	ssr: false,
@@ -20,12 +25,13 @@ const DCryptoGauge = dynamic(() => import("@/components/CryptoGauge"), {
 
 export default function DefaultTable() {
 	const user = useAppSelector(selectUser);
+	const favourites = useAppSelector(selectFavourites);
+	const isFavLoaded = useAppSelector(selectFavLoaded);
+
+	const dispatch = useAppDispatch();
 
 	const [loading, setLoading] = React.useState(false);
 	const [cryptoData, setCryptoData] = React.useState<Rows>([]);
-
-	const [favourites, setFavourites] = React.useState<string[]>([]);
-	const [favouritesLoaded, setFavouritesLoaded] = useState(false);
 
 	const prevFavouritesRef = useRef<string[]>([]);
 	useEffect(() => {
@@ -36,20 +42,18 @@ export default function DefaultTable() {
 				);
 				console.log(userFavourites);
 				setFavourites(userFavourites);
-				setFavouritesLoaded(true);
 			} else {
 				console.log(
 					"Account not logged in, cannot retrieve favourites"
 				);
 				setFavourites([]);
-				setFavouritesLoaded(true);
 			}
 		}
 		getFavourites();
 	}, [user]);
 
 	useEffect(() => {
-		if (!favouritesLoaded) return;
+		if (!isFavLoaded) return;
 		if (prevFavouritesRef.current === favourites) return;
 		prevFavouritesRef.current = favourites;
 
@@ -75,7 +79,7 @@ export default function DefaultTable() {
 		}
 
 		getItems();
-	}, [favouritesLoaded, favourites]);
+	}, [isFavLoaded, favourites]);
 
 	// Temporary data to experiment with using table component
 
@@ -101,12 +105,14 @@ export default function DefaultTable() {
 			);
 
 			if (isFavorited) {
-				setFavourites((prevFavourites) =>
-					prevFavourites.filter((favourite) => favourite !== crypto)
+				dispatch(
+					setFavourites(
+						favourites.filter((favourite) => favourite !== crypto)
+					)
 				);
 				removeFavouriteCryptocurrency(user.email!, crypto);
 			} else {
-				setFavourites((prevFavourites) => [...prevFavourites, crypto]);
+				dispatch(setFavourites([...favourites, crypto]));
 				addFavouriteCryptocurrency(user.email!, crypto);
 			}
 		};
@@ -224,6 +230,13 @@ export default function DefaultTable() {
 						</Table.Row>
 					)}
 				</Table.Body>
+				<Table.Pagination
+					shadow
+					noMargin
+					align="center"
+					rowsPerPage={8}
+					onPageChange={(page) => console.log({ page })}
+				/>
 			</Table>
 		);
 	};

@@ -12,13 +12,16 @@ import {
 import { useRouter } from "next/router";
 import { signInGoogle } from "@/utility/google_auth";
 import { signInAccount } from "@/utility/pass_auth";
+import { useAppSelector } from "@/store/hooks";
+import { selectUser } from "@/store/authslice";
 
 export default function Login() {
+	const user = useAppSelector(selectUser);
 	const router = useRouter();
 
 	const [emailInput, setEmailInput] = useState("");
 	const [password, setPassword] = useState("");
-	const [loginIsFailure, setLoginIsFailure] = React.useState(false);
+	const [loginIsFailure, setLoginIsFailure] = useState(false);
 
 	useEffect(() => {
 		router.prefetch("/");
@@ -34,7 +37,11 @@ export default function Login() {
 	}
 
 	function submitGoogle() {
+		console.log("Trying to google");
 		signInGoogle();
+		if (user) {
+			router.push("/");
+		}
 	}
 	function handleChange(event: { target: { name: string; value: string } }) {
 		const { name, value } = event.target;
@@ -104,7 +111,7 @@ export default function Login() {
 				<Spacer y={1.6} />
 
 				{/* TODO:  Create a new row which allows users to login with Google*/}
-				<Button onPress={signInGoogle}>Sign in with Google</Button>
+				<Button onPress={submitGoogle}>Sign in with Google</Button>
 				{/* <Row justify="space-between">
 					<Image
 						src="/google-icon.svg"
