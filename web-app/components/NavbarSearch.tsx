@@ -47,10 +47,11 @@ export default function NavbarSearch() {
 	}, []);
 
 	function handleChange(event: { target: { name: string; value: string } }) {
-		const { name, value } = event.target;
+		const value = event.target.value.toLowerCase();
 		if (value.length > 0) {
 			const results = cryptocurrencies?.filter((crypto) => {
-				return crypto.id.match(value);
+				const cryptoID = crypto.id.toLocaleLowerCase();
+				return cryptoID.match(value);
 			});
 			setSearchedCrypto(results);
 		} else {
