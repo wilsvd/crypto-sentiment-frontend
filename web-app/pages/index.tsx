@@ -17,9 +17,10 @@ export default function Home() {
 					key="dashboard"
 				/>
 			</Head>
-			<Text h3>{text}</Text>
-
-			<DefaultTable></DefaultTable>
+			<Container css={{ padding: "10px" }}>
+				<Text h3>{text}</Text>
+				<DefaultTable></DefaultTable>
+			</Container>
 		</Container>
 	);
 }

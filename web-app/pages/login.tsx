@@ -28,20 +28,12 @@ export default function Login() {
 	}, []);
 	function submitForm() {
 		signInAccount(emailInput, password).then((success) => {
-			if (success) {
-				router.push("/");
-			} else {
-				setLoginIsFailure(true);
-			}
+			success ? router.push("/") : setLoginIsFailure(true);
 		});
 	}
 
 	function submitGoogle() {
-		console.log("Trying to google");
-		signInGoogle();
-		if (user) {
-			router.push("/");
-		}
+		signInGoogle().then((success) => (success ? router.push("/") : null));
 	}
 	function handleChange(event: { target: { name: string; value: string } }) {
 		const { name, value } = event.target;

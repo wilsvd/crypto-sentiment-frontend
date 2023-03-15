@@ -53,6 +53,8 @@ export default function DefaultTable() {
 	}, [user]);
 
 	useEffect(() => {
+		console.log(isFavLoaded);
+
 		if (!isFavLoaded) return;
 		if (prevFavouritesRef.current === favourites) return;
 		prevFavouritesRef.current = favourites;
@@ -204,10 +206,12 @@ export default function DefaultTable() {
 		return (
 			<Table
 				aria-labelledby="watchlist-table"
+				bordered={true}
 				shadow={false}
 				css={{
 					height: "auto",
 					minWidth: "100%",
+
 					padding: "10px",
 					zIndex: "0",
 				}}
@@ -234,7 +238,7 @@ export default function DefaultTable() {
 					shadow
 					noMargin
 					align="center"
-					rowsPerPage={8}
+					rowsPerPage={20}
 					onPageChange={(page) => console.log({ page })}
 				/>
 			</Table>
@@ -242,21 +246,25 @@ export default function DefaultTable() {
 	};
 
 	function handleDisplayLogic(): ReactNode {
-		if (cryptoData.length > 0) {
+		if (!user) {
+			return (
+				<Text h5>
+					You must have an account to be able to keep a watchlist
+				</Text>
+			);
+		} else {
 			if (loading) {
-				return renderTable(cryptoData);
+				return <>{renderTable(cryptoData)}</>;
 			} else {
 				return <p>Loading</p>;
 			}
-		} else if (!user) {
-			return (
-				<p>You must have an account to be able to keep a watchlist</p>
-			);
-		} else {
-			return (
-				<p>You have not added any cryptocurrencies to your watchlist</p>
-			);
 		}
+
+		// else {
+		// 	return (
+		// 		<p>You have not added any cryptocurrencies to your watchlist</p>
+		// 	);
+		// }
 	}
-	return <Container>{handleDisplayLogic()}</Container>;
+	return <>{handleDisplayLogic()}</>;
 }
