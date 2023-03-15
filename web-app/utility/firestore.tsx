@@ -34,21 +34,55 @@ export async function getFavouriteCryptocurrencies(
 	return userDoc?.favourites || [];
 }
 
-// export async function getAllSentimentHistory() {
-// 	const sentimentsRef = collection(firedb, "sentiments");
-// 	const sentimentsSnapshot = await getDocs(sentimentsRef);
-// 	const historyPromises = sentimentsSnapshot.docs.map(async (doc) => {
-// 		const historyRef = collection(doc.ref, "history");
-// 		const historySnapshot = await getDocs(historyRef);
-// 		return historySnapshot.docs.map((doc) => doc.data());
-// 	});
-// 	const history = await Promise.all(historyPromises);
-// 	return history;
-// }
-
 export interface LatestSentiment {
 	id: string;
 	latestSentiment: number;
+}
+
+// const historyRef = collection(firedb, `sentiments/${crypto}/history`);
+// 	const sentimentQuery = query(
+// 		historyRef,
+// 		where("datetime", ">=", startTime),
+// 		where("datetime", "<=", endTime)
+// 	);
+// 	const snapshot = await getDocs(sentimentQuery);
+
+// 	const history: SentimentHistory[] = [];
+// 	snapshot.forEach((doc) => {
+// 		const datetime: Date = doc.data().datetime.toDate();
+// 		const formDatetime = datetime.toISOString();
+// 		history.push({
+// 			datetime: formDatetime,
+// 			sub_sentiment: doc.data().sub_sentiment,
+// 		});
+// 	});
+// 	return history;
+
+export async function getCryptoLatestSentiment(
+	crypto: string
+): Promise<LatestSentiment | null> {
+	console.log("cryptos: " + crypto);
+	const sentimentsRef = collection(firedb, `sentiments/${crypto}/history`);
+	const filteredSentimentsRef = query(
+		sentimentsRef,
+		orderBy("datetime", "desc"),
+		limit(1)
+	);
+	const snapshot = await getDocs(filteredSentimentsRef);
+
+	var sentiment: LatestSentiment = {
+		id: "",
+		latestSentiment: 0,
+	};
+	if (snapshot.docs.length > 0) {
+		const latest = snapshot.docs[0].data();
+		sentiment = {
+			id: crypto,
+			latestSentiment: latest.sub_sentiment,
+		};
+	}
+
+	return sentiment ? sentiment : null;
 }
 
 export async function getAllLatestSentiments(): Promise<LatestSentiment[]> {
