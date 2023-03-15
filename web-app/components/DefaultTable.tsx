@@ -4,24 +4,12 @@ import Link from "next/link";
 import Image from "next/image";
 import Badge from "@nextui-org/react";
 import { firedb } from "@/config/firebase";
-import {
-	collection,
-	doc,
-	getDoc,
-	setDoc,
-	getDocs,
-	query,
-	where,
-	orderBy,
-	limit,
-	DocumentData,
-} from "firebase/firestore";
+import { collection, getDocs, query, orderBy, limit } from "firebase/firestore";
 import { useAppSelector } from "@/store/hooks";
 import { selectUser } from "@/store/authslice";
 import {
 	addFavouriteCryptocurrency,
 	getFavouriteCryptocurrencies,
-	LatestSentiment,
 	removeFavouriteCryptocurrency,
 } from "@/utility/firestore";
 import { columns, Row, Rows } from "@/types";
@@ -221,6 +209,7 @@ export default function DefaultTable() {
 		return (
 			<Table
 				aria-labelledby="dashboard-table"
+				bordered={true}
 				shadow={false}
 				css={{
 					height: "auto",
@@ -234,9 +223,6 @@ export default function DefaultTable() {
 					{(column) => (
 						<Table.Column
 							key={column.key}
-							// align="start"
-							// maxWidth={50}
-							// width={50}
 							css={{
 								width: "50",
 							}}
@@ -256,6 +242,13 @@ export default function DefaultTable() {
 						</Table.Row>
 					)}
 				</Table.Body>
+				<Table.Pagination
+					shadow
+					noMargin
+					align="center"
+					rowsPerPage={8}
+					onPageChange={(page) => console.log({ page })}
+				/>
 			</Table>
 		);
 	};
