@@ -15,8 +15,10 @@ export default function Watchlist() {
 					key="watchlist"
 				/>
 			</Head>
-			<Text h3>Watchlist</Text>
-			<WatchTable></WatchTable>
+			<Container css={{ padding: "10px" }}>
+				<Text h3>Watchlist</Text>
+				<WatchTable></WatchTable>
+			</Container>
 		</Container>
 	);
 }

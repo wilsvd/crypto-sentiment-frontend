@@ -254,7 +254,7 @@ export default function DefaultTable() {
 					shadow
 					noMargin
 					align="center"
-					rowsPerPage={8}
+					rowsPerPage={20}
 					onPageChange={(page) => console.log({ page })}
 				/>
 			</Table>
@@ -262,8 +262,8 @@ export default function DefaultTable() {
 	};
 
 	return (
-		<Container>
-			{loading ? renderTable(cryptoData) : <p>Loading</p>}
-		</Container>
+		<>
+			{loading ? <>{renderTable(cryptoData)}</> : <Text h5>Loading</Text>}
+		</>
 	);
 }

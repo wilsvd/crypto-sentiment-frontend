@@ -8,7 +8,9 @@ export default function About() {
 				<title>About</title>
 				<meta property="og:About" content="About" key="about" />
 			</Head>
-			<Text h3>About this</Text>
+			<Container css={{ padding: "10px" }}>
+				<Text h3>About</Text>
+			</Container>
 		</Container>
 	);
 }
