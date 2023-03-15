@@ -2,42 +2,29 @@
 import { firedb } from "@/config/firebase";
 import { addDoc, collection, doc } from "firebase/firestore";
 
-import {
-	GetStaticProps,
-	GetStaticPaths,
-	GetServerSideProps,
-	NextPageContext,
-	GetServerSidePropsContext,
-} from "next";
+import { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
-import { Container, Text, Spacer, Textarea, Divider } from "@nextui-org/react";
-import {
-	getAllLatestSentiments,
-	getSentimentHistoryInRange,
-	LatestSentiment,
-} from "@/utility/firestore";
+import { Container, Text } from "@nextui-org/react";
+import { getAllLatestSentiments, LatestSentiment } from "@/utility/firestore";
 import CryptoChart from "@/components/CryptoChart";
-import { faker } from "@faker-js/faker";
 import CryptoTestimonials from "@/components/CryptoTestimonials";
 
 export const getServerSideProps: GetServerSideProps = async ({ params }) => {
-	const itemID = params?.crypto as string;
+	// const itemID = params?.crypto as string;
 
-	// generateFakeHistoricalData();
-	const sentiments = await getAllLatestSentiments();
-	const foundItem = sentiments.find(
-		(item: LatestSentiment) => itemID === item.id
-	);
+	// const sentiments = await getAllLatestSentiments();
+	// const foundItem = sentiments.find(
+	// 	(item: LatestSentiment) => itemID === item.id
+	// );
 
+	// console.log(foundItem);
 	return {
 		props: {
-			specificCryptoData: foundItem,
+			specificCryptoData: { id: "0xPolygon", latestSentiment: 0.97 },
 		},
 	};
 };
 
-import { Grid } from "@nextui-org/react";
-import CryptoGauge from "@/components/CryptoGauge";
 import dynamic from "next/dynamic";
 
 const DCryptoGauge = dynamic(() => import("@/components/CryptoGauge"), {
