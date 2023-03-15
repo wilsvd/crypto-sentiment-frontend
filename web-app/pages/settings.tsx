@@ -21,14 +21,17 @@ import { use, useState } from "react";
 export default function AccountSettings() {
 	const user = useAppSelector(selectUser)!;
 	const [name, setName] = useState(() => {
-		return user.displayName ? user.displayName : "N/A";
+		if (user && user.displayName) {
+			return user.displayName;
+		}
+		return "N/A";
 	});
 	const [email, setEmail] = useState(() => {
-		return user.email ? user.email : "N/A";
+		if (user && user.email) {
+			return user.email;
+		}
+		return "N/A";
 	});
-	// const [phone, setPhone] = useState(() => {
-	// 	return user.phoneNumber ? user.phoneNumber : "N/A";
-	// });
 	const [readOnly, setReadOnly] = useState(true);
 
 	const [deleteDisabled, setDeleteDisabled] = useState(true);
@@ -43,9 +46,6 @@ export default function AccountSettings() {
 			case "email":
 				setEmail(value);
 				break;
-			// case "phone":
-			// 	setPhone(value);
-			// 	break;
 			case "confirmDelete":
 				value == "DELETE"
 					? setDeleteDisabled(false)
@@ -75,7 +75,6 @@ export default function AccountSettings() {
 			</Head>
 			<Text h3>Account Settings</Text>
 
-			{/* TODO: Improve UI for user account */}
 			{user ? (
 				<Container>
 					<Text h5>Display Name</Text>
@@ -95,15 +94,7 @@ export default function AccountSettings() {
 						value={email}
 						onChange={handleChange}
 					/>
-					{/* <Spacer y={1}></Spacer>
-					<Text h5>Phone Number</Text>
-					<Input
-						aria-labelledby="setting-phone"
-						readOnly={readOnly}
-						name="phone"
-						value={phone}
-						onChange={handleChange}
-					/> */}
+
 					<Spacer y={1}></Spacer>
 
 					<Container display="flex" justify="space-between">
