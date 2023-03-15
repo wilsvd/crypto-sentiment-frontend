@@ -1,7 +1,7 @@
 import { auth } from "@/config/firebase";
 
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
-import { setUser } from "./authslice";
+import { setUser, User } from "./authslice";
 
 import type { AppDispatch, AppState } from "./store";
 
@@ -13,7 +13,17 @@ export const listenForAuthChanges = () => {
 	return (dispatch: any) => {
 		auth.onAuthStateChanged((user) => {
 			console.log("AUTH CHANGING");
-			dispatch(setUser(user));
+			if (user) {
+				const userDetails: User = {
+					displayName: user.displayName,
+					email: user.email,
+					emailVerified: user.emailVerified,
+					phoneNumber: user.phoneNumber,
+				};
+				dispatch(setUser(userDetails));
+			} else {
+				dispatch(setUser(null));
+			}
 		});
 	};
 };
