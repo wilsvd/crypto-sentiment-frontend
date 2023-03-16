@@ -26,6 +26,7 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
 };
 
 import dynamic from "next/dynamic";
+import Head from "next/head";
 
 const DCryptoGauge = dynamic(() => import("@/components/CryptoGauge"), {
 	ssr: false,
@@ -39,6 +40,14 @@ function CryptoPage(props: { specificCryptoData: LatestSentiment }) {
 	}
 	return (
 		<Container>
+			<Head aria-labelledby={`${props.specificCryptoData.id}-metadata`}>
+				<title>{props.specificCryptoData.id}</title>
+				<meta
+					property={`og:${props.specificCryptoData.id}`}
+					content={props.specificCryptoData.id}
+					key={props.specificCryptoData.id}
+				/>
+			</Head>
 			<Text h3>{props.specificCryptoData.id}</Text>
 			<Text h4>
 				Sentiment : {props.specificCryptoData.latestSentiment}

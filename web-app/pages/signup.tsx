@@ -12,6 +12,7 @@ import { signInGoogle } from "@/utility/google_auth";
 import { useRouter } from "next/router";
 
 import { makeAccount } from "@/utility/pass_auth";
+import Head from "next/head";
 
 export default function Signup() {
 	const router = useRouter();
@@ -64,6 +65,10 @@ export default function Signup() {
 			css={{ minHeight: "100vh" }}
 			aria-label="Signup form"
 		>
+			<Head aria-labelledby="signup-metadata">
+				<title>Signup</title>
+				<meta property="og:Signup" content="Signup" key="signup" />
+			</Head>
 			<Card
 				aria-labelledby="signup-card"
 				css={{ mw: "420px", p: "20px" }}
