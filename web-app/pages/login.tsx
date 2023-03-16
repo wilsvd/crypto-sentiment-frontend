@@ -14,6 +14,7 @@ import { signInGoogle } from "@/utility/google_auth";
 import { signInAccount } from "@/utility/pass_auth";
 import { useAppSelector } from "@/store/hooks";
 import { selectUser } from "@/store/authslice";
+import Head from "next/head";
 
 export default function Login() {
 	const user = useAppSelector(selectUser);
@@ -49,6 +50,10 @@ export default function Login() {
 			css={{ minHeight: "100vh" }}
 			aria-label="Login form"
 		>
+			<Head aria-labelledby="login-metadata">
+				<title>Login</title>
+				<meta property="og:Login" content="Login" key="login" />
+			</Head>
 			<Card css={{ mw: "420px", p: "20px" }} variant="bordered">
 				<Text
 					size={24}
