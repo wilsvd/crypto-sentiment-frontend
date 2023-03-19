@@ -5,11 +5,7 @@ import { addDoc, collection, doc } from "firebase/firestore";
 import { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
 import { Container, Text } from "@nextui-org/react";
-import {
-	getAllLatestSentiments,
-	getCryptoLatestSentiment,
-	LatestSentiment,
-} from "@/utility/firestore";
+import { getCryptoLatestSentiment, LatestSentiment } from "@/utility/firestore";
 import CryptoChart from "@/components/CryptoChart";
 import CryptoTestimonials from "@/components/CryptoTestimonials";
 
@@ -48,40 +44,50 @@ function CryptoPage(props: { specificCryptoData: LatestSentiment }) {
 					key={props.specificCryptoData.id}
 				/>
 			</Head>
-			<Text h3>{props.specificCryptoData.id}</Text>
-			<Text h4>
-				Sentiment : {props.specificCryptoData.latestSentiment}
-			</Text>
-			<Container
-				style={{ float: "left", maxHeight: "200px", maxWidth: "500px" }}
-			>
-				<DCryptoGauge crypto={props.specificCryptoData}></DCryptoGauge>
-			</Container>
+			<Container css={{ padding: "10px" }}>
+				<Text h3>{props.specificCryptoData.id}</Text>
+				<Text h4>
+					Sentiment : {props.specificCryptoData.latestSentiment}
+				</Text>
+				<Container
+					style={{
+						float: "left",
+						maxHeight: "200px",
+						maxWidth: "500px",
+					}}
+				>
+					<DCryptoGauge
+						crypto={props.specificCryptoData}
+					></DCryptoGauge>
+				</Container>
 
-			<Container
-				display="flex"
-				justify="center"
-				alignItems="center"
-				css={{
-					float: "right",
-					maxHeight: "600px",
-					maxWidth: "30%",
-				}}
-			>
-				<Text h4>Testimonials</Text>
+				<Container
+					display="flex"
+					justify="center"
+					alignItems="center"
+					css={{
+						float: "right",
+						maxHeight: "600px",
+						maxWidth: "30%",
+					}}
+				>
+					<Text h4>Testimonials</Text>
 
-				<CryptoTestimonials
-					crypto={props.specificCryptoData}
-				></CryptoTestimonials>
-			</Container>
-			<Container
-				css={{
-					float: "left",
-					maxWidth: "900px",
-				}}
-			>
-				<Text h4>Historical Data</Text>
-				<CryptoChart crypto={props.specificCryptoData}></CryptoChart>
+					<CryptoTestimonials
+						crypto={props.specificCryptoData}
+					></CryptoTestimonials>
+				</Container>
+				<Container
+					css={{
+						float: "left",
+						maxWidth: "900px",
+					}}
+				>
+					<Text h4>Historical Data</Text>
+					<CryptoChart
+						crypto={props.specificCryptoData}
+					></CryptoChart>
+				</Container>
 			</Container>
 		</Container>
 	);

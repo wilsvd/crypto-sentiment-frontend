@@ -17,9 +17,14 @@ import {
 	selectFavLoaded,
 	selectFavourites,
 	setFavourites,
-} from "@/store/cryptoslice";
+} from "@/store/usercryptoslice";
 import { columns, Row, Rows } from "@/types";
 import dynamic from "next/dynamic";
+import {
+	selectCryptoData,
+	selectCryptoLoaded,
+	setCryptoData,
+} from "@/store/cryptoslice";
 
 const DCryptoGauge = dynamic(() => import("@/components/CryptoGauge"), {
 	ssr: false,
@@ -27,74 +32,14 @@ const DCryptoGauge = dynamic(() => import("@/components/CryptoGauge"), {
 
 export default function DefaultTable() {
 	const user = useAppSelector(selectUser);
-	const favourites = useAppSelector(selectFavourites);
-	const isFavLoaded = useAppSelector(selectFavLoaded);
+
+	const userFavourites = useAppSelector(selectFavourites);
+	const userFavouritesLoaded = useAppSelector(selectFavLoaded);
+
+	const cryptoData = useAppSelector(selectCryptoData);
+	const cryptoLoaded = useAppSelector(selectCryptoLoaded);
 
 	const dispatch = useAppDispatch();
-
-	const [loading, setLoading] = React.useState(false);
-	const [cryptoData, setCryptoData] = React.useState<Rows>([]);
-
-	const prevFavouritesRef = useRef<string[]>([]);
-	useEffect(() => {
-		async function getFavourites() {
-			if (user && user.email) {
-				const userFavourites = await getFavouriteCryptocurrencies(
-					user.email
-				);
-				dispatch(setFavourites(userFavourites));
-			} else {
-				console.log(
-					"Account not logged in, cannot retrieve favourites"
-				);
-				dispatch(setFavourites([]));
-			}
-		}
-		getFavourites();
-	}, [user]);
-
-	useEffect(() => {
-		console.log(isFavLoaded);
-		if (!isFavLoaded) return;
-
-		if (prevFavouritesRef.current === favourites) return;
-		prevFavouritesRef.current = favourites;
-
-		async function getItems() {
-			console.log("Getting items");
-			const querySnapshot = await getDocs(
-				collection(firedb, "sentiments")
-			);
-
-			const newData = querySnapshot.docs.map(async (doc) => {
-				const crypto: string = doc.id;
-				const q = query(
-					collection(firedb, `sentiments/${crypto}/history`),
-					orderBy("datetime", "desc"),
-					limit(1)
-				);
-				const inQuerySnapshot = await getDocs(q);
-				const info = inQuerySnapshot.docs[0].data();
-				const num_sentiment: number = info["sub_sentiment"];
-				const sub_sentiment = num_sentiment.toFixed(2);
-				const isFavourite = favourites.includes(crypto);
-
-				return {
-					key: crypto,
-					cryptocurrency: crypto,
-					sentiment: sub_sentiment,
-					favourite: isFavourite,
-				};
-			});
-
-			Promise.all(newData).then((values) => {
-				setCryptoData(values);
-				setLoading(true);
-			});
-		}
-
-		getItems();
-	}, [isFavLoaded, favourites]);
 
 	const toggleFavorite = (crypto: string) => {
 		if (!user || !user.email) {
@@ -102,30 +47,31 @@ export default function DefaultTable() {
 			return;
 		}
 
-		const isFavorited = favourites.includes(crypto);
+		const isFavorited = userFavourites.includes(crypto);
 
 		const updateFavoritedCrypto = () => {
-			setCryptoData((prevCryptoData) =>
-				prevCryptoData.map((data) => {
-					if (data.cryptocurrency === crypto) {
-						return {
-							...data,
-							favourite: !isFavorited,
-						};
-					}
-					return data;
-				})
-			);
+			const result = cryptoData.map((data) => {
+				if (data.cryptocurrency === crypto) {
+					return {
+						...data,
+						favourite: isFavorited ? false : true,
+					};
+				}
+				return { ...data };
+			});
+			dispatch(setCryptoData(result));
 
 			if (isFavorited) {
 				dispatch(
 					setFavourites(
-						favourites.filter((favourite) => favourite !== crypto)
+						userFavourites.filter(
+							(favourite) => favourite !== crypto
+						)
 					)
 				);
 				removeFavouriteCryptocurrency(user.email!, crypto);
 			} else {
-				dispatch(setFavourites([...favourites, crypto]));
+				dispatch(setFavourites([...userFavourites, crypto]));
 				addFavouriteCryptocurrency(user.email!, crypto);
 			}
 		};
@@ -140,7 +86,7 @@ export default function DefaultTable() {
 				if (cellValue) {
 					return (
 						<Image
-							aria-labelledby="dashboard-table-favourite"
+							aria-labelledby="watchlist-table-favourite"
 							src="/red-heart-icon.svg"
 							alt="me"
 							width="32"
@@ -153,7 +99,7 @@ export default function DefaultTable() {
 				} else {
 					return (
 						<Image
-							aria-labelledby="dashboard-table-unfavourite"
+							aria-labelledby="watchlist-table-unfavourite"
 							src="/iconmonstr-heart-thin.svg"
 							alt="me"
 							width="32"
@@ -168,7 +114,7 @@ export default function DefaultTable() {
 			case "cryptocurrency":
 				return (
 					<Link
-						aria-labelledby="dashboard-table-crypto-link"
+						aria-labelledby="watchlist-table-crypto-link"
 						style={{ textDecoration: "underline" }}
 						href={`currencies/${cellValue}`}
 					>
@@ -178,7 +124,7 @@ export default function DefaultTable() {
 			case "sentiment":
 				return (
 					<Container
-						aria-labelledby="dashboard-table-sentiment-container-1"
+						aria-labelledby="watchlist-table-sentiment-container-1"
 						fluid
 						display="flex"
 						style={{
@@ -192,7 +138,7 @@ export default function DefaultTable() {
 							{cellValue}
 						</Text>
 						<Container
-							aria-labelledby="dashboard-table-sentiment-container-2"
+							aria-labelledby="watchlist-table-sentiment-container-2"
 							style={{
 								marginRight: "0px",
 								height: "50px",
@@ -216,7 +162,7 @@ export default function DefaultTable() {
 	const renderTable = (liveData: Rows) => {
 		return (
 			<Table
-				aria-labelledby="dashboard-table"
+				aria-labelledby="watchlist-table"
 				bordered={true}
 				shadow={false}
 				css={{
@@ -263,7 +209,11 @@ export default function DefaultTable() {
 
 	return (
 		<>
-			{loading ? <>{renderTable(cryptoData)}</> : <Text h5>Loading</Text>}
+			{cryptoLoaded ? (
+				<>{renderTable(cryptoData)}</>
+			) : (
+				<Text h5>Loading</Text>
+			)}
 		</>
 	);
 }

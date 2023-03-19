@@ -1,10 +1,15 @@
 import { configureStore, ThunkAction, Action } from "@reduxjs/toolkit";
 import authReducer from "./authslice";
-import cryptoslice from "./cryptoslice";
+import userCryptoSlice from "./usercryptoslice";
+import cryptoSlice from "./cryptoslice";
 
 export function makeStore() {
 	return configureStore({
-		reducer: { auth: authReducer, crypto: cryptoslice },
+		reducer: {
+			auth: authReducer,
+			userCrypto: userCryptoSlice,
+			cryptoData: cryptoSlice,
+		},
 	});
 }
 

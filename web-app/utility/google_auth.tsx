@@ -8,7 +8,11 @@ provider.setCustomParameters({
 });
 
 export async function signInGoogle() {
-	const result = await signInWithPopup(auth, provider);
-	const credential = GoogleAuthProvider.credentialFromResult(result);
-	return credential ? true : false;
+	try {
+		const result = await signInWithPopup(auth, provider);
+		const credential = GoogleAuthProvider.credentialFromResult(result);
+		return credential ? true : false;
+	} catch {
+		console.log("Uncaught error");
+	}
 }
