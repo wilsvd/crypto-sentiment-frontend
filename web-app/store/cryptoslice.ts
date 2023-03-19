@@ -1,32 +1,39 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { AppState } from "./store";
 
+export type cryptoDataT = {
+	key: string;
+	cryptocurrency: string;
+	sentiment: string;
+	favourite: boolean;
+};
+
 interface CryptoState {
-	favourites: string[];
+	data: cryptoDataT[];
 	loaded: boolean;
 }
 
 const initialState: CryptoState = {
-	favourites: [],
+	data: [],
 	loaded: false,
 };
 
 export const cryptoSlice = createSlice({
-	name: "crypto",
+	name: "cryptodata",
 	initialState,
 	reducers: {
-		setFavourites: (state, action: PayloadAction<string[]>) => {
-			state.favourites = action.payload;
+		setCryptoData: (state, action: PayloadAction<cryptoDataT[]>) => {
+			state.data = action.payload;
 			state.loaded = true;
 		},
-		setFavLoaded: (state, action) => {
+		setCryptoLoaded: (state, action) => {
 			state.loaded = action.payload;
 		},
 	},
 });
 
-export const { setFavourites, setFavLoaded } = cryptoSlice.actions;
+export const { setCryptoData, setCryptoLoaded } = cryptoSlice.actions;
 export default cryptoSlice.reducer;
 
-export const selectFavourites = (state: AppState) => state.crypto.favourites;
-export const selectFavLoaded = (state: AppState) => state.crypto.loaded;
+export const selectCryptoData = (state: AppState) => state.cryptoData.data;
+export const selectCryptoLoaded = (state: AppState) => state.cryptoData.loaded;

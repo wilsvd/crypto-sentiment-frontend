@@ -10,17 +10,7 @@ import {
 	Table,
 	Text,
 } from "@nextui-org/react";
-import { GetServerSideProps } from "next";
 import { useEffect, useState } from "react";
-
-// export const getServerSideProps: GetServerSideProps = async () => {
-// 	const sentiments = await getAllLatestSentiments();
-// 	return {
-// 		props: {
-// 			cryptocurrencyList: sentiments,
-// 		},
-// 	};
-// };
 
 export default function NavbarSearch() {
 	const columns = [
@@ -50,7 +40,7 @@ export default function NavbarSearch() {
 		const value = event.target.value.toLowerCase();
 		if (value.length > 0) {
 			const results = cryptocurrencies?.filter((crypto) => {
-				const cryptoID = crypto.id.toLocaleLowerCase();
+				const cryptoID = crypto.id.toLowerCase();
 				return cryptoID.match(value);
 			});
 			setSearchedCrypto(results);

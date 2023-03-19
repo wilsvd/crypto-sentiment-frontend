@@ -10,6 +10,7 @@ import {
 	addFavouriteCryptocurrency,
 	getFavouriteCryptocurrencies,
 	getFavouriteLatestSentiments,
+	LatestSentiment,
 	removeFavouriteCryptocurrency,
 } from "@/utility/firestore";
 import dynamic from "next/dynamic";
@@ -17,7 +18,14 @@ import {
 	selectFavLoaded,
 	selectFavourites,
 	setFavourites,
+} from "@/store/usercryptoslice";
+import {
+	cryptoDataT,
+	selectCryptoData,
+	selectCryptoLoaded,
+	setCryptoData,
 } from "@/store/cryptoslice";
+import { watch } from "fs";
 
 const DCryptoGauge = dynamic(() => import("@/components/CryptoGauge"), {
 	ssr: false,
@@ -25,63 +33,16 @@ const DCryptoGauge = dynamic(() => import("@/components/CryptoGauge"), {
 
 export default function DefaultTable() {
 	const user = useAppSelector(selectUser);
-	const favourites = useAppSelector(selectFavourites);
-	const isFavLoaded = useAppSelector(selectFavLoaded);
+
+	const userFavourites = useAppSelector(selectFavourites);
+	const userFavouritesLoaded = useAppSelector(selectFavLoaded);
+
+	const cryptoData = useAppSelector(selectCryptoData);
+	const cryptoLoaded = useAppSelector(selectCryptoLoaded);
 
 	const dispatch = useAppDispatch();
 
-	const [loading, setLoading] = React.useState(false);
-	const [cryptoData, setCryptoData] = React.useState<Rows>([]);
-
-	const prevFavouritesRef = useRef<string[]>([]);
-	useEffect(() => {
-		async function getFavourites() {
-			if (user && user.email) {
-				const userFavourites = await getFavouriteCryptocurrencies(
-					user.email
-				);
-				console.log(userFavourites);
-				setFavourites(userFavourites);
-			} else {
-				console.log(
-					"Account not logged in, cannot retrieve favourites"
-				);
-				setFavourites([]);
-			}
-		}
-		getFavourites();
-	}, [user]);
-
-	useEffect(() => {
-		console.log(isFavLoaded);
-
-		if (!isFavLoaded) return;
-		if (prevFavouritesRef.current === favourites) return;
-		prevFavouritesRef.current = favourites;
-
-		async function getItems() {
-			const favouriteSentiments = await getFavouriteLatestSentiments(
-				favourites
-			);
-			const newData = favouriteSentiments.map((crypto) => {
-				const num_sentiment: number = crypto.latestSentiment;
-				const sub_sentiment = num_sentiment.toFixed(2);
-				return {
-					key: crypto.id,
-					cryptocurrency: crypto.id,
-					sentiment: sub_sentiment,
-					favourite: true,
-				};
-			});
-
-			Promise.all(newData).then((values) => {
-				setCryptoData(values);
-				setLoading(true);
-			});
-		}
-
-		getItems();
-	}, [isFavLoaded, favourites]);
+	const watchlist = cryptoData.filter((value) => value.favourite);
 
 	// Temporary data to experiment with using table component
 
@@ -91,30 +52,31 @@ export default function DefaultTable() {
 			return;
 		}
 
-		const isFavorited = favourites.includes(crypto);
+		const isFavorited = userFavourites.includes(crypto);
 
 		const updateFavoritedCrypto = () => {
-			setCryptoData((prevCryptoData) =>
-				prevCryptoData.map((data) => {
-					if (data.cryptocurrency === crypto) {
-						return {
-							...data,
-							favourite: !isFavorited,
-						};
-					}
-					return data;
-				})
-			);
+			const result = cryptoData.map((data) => {
+				if (data.cryptocurrency === crypto) {
+					return {
+						...data,
+						favourite: isFavorited ? false : true,
+					};
+				}
+				return { ...data };
+			});
+			dispatch(setCryptoData(result));
 
 			if (isFavorited) {
 				dispatch(
 					setFavourites(
-						favourites.filter((favourite) => favourite !== crypto)
+						userFavourites.filter(
+							(favourite) => favourite !== crypto
+						)
 					)
 				);
 				removeFavouriteCryptocurrency(user.email!, crypto);
 			} else {
-				dispatch(setFavourites([...favourites, crypto]));
+				dispatch(setFavourites([...userFavourites, crypto]));
 				addFavouriteCryptocurrency(user.email!, crypto);
 			}
 		};
@@ -253,18 +215,19 @@ export default function DefaultTable() {
 				</Text>
 			);
 		} else {
-			if (loading) {
-				return <>{renderTable(cryptoData)}</>;
+			if (cryptoLoaded && watchlist.length > 0) {
+				return <>{renderTable(watchlist)}</>;
+			} else if (cryptoLoaded && watchlist.length === 0) {
+				return (
+					<Text h5>
+						You have not added any cryptocurrencies to your
+						watchlist
+					</Text>
+				);
 			} else {
 				return <p>Loading</p>;
 			}
 		}
-
-		// else {
-		// 	return (
-		// 		<p>You have not added any cryptocurrencies to your watchlist</p>
-		// 	);
-		// }
 	}
 	return <>{handleDisplayLogic()}</>;
 }

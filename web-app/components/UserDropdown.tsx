@@ -14,13 +14,7 @@ function SignedInNavbar() {
 		<Dropdown aria-labelledby="dropdown-user" placement="bottom-right">
 			<Navbar.Item>
 				<Dropdown.Trigger>
-					<Avatar
-						bordered
-						as="button"
-						color="gradient"
-						size="md"
-						// src="https://i.pravatar.cc/150?u=a042581f4e29026704d"
-					/>
+					<Avatar bordered as="button" color="gradient" size="md" />
 				</Dropdown.Trigger>
 			</Navbar.Item>
 			<Dropdown.Menu

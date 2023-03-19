@@ -1,3 +1,5 @@
+import { selectCryptoData } from "@/store/cryptoslice";
+import { useAppSelector } from "@/store/hooks";
 import { Button, Container, Text } from "@nextui-org/react";
 import Head from "next/head";
 
