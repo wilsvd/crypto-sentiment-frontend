@@ -1,3 +1,11 @@
+import { selectUser } from "@/store/authslice";
+import {
+	cryptoDataT,
+	selectCryptoData,
+	selectCryptoLoaded,
+} from "@/store/cryptoslice";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { selectFavLoaded, selectFavourites } from "@/store/usercryptoslice";
 import { getAllLatestSentiments, LatestSentiment } from "@/utility/firestore";
 import {
 	Col,
@@ -20,29 +28,29 @@ export default function NavbarSearch() {
 		},
 	];
 
-	const [cryptocurrencies, setCryptocurrencies] = useState<
-		LatestSentiment[] | null
-	>(null);
 	const [searchedCrypto, setSearchedCrypto] = useState<
-		LatestSentiment[] | null
+		cryptoDataT[] | null
 	>();
-	useEffect(() => {
-		async function getItems() {
-			const sentiments = await getAllLatestSentiments();
-			Promise.all(sentiments).then((crypto) =>
-				setCryptocurrencies(crypto)
-			);
-		}
-		getItems();
-	}, []);
+
+	const user = useAppSelector(selectUser);
+
+	const userFavourites = useAppSelector(selectFavourites);
+	const userFavouritesLoaded = useAppSelector(selectFavLoaded);
+
+	const cryptoData = useAppSelector(selectCryptoData);
+	const cryptoLoaded = useAppSelector(selectCryptoLoaded);
+
+	const dispatch = useAppDispatch();
 
 	function handleChange(event: { target: { name: string; value: string } }) {
 		const value = event.target.value.toLowerCase();
 		if (value.length > 0) {
-			const results = cryptocurrencies?.filter((crypto) => {
-				const cryptoID = crypto.id.toLowerCase();
-				return cryptoID.match(value);
-			});
+			const results = cryptoData.filter(
+				(crypto: { cryptocurrency: string }) => {
+					const cryptoID = crypto.cryptocurrency.toLowerCase();
+					return cryptoID.match(value);
+				}
+			);
 			setSearchedCrypto(results);
 		} else {
 			setSearchedCrypto(null);
@@ -64,9 +72,9 @@ export default function NavbarSearch() {
 						fullWidth={true}
 						borderWeight="normal"
 						clearable
-						disabled={cryptocurrencies == null ? true : false}
+						disabled={cryptoData == null ? true : false}
 						placeholder={
-							cryptocurrencies == null
+							cryptoData == null
 								? "One moment please..."
 								: "Search..."
 						}
@@ -106,16 +114,16 @@ export default function NavbarSearch() {
 							</Table.Header>
 							<Table.Body items={searchedCrypto}>
 								{(item) => (
-									<Table.Row key={item.id}>
+									<Table.Row key={item.key}>
 										<Table.Cell>
 											<Link
 												aria-labelledby="dashboard-table-crypto-link"
 												style={{
 													textDecoration: "underline",
 												}}
-												href={`currencies/${item.id}`}
+												href={`currencies/${item.key}`}
 											>
-												<Text h5>{item.id}</Text>
+												<Text h5>{item.key}</Text>
 											</Link>
 										</Table.Cell>
 									</Table.Row>

@@ -14,28 +14,9 @@ export default function CryptoTestimonials({ crypto }: Props) {
 			getAllPosts(crypto.id).then((postData) => {
 				setPosts(postData);
 			});
-			// getSentimentHistoryInRange(crypto.id, startTime, endTime).then(
-			// 	(history) => {
-			// 		console.log(history);
-			// 		setHistory(history);
-			// 		setData({
-			// 			labels: history.map((value) => value.datetime),
-			// 			datasets: [
-			// 				{
-			// 					label: `${crypto.id}`,
-			// 					data: history.map(
-			// 						(value) => value.sub_sentiment
-			// 					),
-			// 					borderColor: "rgb(255, 99, 132)",
-			// 					backgroundColor: "rgba(255, 99, 132, 0.5)",
-			// 				},
-			// 			],
-			// 		});
-			// 	}
-			// );
 		}
 		getNewTestimonials();
-	}, []);
+	}, [crypto.id]);
 
 	const textAreas = posts
 		? posts.map((postData) => {

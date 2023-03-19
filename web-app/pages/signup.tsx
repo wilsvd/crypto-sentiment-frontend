@@ -23,8 +23,9 @@ export default function Signup() {
 	const [loginIsFailure, setLoginIsFailure] = useState(false);
 
 	useEffect(() => {
+		console.log("Signup Test");
 		router.prefetch("/");
-	}, []);
+	});
 
 	function submitForm() {
 		if (password === confirmPassword) {

@@ -1,8 +1,8 @@
 import Head from "next/head";
 
-import React, { useEffect, useState } from "react";
+import React from "react";
 
-import { Button, Container, Text } from "@nextui-org/react";
+import { Container, Text } from "@nextui-org/react";
 import DefaultTable from "@/components/DefaultTable";
 
 export default function Home() {
