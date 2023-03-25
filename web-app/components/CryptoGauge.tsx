@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import GaugeChart from "react-gauge-chart";
 import { LatestSentiment } from "@/utility/firestore";
-import { Container } from "@nextui-org/react";
 
 type Props = {
 	crypto: LatestSentiment;
@@ -38,6 +37,7 @@ export default function CryptoGauge({ crypto }: Props) {
 			cornerRadius={0}
 			animDelay={100}
 			hideText={true}
+			animate={false}
 			textColor="#000"
 			colors={["#FF0000", "#00FF00"]}
 			formatTextValue={(value) => value}
