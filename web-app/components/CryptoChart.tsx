@@ -77,7 +77,8 @@ const CryptoChart = ({ crypto }: Props) => {
 			);
 		}
 		getNewHistory();
-	}, [startTime, endTime]);
+	}, [startTime, endTime, crypto.id]);
+
 	return (
 		<Container fluid>
 			{data ? <Line options={options} data={data} /> : null}

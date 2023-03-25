@@ -107,7 +107,6 @@ export default function Login() {
 				</Row>
 				<Spacer y={1.6} />
 
-				{/* TODO:  Create a new row which allows users to login with Google*/}
 				<Button onPress={submitGoogle}>Sign in with Google</Button>
 				{/* <Row justify="space-between">
 					<Image

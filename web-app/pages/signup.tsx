@@ -24,7 +24,7 @@ export default function Signup() {
 
 	useEffect(() => {
 		router.prefetch("/");
-	}, []);
+	});
 
 	function submitForm() {
 		if (password === confirmPassword) {
@@ -53,8 +53,6 @@ export default function Signup() {
 			setConfirmPassword(value);
 		}
 	}
-
-	console.log(email, password, confirmPassword);
 
 	return (
 		<Container
