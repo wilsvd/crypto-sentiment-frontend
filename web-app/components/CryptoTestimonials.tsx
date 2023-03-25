@@ -1,5 +1,6 @@
 import { Posts } from "@/utility/firestore";
 import { Container, Spacer, Textarea } from "@nextui-org/react";
+import React from "react";
 
 type Props = {
 	posts: Posts;
@@ -9,8 +10,9 @@ export default function CryptoTestimonials({ posts }: Props) {
 	const textAreas = posts
 		? posts.map((postData) => {
 				return (
-					<>
+					<React.Fragment key={postData.id}>
 						<Textarea
+							aria-labelledby={`${postData.title}`}
 							css={{
 								width: "400px",
 							}}
@@ -18,7 +20,7 @@ export default function CryptoTestimonials({ posts }: Props) {
 							initialValue={postData.title}
 						/>
 						<Spacer y={0.5} />
-					</>
+					</React.Fragment>
 				);
 		  })
 		: null;
