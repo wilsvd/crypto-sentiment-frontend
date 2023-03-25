@@ -38,7 +38,7 @@ function CryptoPage(props: { cryptoData: LatestSentiment; postData: Posts }) {
 		return <h1>Loading...</h1>;
 	}
 	return (
-		<Container>
+		<Container aria-labelledby="cryptocurrency-container">
 			<Head aria-labelledby={`${props.cryptoData.id}-metadata`}>
 				<title>{props.cryptoData.id}</title>
 				<meta
@@ -51,6 +51,7 @@ function CryptoPage(props: { cryptoData: LatestSentiment; postData: Posts }) {
 				<Text h3>{props.cryptoData.id}</Text>
 				<Text h4>Sentiment : {props.cryptoData.latestSentiment}</Text>
 				<Container
+					aria-labelledby="cryptogauge-container"
 					style={{
 						float: "left",
 						maxHeight: "200px",
@@ -61,6 +62,7 @@ function CryptoPage(props: { cryptoData: LatestSentiment; postData: Posts }) {
 				</Container>
 
 				<Container
+					aria-labelledby="testimonials-parent-container"
 					display="flex"
 					justify="center"
 					alignItems="center"
@@ -77,6 +79,7 @@ function CryptoPage(props: { cryptoData: LatestSentiment; postData: Posts }) {
 					></CryptoTestimonials>
 				</Container>
 				<Container
+					aria-labelledby="historical-data-container"
 					css={{
 						float: "left",
 						maxWidth: "900px",
