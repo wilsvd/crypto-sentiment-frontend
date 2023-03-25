@@ -15,8 +15,8 @@ export const useAppDispatch = () => useDispatch<AppDispatch>();
 
 export const useAppSelector: TypedUseSelectorHook<AppState> = useSelector;
 
-export const listenForAuthChanges = () => {
-	return (dispatch: any) => {
+export function listenForAuthChanges() {
+	return (dispatch: AppDispatch) => {
 		auth.onAuthStateChanged(async (user) => {
 			console.log("AUTH CHANGING");
 			if (user) {
@@ -30,50 +30,35 @@ export const listenForAuthChanges = () => {
 				const userFavourites = await getFavouriteCryptocurrencies(
 					userDetails.email!
 				);
-				Promise.all(userFavourites).then(async (cryptos) => {
+				Promise.all(userFavourites).then((cryptos) => {
 					dispatch(setFavourites(cryptos));
-					const latestCryptoSentiments =
-						await getAllLatestSentiments();
-
-					Promise.all(latestCryptoSentiments).then((cryptoData) => {
-						const result = cryptoData.map((crypto) => {
-							const isFavourite = userFavourites.includes(
-								crypto.id
-							);
-							const num_sentiment: number =
-								crypto.latestSentiment;
-							const sub_sentiment = num_sentiment.toFixed(2);
-							return {
-								key: crypto.id,
-								cryptocurrency: crypto.id,
-								sentiment: sub_sentiment,
-								favourite: isFavourite,
-							};
-						});
-						dispatch(setCryptoData(result));
-					});
+					fetchData(dispatch, cryptos);
 				});
 			} else {
 				dispatch(setUser(null));
 				const userFavourites: string[] = [];
 				dispatch(setFavourites(userFavourites));
-				const latestCryptoSentiments = await getAllLatestSentiments();
-
-				Promise.all(latestCryptoSentiments).then((cryptoData) => {
-					const result = cryptoData.map((crypto) => {
-						const isFavourite = userFavourites.includes(crypto.id);
-						const num_sentiment: number = crypto.latestSentiment;
-						const sub_sentiment = num_sentiment.toFixed(2);
-						return {
-							key: crypto.id,
-							cryptocurrency: crypto.id,
-							sentiment: sub_sentiment,
-							favourite: isFavourite,
-						};
-					});
-					dispatch(setCryptoData(result));
-				});
+				fetchData(dispatch, userFavourites);
 			}
 		});
 	};
-};
+}
+
+async function fetchData(dispatch: AppDispatch, userFavourites: string[]) {
+	const latestCryptoSentiments = await getAllLatestSentiments();
+
+	Promise.all(latestCryptoSentiments).then((cryptoData) => {
+		const result = cryptoData.map((crypto) => {
+			const isFavourite = userFavourites.includes(crypto.id);
+			const num_sentiment: number = crypto.latestSentiment;
+			const sub_sentiment = num_sentiment.toFixed(2);
+			return {
+				key: crypto.id,
+				cryptocurrency: crypto.id,
+				sentiment: sub_sentiment,
+				favourite: isFavourite,
+			};
+		});
+		dispatch(setCryptoData(result));
+	});
+}
