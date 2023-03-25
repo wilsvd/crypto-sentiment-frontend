@@ -27,6 +27,8 @@ export type SentimentHistory = {
 };
 
 export type Posts = {
+	[key: string]: any;
+	id: string;
 	datetime: string;
 	sentiment: number;
 	title: string;
@@ -227,6 +229,7 @@ export async function getAllPosts(crypto: string): Promise<Posts> {
 		const datetime: Date = doc.data().datetime.toDate();
 		const formDatetime = datetime.toISOString();
 		posts.push({
+			id: doc.id,
 			datetime: formDatetime,
 			sentiment: doc.data().sentiment,
 			title: doc.data().title,
@@ -234,28 +237,3 @@ export async function getAllPosts(crypto: string): Promise<Posts> {
 	});
 	return posts;
 }
-
-// export async function generateFakeHistoricalData() {
-// 	const nEndTime = new Date();
-// 	const nStartTime = new Date("2023-01-01T00:30:00Z");
-
-// 	const crypto = "0xPolygon";
-// 	async function printDates(startDate: Date, endDate: Date) {
-// 		let currentDate = startDate;
-// 		while (currentDate <= endDate) {
-// 			console.log(currentDate);
-// 			const sentiment = faker.datatype.number({
-// 				min: -1,
-// 				max: 1,
-// 				precision: 0.01,
-// 			});
-// 			const ref = collection(firedb, `sentiments/${crypto}/history`);
-// 			const res = await addDoc(ref, {
-// 				datetime: currentDate,
-// 				sub_sentiment: sentiment,
-// 			});
-// 			currentDate.setDate(currentDate.getDate() + 1);
-// 		}
-// 	}
-// 	printDates(nStartTime, nEndTime);
-// }
