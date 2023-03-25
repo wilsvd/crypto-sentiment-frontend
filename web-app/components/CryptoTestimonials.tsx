@@ -1,23 +1,11 @@
-import { getAllPosts, LatestSentiment, Posts } from "@/utility/firestore";
-import { Container, Divider, Row, Spacer, Textarea } from "@nextui-org/react";
-import { useEffect, useState } from "react";
+import { Posts } from "@/utility/firestore";
+import { Container, Spacer, Textarea } from "@nextui-org/react";
 
 type Props = {
-	crypto: LatestSentiment;
+	posts: Posts;
 };
 
-export default function CryptoTestimonials({ crypto }: Props) {
-	const [posts, setPosts] = useState<Posts | null>(null);
-
-	useEffect(() => {
-		async function getNewTestimonials() {
-			getAllPosts(crypto.id).then((postData) => {
-				setPosts(postData);
-			});
-		}
-		getNewTestimonials();
-	}, [crypto.id]);
-
+export default function CryptoTestimonials({ posts }: Props) {
 	const textAreas = posts
 		? posts.map((postData) => {
 				return (
@@ -29,7 +17,6 @@ export default function CryptoTestimonials({ crypto }: Props) {
 							readOnly
 							initialValue={postData.title}
 						/>
-						{/* <Divider /> */}
 						<Spacer y={0.5} />
 					</>
 				);
