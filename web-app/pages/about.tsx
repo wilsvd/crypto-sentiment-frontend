@@ -36,14 +36,15 @@ export default function About() {
 								regarding a cryptocurrency or the environment
 								surrounding it. A machine learning model based
 								on the transformers architecture called
-								"twitter-roberta-base-sentiment-latest" is used
-								to carry out the sentiment analysis on the post
-								titles. Post titles are either positive, neutral
-								or negative and these values are encoded into 1,
-								0, and -1. The subreddit sentiment is then
-								calculated by taking the sum of sentiments from
-								all post titles of a subreddit and dividing by
-								the number of posts collected.
+								&quot;twitter-roberta-base-sentiment-latest&quot;
+								is used to carry out the sentiment analysis on
+								the post titles. Post titles are either
+								positive, neutral or negative and these values
+								are encoded into 1, 0, and -1. The subreddit
+								sentiment is then calculated by taking the sum
+								of sentiments from all post titles of a
+								subreddit and dividing by the number of posts
+								collected.
 							</Text>
 						</Card.Body>
 					</Card>
@@ -84,9 +85,8 @@ export default function About() {
 								regarding the market sentiment.
 								<br />
 								<b>
-									Be aware that due to limitations in the
-									sentiment analysis of Reddit posts that
-									market sentiment may not 100% reflect
+									Be aware that Reddit posts and the sentiment
+									analysis carried out may not reflect
 									reality.
 								</b>
 							</Text>

@@ -26,7 +26,7 @@ export default function Login() {
 
 	useEffect(() => {
 		router.prefetch("/");
-	}, []);
+	});
 	function submitForm() {
 		signInAccount(emailInput, password).then((success) => {
 			success ? router.push("/") : setLoginIsFailure(true);
