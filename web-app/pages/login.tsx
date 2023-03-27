@@ -8,13 +8,25 @@ import {
 	Row,
 	Checkbox,
 	Container,
+	Link,
 } from "@nextui-org/react";
 import { useRouter } from "next/router";
-import { signInGoogle } from "@/utility/google_auth";
-import { signInAccount } from "@/utility/pass_auth";
 import { useAppSelector } from "@/store/hooks";
 import { selectUser } from "@/store/authslice";
 import Head from "next/head";
+
+import { auth } from "@/config/firebase";
+import {
+	setPersistence,
+	browserSessionPersistence,
+	signInWithPopup,
+	browserLocalPersistence,
+	GoogleAuthProvider,
+	signInWithEmailAndPassword,
+	inMemoryPersistence,
+} from "firebase/auth";
+import ForgotPasswordModal from "@/components/ForgotPasswordModal";
+import { provider } from "@/utility/googleAuth";
 
 export default function Login() {
 	const user = useAppSelector(selectUser);
@@ -23,23 +35,57 @@ export default function Login() {
 	const [emailInput, setEmailInput] = useState("");
 	const [password, setPassword] = useState("");
 	const [loginIsFailure, setLoginIsFailure] = useState(false);
+	const [rememberMe, setRememberMe] = useState(false);
 
 	useEffect(() => {
 		router.prefetch("/");
 	});
 	function submitForm() {
-		signInAccount(emailInput, password).then((success) => {
-			success ? router.push("/") : setLoginIsFailure(true);
-		});
+		const persistType = rememberMe
+			? browserLocalPersistence
+			: inMemoryPersistence;
+
+		setPersistence(auth, persistType)
+			.then(() => {
+				signInWithEmailAndPassword(auth, emailInput, password).then(
+					(userCred) => {
+						userCred ? router.push("/") : setLoginIsFailure(true);
+					}
+				);
+			})
+			.catch((error) => {
+				const errorCode = error.code;
+				const errorMessage = error.message;
+			});
 	}
 
 	function submitGoogle() {
-		signInGoogle().then((success) => (success ? router.push("/") : null));
+		const persistType = rememberMe
+			? browserLocalPersistence
+			: inMemoryPersistence;
+
+		setPersistence(auth, persistType)
+			.then(() => {
+				signInWithPopup(auth, provider).then((userCred) => {
+					userCred ? router.push("/") : null;
+				});
+			})
+			.catch((error) => {
+				const errorCode = error.code;
+				const errorMessage = error.message;
+			});
 	}
 	function handleChange(event: { target: { name: string; value: string } }) {
 		const { name, value } = event.target;
 		name === "emailInput" ? setEmailInput(value) : setPassword(value);
 	}
+
+	const [visible, setVisible] = useState(false);
+	const openForgotPassword = () => setVisible(true);
+	const closeForgotPassword = () => {
+		setVisible(false);
+		console.log("closed");
+	};
 
 	return (
 		<Container
@@ -98,12 +144,16 @@ export default function Login() {
 				<Spacer y={1.6} />
 
 				<Row justify="space-between">
-					<Checkbox>
+					<Checkbox
+						onClick={() => setRememberMe((oldVal) => !oldVal)}
+					>
 						<Text size={14}>Remember me</Text>
 					</Checkbox>
 
 					{/* TODO:  Implement a method to request for forgotten password*/}
-					<Text size={14}>Forgot password?</Text>
+					<Button auto flat size={"sm"} onPress={openForgotPassword}>
+						<Text size={14}>Forgot password?</Text>
+					</Button>
 				</Row>
 				<Spacer y={1.6} />
 
@@ -121,6 +171,11 @@ export default function Login() {
 				<Spacer y={1} />
 				<Button onPress={submitForm}>Sign in</Button>
 			</Card>
+
+			<ForgotPasswordModal
+				visible={visible}
+				closeHandler={closeForgotPassword}
+			/>
 		</Container>
 	);
 }
