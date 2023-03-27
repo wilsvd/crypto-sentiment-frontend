@@ -1,15 +1,11 @@
-import { Button, Container, Table, Text } from "@nextui-org/react";
-import React, { useEffect, useRef, useState } from "react";
+import { Container, Table, Text } from "@nextui-org/react";
+import React from "react";
 import Link from "next/link";
 import Image from "next/image";
-import Badge from "@nextui-org/react";
-import { firedb } from "@/config/firebase";
-import { collection, getDocs, query, orderBy, limit } from "firebase/firestore";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { selectUser } from "@/store/authslice";
 import {
 	addFavouriteCryptocurrency,
-	getFavouriteCryptocurrencies,
 	removeFavouriteCryptocurrency,
 } from "@/utility/firestore";
 

@@ -1,7 +1,5 @@
 import { Navbar } from "@nextui-org/react";
-
 import NextLink from "next/link";
-
 import { useRouter } from "next/router";
 
 export default function UserAuth() {

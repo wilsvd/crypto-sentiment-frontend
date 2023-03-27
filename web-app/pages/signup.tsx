@@ -8,11 +8,13 @@ import {
 	Row,
 	Container,
 } from "@nextui-org/react";
-import { signInGoogle } from "@/utility/google_auth";
 import { useRouter } from "next/router";
 
-import { makeAccount } from "@/utility/pass_auth";
+import { makeAccount } from "@/utility/passAuth";
 import Head from "next/head";
+import { signInWithPopup } from "firebase/auth";
+import { auth } from "@/config/firebase";
+import { provider } from "@/utility/googleAuth";
 
 export default function Signup() {
 	const router = useRouter();
@@ -41,6 +43,13 @@ export default function Signup() {
 			setLoginIsFailure(true);
 			console.log("FAILURE");
 		}
+	}
+
+	function submitGoogle() {
+		signInWithPopup(auth, provider).then((userCred) => {
+			// userCred ? router.push("/") : null;
+			setLoginIsFailure(false);
+		});
 	}
 
 	function handleChange(event: { target: { name: string; value: string } }) {
@@ -134,7 +143,7 @@ export default function Signup() {
 				<Row justify="space-between"></Row>
 
 				<Spacer y={1} />
-				<Button onPress={signInGoogle}>Sign up with Google</Button>
+				<Button onPress={submitGoogle}>Sign up with Google</Button>
 				<Spacer y={1} />
 				<Button onPress={submitForm}>Sign up</Button>
 			</Card>

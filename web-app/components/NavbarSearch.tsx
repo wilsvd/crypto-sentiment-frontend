@@ -1,20 +1,11 @@
-import { selectUser } from "@/store/authslice";
-import {
-	cryptoDataT,
-	selectCryptoData,
-	selectCryptoLoaded,
-} from "@/store/cryptoslice";
-import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { selectFavLoaded, selectFavourites } from "@/store/usercryptoslice";
-import { getAllLatestSentiments, LatestSentiment } from "@/utility/firestore";
+import { cryptoDataT, selectCryptoData } from "@/store/cryptoslice";
+import { useAppSelector } from "@/store/hooks";
 import {
 	Col,
 	Container,
-	Grid,
 	Input,
 	Link,
 	Row,
-	Spacer,
 	Table,
 	Text,
 } from "@nextui-org/react";

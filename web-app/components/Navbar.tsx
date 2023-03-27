@@ -11,7 +11,7 @@ import { selectUser } from "@/store/authslice";
 import { useAppSelector } from "@/store/hooks";
 import NavbarSearch from "./NavbarSearch";
 
-function DefaultNavbar() {
+export default function DefaultNavbar() {
 	const { asPath } = useRouter();
 	const user = useAppSelector(selectUser);
 	return (
@@ -70,5 +70,3 @@ function DefaultNavbar() {
 		</Navbar>
 	);
 }
-
-export default DefaultNavbar;
