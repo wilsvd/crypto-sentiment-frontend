@@ -1,7 +1,5 @@
 import {
 	createUserWithEmailAndPassword,
-	signInWithEmailAndPassword,
-	onAuthStateChanged,
 	updateProfile,
 	updateEmail,
 	deleteUser,
@@ -31,20 +29,6 @@ export async function signOutAccount() {
 			console.log("Signing out error");
 			console.log(error);
 		});
-}
-
-export async function signInAccount(email: string, password: string) {
-	try {
-		const userCredential = await signInWithEmailAndPassword(
-			auth,
-			email,
-			password
-		);
-		// Signed in
-		return userCredential.user ? true : false;
-	} catch {
-		return false;
-	}
 }
 
 export function updateUserProfile(newProfile: {
@@ -81,50 +65,34 @@ export function updateEmailAddress(newEmail: string) {
 	}
 }
 
-import { updatePassword } from "firebase/auth";
+// import { updatePassword } from "firebase/auth";
 
-export function updateUserPassword(newPassword: string) {
-	if (auth.currentUser) {
-		updatePassword(auth.currentUser, newPassword)
-			.then(() => {
-				// Update successful.
-				console.log("Password update successful");
-			})
-			.catch((error) => {
-				console.log("Password Error occurred");
-				// An error ocurred
-				// ...
-			});
-	}
-}
+// export function updateUserPassword(newPassword: string) {
+// 	if (auth.currentUser) {
+// 		updatePassword(auth.currentUser, newPassword)
+// 			.then(() => {
+// 				// Update successful.
+// 				console.log("Password update successful");
+// 			})
+// 			.catch((error) => {
+// 				console.log("Password Error occurred");
+// 				// An error ocurred
+// 				// ...
+// 			});
+// 	}
+// }
 
-import { sendEmailVerification } from "firebase/auth";
+// import { sendEmailVerification } from "firebase/auth";
 
-export function verifyEmail() {
-	if (auth.currentUser) {
-		sendEmailVerification(auth.currentUser).then(() => {
-			// Email verification sent!
-			// ...
-			console.log("Email verification sent");
-		});
-	}
-}
-
-import { sendPasswordResetEmail } from "firebase/auth";
-
-export function resetPassword(email: string) {
-	sendPasswordResetEmail(auth, email)
-		.then(() => {
-			console.log("Password reset email sent");
-			// Password reset email sent!
-			// ..
-		})
-		.catch((error) => {
-			const errorCode = error.code;
-			const errorMessage = error.message;
-			// ..
-		});
-}
+// export function verifyEmail() {
+// 	if (auth.currentUser) {
+// 		sendEmailVerification(auth.currentUser).then(() => {
+// 			// Email verification sent!
+// 			// ...
+// 			console.log("Email verification sent");
+// 		});
+// 	}
+// }
 
 export async function removeUser() {
 	if (auth.currentUser) {
