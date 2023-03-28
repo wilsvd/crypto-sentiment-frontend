@@ -4,7 +4,7 @@ import {
 	removeUser,
 	updateEmailAddress,
 	updateUserProfile,
-} from "@/utility/pass_auth";
+} from "@/utility/passAuth";
 import {
 	Container,
 	Text,

@@ -1,4 +1,4 @@
-import { signOutAccount } from "@/utility/pass_auth";
+import { signOutAccount } from "@/utility/passAuth";
 import { Navbar, Text, Avatar, Dropdown, Input, Link } from "@nextui-org/react";
 
 import NextLink from "next/link";
@@ -7,7 +7,7 @@ import { selectUser } from "@/store/authslice";
 import { useAppSelector } from "@/store/hooks";
 import { useRouter } from "next/router";
 
-function SignedInNavbar() {
+export default function SignedInNavbar() {
 	const user = useAppSelector(selectUser);
 	const router = useRouter();
 	return (
@@ -57,5 +57,3 @@ function SignedInNavbar() {
 		</Dropdown>
 	);
 }
-
-export default SignedInNavbar;

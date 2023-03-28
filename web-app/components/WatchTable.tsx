@@ -1,16 +1,13 @@
-import { Button, Container, Table, Text } from "@nextui-org/react";
-import React, { ReactNode, useEffect, useRef, useState } from "react";
+import { Container, Table, Text } from "@nextui-org/react";
+import React, { ReactNode } from "react";
 import Link from "next/link";
 import Image from "next/image";
 
-import { Cols, columns, Row, Rows } from "@/types";
+import { columns, Row, Rows } from "@/types";
 import { useAppSelector, useAppDispatch } from "@/store/hooks";
 import { selectUser } from "@/store/authslice";
 import {
 	addFavouriteCryptocurrency,
-	getFavouriteCryptocurrencies,
-	getFavouriteLatestSentiments,
-	LatestSentiment,
 	removeFavouriteCryptocurrency,
 } from "@/utility/firestore";
 import dynamic from "next/dynamic";
@@ -20,12 +17,10 @@ import {
 	setFavourites,
 } from "@/store/usercryptoslice";
 import {
-	cryptoDataT,
 	selectCryptoData,
 	selectCryptoLoaded,
 	setCryptoData,
 } from "@/store/cryptoslice";
-import { watch } from "fs";
 
 const DCryptoGauge = dynamic(() => import("@/components/CryptoGauge"), {
 	ssr: false,

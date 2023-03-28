@@ -1,24 +1,15 @@
-import { selectUser } from "@/store/authslice";
-import {
-	cryptoDataT,
-	selectCryptoData,
-	selectCryptoLoaded,
-} from "@/store/cryptoslice";
-import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { selectFavLoaded, selectFavourites } from "@/store/usercryptoslice";
-import { getAllLatestSentiments, LatestSentiment } from "@/utility/firestore";
+import { cryptoDataT, selectCryptoData } from "@/store/cryptoslice";
+import { useAppSelector } from "@/store/hooks";
 import {
 	Col,
 	Container,
-	Grid,
 	Input,
 	Link,
 	Row,
-	Spacer,
 	Table,
 	Text,
 } from "@nextui-org/react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 export default function NavbarSearch() {
 	const columns = [
@@ -32,15 +23,7 @@ export default function NavbarSearch() {
 		cryptoDataT[] | null
 	>();
 
-	const user = useAppSelector(selectUser);
-
-	const userFavourites = useAppSelector(selectFavourites);
-	const userFavouritesLoaded = useAppSelector(selectFavLoaded);
-
 	const cryptoData = useAppSelector(selectCryptoData);
-	const cryptoLoaded = useAppSelector(selectCryptoLoaded);
-
-	const dispatch = useAppDispatch();
 
 	function handleChange(event: { target: { name: string; value: string } }) {
 		const value = event.target.value.toLowerCase();
