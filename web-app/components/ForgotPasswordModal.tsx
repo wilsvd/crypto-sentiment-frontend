@@ -48,6 +48,7 @@ export default function ForgotPasswordModal({ visible, closeHandler }: Props) {
 				</Modal.Header>
 				<Modal.Body>
 					<Input
+						type="email"
 						clearable
 						bordered
 						fullWidth
@@ -55,7 +56,6 @@ export default function ForgotPasswordModal({ visible, closeHandler }: Props) {
 						size="lg"
 						name="emailInput"
 						placeholder="Email"
-						value={emailInput}
 						onChange={handleChange}
 					/>
 				</Modal.Body>

@@ -78,6 +78,7 @@ export default function Login() {
 	function handleChange(event: { target: { name: string; value: string } }) {
 		const { name, value } = event.target;
 		name === "emailInput" ? setEmailInput(value) : setPassword(value);
+		console.log(emailInput);
 	}
 
 	const [visible, setVisible] = useState(false);
@@ -115,6 +116,7 @@ export default function Login() {
 					<Text h5>You entered an incorrect email or password</Text>
 				)}
 				<Input
+					type="email"
 					aria-labelledby="login-email-input"
 					clearable
 					underlined
@@ -123,12 +125,12 @@ export default function Login() {
 					size="lg"
 					name="emailInput"
 					placeholder="Email"
-					value={emailInput}
 					onChange={handleChange}
 				/>
 				<Spacer y={1} />
 
 				<Input.Password
+					type="password"
 					aria-labelledby="login-pass-input"
 					clearable
 					underlined
@@ -138,10 +140,9 @@ export default function Login() {
 					name="password"
 					placeholder="Password"
 					css={{ mb: "6px" }}
-					value={password}
 					onChange={handleChange}
 				/>
-				<Spacer y={1.6} />
+				<Spacer y={1} />
 
 				<Row justify="space-between">
 					<Checkbox
@@ -156,20 +157,9 @@ export default function Login() {
 					</Button>
 				</Row>
 				<Spacer y={1.6} />
-
-				<Button onPress={submitGoogle}>Sign in with Google</Button>
-				{/* <Row justify="space-between">
-					<Image
-						src="/google-icon.svg"
-						alt="google logo"
-						width={48}
-						height={48}
-						onClick={() => console.log("YOU CLICK")}
-					></Image>
-				</Row> */}
-
-				<Spacer y={1} />
 				<Button onPress={submitForm}>Sign in</Button>
+				<Spacer y={1} />
+				<Button onPress={submitGoogle}>Sign in with Google</Button>
 			</Card>
 
 			<ForgotPasswordModal

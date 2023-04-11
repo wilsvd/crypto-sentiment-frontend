@@ -82,7 +82,6 @@ export default function AccountSettings() {
 							aria-labelledby="setting-name"
 							readOnly={readOnly}
 							name="name"
-							value={name}
 							onChange={handleChange}
 						/>
 						<Spacer y={1}></Spacer>
@@ -92,7 +91,6 @@ export default function AccountSettings() {
 							aria-labelledby="setting-email"
 							readOnly={readOnly}
 							name="email"
-							value={email}
 							onChange={handleChange}
 						/>
 
@@ -170,9 +168,6 @@ export default function AccountSettings() {
 								/>
 							</Modal.Body>
 							<Modal.Footer justify="center">
-								<Button auto flat onPress={closeHandler}>
-									Close
-								</Button>
 								<Button
 									color={"error"}
 									disabled={deleteDisabled}
