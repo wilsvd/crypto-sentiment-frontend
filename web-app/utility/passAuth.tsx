@@ -31,40 +31,6 @@ export async function signOutAccount() {
 		});
 }
 
-export function updateUserProfile(newProfile: {
-	displayName: string;
-	photoURL: string;
-}) {
-	if (auth.currentUser) {
-		updateProfile(auth.currentUser, newProfile)
-			.then(() => {
-				// Profile updated!
-				// ...
-			})
-			.catch((error) => {
-				// An error occurred
-				// ...
-			});
-	}
-}
-
-export function updateEmailAddress(newEmail: string) {
-	console.log("Trying to update");
-	if (auth.currentUser) {
-		updateEmail(auth.currentUser, newEmail)
-			.then(() => {
-				console.log("Email updated!");
-				// Email updated!
-				// ...
-			})
-			.catch((error) => {
-				console.log(error);
-				// An error occurred
-				// ...
-			});
-	}
-}
-
 // import { updatePassword } from "firebase/auth";
 
 // export function updateUserPassword(newPassword: string) {
