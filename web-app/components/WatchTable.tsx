@@ -43,7 +43,9 @@ export default function DefaultTable() {
 
 	const toggleFavorite = (crypto: string) => {
 		if (!user || !user.email) {
-			console.log("You are not logged in");
+			alert(
+				"You are not logged in. Please create an account or login to favourite cryptocurrencies."
+			);
 			return;
 		}
 
