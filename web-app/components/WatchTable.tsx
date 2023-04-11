@@ -86,6 +86,7 @@ export default function DefaultTable() {
 				if (cellValue) {
 					return (
 						<Image
+							style={{ cursor: "pointer" }}
 							aria-labelledby="watchlist-table-favourite"
 							src="/red-heart-icon.svg"
 							alt="me"
@@ -99,6 +100,7 @@ export default function DefaultTable() {
 				} else {
 					return (
 						<Image
+							style={{ cursor: "pointer" }}
 							aria-labelledby="watchlist-table-unfavourite"
 							src="/iconmonstr-heart-thin.svg"
 							alt="me"

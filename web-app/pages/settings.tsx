@@ -35,29 +35,6 @@ export default function AccountSettings() {
 
 	const [deleteDisabled, setDeleteDisabled] = useState(true);
 
-	function handleChange(event: { target: { name: string; value: string } }) {
-		const { name, value } = event.target;
-
-		switch (name) {
-			case "name":
-				console.log("Set name");
-				console.log("Value: " + value);
-				setName(value);
-				break;
-			case "email":
-				console.log("Set email");
-				setEmail(value);
-				break;
-			case "confirmDelete":
-				value == "DELETE"
-					? setDeleteDisabled(false)
-					: setDeleteDisabled(true);
-				break;
-			default:
-				break;
-		}
-	}
-
 	const [visible, setVisible] = useState(false);
 	const openHandler = () => setVisible(true);
 	const closeHandler = () => setVisible(false);
@@ -78,22 +55,22 @@ export default function AccountSettings() {
 					<Container fluid>
 						<Text h5>Display Name</Text>
 						<Input
+							type="text"
 							fullWidth
 							aria-labelledby="setting-name"
 							readOnly={readOnly}
 							name="name"
-							value={name}
-							onChange={handleChange}
+							onChange={(e) => setName(e.target.value)}
 						/>
 						<Spacer y={1}></Spacer>
 						<Text h5>Email Address</Text>
 						<Input
+							type="email"
 							fullWidth
 							aria-labelledby="setting-email"
 							readOnly={readOnly}
 							name="email"
-							value={email}
-							onChange={handleChange}
+							onChange={(e) => setEmail(e.target.value)}
 						/>
 
 						<Spacer y={1}></Spacer>
@@ -166,18 +143,22 @@ export default function AccountSettings() {
 									size="lg"
 									name="confirmDelete"
 									placeholder="Type DELETE to confirm"
-									onChange={handleChange}
+									onChange={(e) => {
+										e.target.value == "DELETE"
+											? setDeleteDisabled(false)
+											: setDeleteDisabled(true);
+									}}
 								/>
 							</Modal.Body>
 							<Modal.Footer justify="center">
-								<Button auto flat onPress={closeHandler}>
-									Close
-								</Button>
 								<Button
 									color={"error"}
 									disabled={deleteDisabled}
 									auto
-									onPress={() => removeUser()}
+									onPress={() => {
+										closeHandler();
+										removeUser();
+									}}
 								>
 									Delete Account
 								</Button>

@@ -20,9 +20,18 @@ export default function SignedInNavbar() {
 			<Dropdown.Menu
 				aria-labelledby="dropdown-user-menu"
 				color="secondary"
-				onAction={(actionKey) =>
-					actionKey == "logout" ? signOutAccount() : null
-				}
+				onAction={(actionKey) => {
+					switch (actionKey) {
+						case "logout":
+							signOutAccount();
+							break;
+						case "settings":
+							router.push("/settings");
+							break;
+						default:
+							break;
+					}
+				}}
 			>
 				<Dropdown.Item
 					textValue="dropdown-user-account"
@@ -40,10 +49,9 @@ export default function SignedInNavbar() {
 					textValue="dropdown-user-settings"
 					key="settings"
 					withDivider
+					color="primary"
 				>
-					<Link as={NextLink} href="/settings">
-						Account Settings
-					</Link>
+					Account Settings
 				</Dropdown.Item>
 				<Dropdown.Item
 					textValue="dropdown-user-logout"

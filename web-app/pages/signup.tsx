@@ -95,6 +95,7 @@ export default function Signup() {
 					<Text h5>The passwords you entered do not match.</Text>
 				)}
 				<Input
+					type="email"
 					aria-labelledby="signup-email-input"
 					clearable
 					underlined
@@ -103,12 +104,12 @@ export default function Signup() {
 					size="lg"
 					placeholder="Email"
 					name="email"
-					value={email}
 					onChange={handleChange}
 				/>
 				<Spacer y={1} />
 
 				<Input.Password
+					type="password"
 					aria-labelledby="signup-pass-input"
 					clearable
 					underlined
@@ -118,12 +119,12 @@ export default function Signup() {
 					placeholder="Password"
 					css={{ mb: "6px" }}
 					name="password"
-					value={password}
 					onChange={handleChange}
 				/>
 				<Spacer y={1} />
 
 				<Input.Password
+					type="password"
 					aria-labelledby="signup-confirm-pass-input"
 					clearable
 					underlined
@@ -133,19 +134,12 @@ export default function Signup() {
 					placeholder="Confirm your password"
 					css={{ mb: "6px" }}
 					name="confirmPassword"
-					value={confirmPassword}
 					onChange={handleChange}
 				/>
-				<Spacer y={1} />
-
-				{/* TODO:  Create a new row which allows users to signup with Google*/}
-
-				<Row justify="space-between"></Row>
-
+				<Spacer y={1.6} />
+				<Button onPress={submitForm}>Sign up</Button>
 				<Spacer y={1} />
 				<Button onPress={submitGoogle}>Sign up with Google</Button>
-				<Spacer y={1} />
-				<Button onPress={submitForm}>Sign up</Button>
 			</Card>
 		</Container>
 	);
