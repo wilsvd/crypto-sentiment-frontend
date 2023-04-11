@@ -137,9 +137,9 @@ export default function Signup() {
 					onChange={handleChange}
 				/>
 				<Spacer y={1.6} />
-				<Button onPress={submitGoogle}>Sign up with Google</Button>
-				<Spacer y={1} />
 				<Button onPress={submitForm}>Sign up</Button>
+				<Spacer y={1} />
+				<Button onPress={submitGoogle}>Sign up with Google</Button>
 			</Card>
 		</Container>
 	);
