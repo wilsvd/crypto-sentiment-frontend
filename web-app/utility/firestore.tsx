@@ -64,27 +64,38 @@ export async function getCryptoLatestSentiment(
 	crypto: string
 ): Promise<LatestSentiment | null> {
 	console.log("cryptos: " + crypto);
-	const sentimentsRef = collection(firedb, `sentiments/${crypto}/history`);
-	const filteredSentimentsRef = query(
-		sentimentsRef,
-		orderBy("datetime", "desc"),
-		limit(1)
-	);
-	const snapshot = await getDocs(filteredSentimentsRef);
 
-	var sentiment: LatestSentiment = {
-		id: "",
-		latestSentiment: 0,
-	};
-	if (snapshot.docs.length > 0) {
-		const latest = snapshot.docs[0].data();
-		sentiment = {
-			id: crypto,
-			latestSentiment: latest.sub_sentiment,
-		};
+	try {
+		const sentimentsRef = collection(
+			firedb,
+			`sentiments/${crypto}/history`
+		);
+		const filteredSentimentsRef = query(
+			sentimentsRef,
+			orderBy("datetime", "desc"),
+			limit(1)
+		);
+		var sentiment: LatestSentiment | null = null;
+		try {
+			const snapshot = await getDocs(filteredSentimentsRef);
+
+			if (snapshot.docs.length > 0) {
+				const latest = snapshot.docs[0].data();
+				sentiment = {
+					id: crypto,
+					latestSentiment: latest.sub_sentiment,
+				};
+			}
+
+			return sentiment;
+		} catch (error) {
+			console.log(error);
+			return null;
+		}
+	} catch (error) {
+		console.log(error);
+		return null;
 	}
-
-	return sentiment ? sentiment : null;
 }
 
 export async function getAllLatestSentiments(): Promise<LatestSentiment[]> {

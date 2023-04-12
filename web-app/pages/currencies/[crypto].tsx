@@ -12,8 +12,14 @@ import CryptoTestimonials from "@/components/CryptoTestimonials";
 
 export const getServerSideProps: GetServerSideProps = async ({ params }) => {
 	const itemID = params?.crypto as string;
-
+	console.log("ID: " + itemID);
 	const foundItem = await getCryptoLatestSentiment(itemID);
+
+	if (!foundItem) {
+		return {
+			notFound: true,
+		};
+	}
 	const posts = await getAllPosts(itemID);
 
 	return {
