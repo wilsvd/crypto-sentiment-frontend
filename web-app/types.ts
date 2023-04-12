@@ -1,3 +1,9 @@
+import { cryptoDataT } from "./store/cryptoslice";
+
+export type TablePropsT = {
+	cryptoData: cryptoDataT[];
+};
+
 export type Col = {
 	[key: string]: string;
 	label: string;
@@ -16,7 +22,7 @@ export const columns: Cols = [
 	},
 	{
 		key: "sentiment",
-		label: "Sentiment",
+		label: "Sentiment (-1 to 1)",
 	},
 ];
 
