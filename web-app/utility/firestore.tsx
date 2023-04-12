@@ -7,19 +7,16 @@ import {
 	getDocs,
 	query,
 	where,
-	QueryDocumentSnapshot,
-	QuerySnapshot,
 	orderBy,
-	limit,
 	updateDoc,
 	setDoc,
-	addDoc,
 	deleteDoc,
 } from "firebase/firestore";
 
 export type LatestSentiment = {
 	id: string;
 	latestSentiment: number;
+	subreddit: string;
 };
 
 export type SentimentHistory = {
@@ -63,37 +60,21 @@ export async function getFavouriteCryptocurrencies(
 export async function getCryptoLatestSentiment(
 	crypto: string
 ): Promise<LatestSentiment | null> {
-	console.log("cryptos: " + crypto);
+	const docRef = doc(firedb, "sentiments", crypto);
 
-	try {
-		const sentimentsRef = collection(
-			firedb,
-			`sentiments/${crypto}/history`
-		);
-		const filteredSentimentsRef = query(
-			sentimentsRef,
-			orderBy("datetime", "desc"),
-			limit(1)
-		);
-		var sentiment: LatestSentiment | null = null;
-		try {
-			const snapshot = await getDocs(filteredSentimentsRef);
+	const snapshot = await getDoc(docRef);
 
-			if (snapshot.docs.length > 0) {
-				const latest = snapshot.docs[0].data();
-				sentiment = {
-					id: crypto,
-					latestSentiment: latest.sub_sentiment,
-				};
-			}
-
-			return sentiment;
-		} catch (error) {
-			console.log(error);
-			return null;
-		}
-	} catch (error) {
-		console.log(error);
+	if (snapshot.exists()) {
+		console.log("Document data:", snapshot.data());
+		const sentiment: LatestSentiment = {
+			id: snapshot.id,
+			latestSentiment: snapshot.data().latest_sentiment,
+			subreddit: snapshot.data().subreddit,
+		};
+		return sentiment;
+	} else {
+		// docSnap.data() will be undefined in this case
+		console.log("No such document!");
 		return null;
 	}
 }
@@ -109,47 +90,8 @@ export async function getAllLatestSentiments(): Promise<LatestSentiment[]> {
 		sentiments.push({
 			id: doc.id,
 			latestSentiment: doc.data().latest_sentiment,
+			subreddit: doc.data().subreddit,
 		});
-	}
-
-	return sentiments;
-}
-
-export async function getFavouriteLatestSentiments(
-	favouriteCryptos: string[]
-): Promise<LatestSentiment[]> {
-	if (!favouriteCryptos || favouriteCryptos.length == 0) {
-		return [];
-	}
-	console.log("Favourite cryptos" + favouriteCryptos);
-	const sentimentsRef = collection(firedb, "sentiments");
-	const filteredSentimentsRef = query(
-		sentimentsRef,
-		where("crypto", "in", favouriteCryptos)
-	);
-	console.log(filteredSentimentsRef);
-	const snapshot = await getDocs(filteredSentimentsRef);
-	const sentiments = [];
-
-	for (const doc of snapshot.docs) {
-		const latestSentimentRef = collection(doc.ref, "history");
-		const latestSentimentQuery = query(
-			latestSentimentRef,
-			orderBy("datetime", "desc"),
-			limit(1)
-		);
-
-		const latestSentimentSnapshot = await getDocs(latestSentimentQuery);
-
-		if (latestSentimentSnapshot.docs.length > 0) {
-			const latestSentimentDoc = latestSentimentSnapshot.docs[0];
-			const info = latestSentimentDoc.data();
-			sentiments.push({
-				id: doc.id,
-				latestSentiment: info.sub_sentiment,
-				datetime: info.datetime,
-			});
-		}
 	}
 
 	return sentiments;

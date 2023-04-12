@@ -1,6 +1,6 @@
 import { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
-import { Container, Text } from "@nextui-org/react";
+import { Container, Link, Text } from "@nextui-org/react";
 import {
 	getAllPosts,
 	getCryptoLatestSentiment,
@@ -78,7 +78,15 @@ function CryptoPage(props: { cryptoData: LatestSentiment; postData: Posts }) {
 						maxWidth: "30%",
 					}}
 				>
-					<Text h4>Testimonials</Text>
+					<Text h4>
+						<Link
+							href={`https://www.reddit.com/r/${props.cryptoData.subreddit}/`}
+							target="_blank"
+						>
+							Subreddit
+						</Link>
+						&nbsp;Testimonials
+					</Text>
 
 					<CryptoTestimonials
 						posts={props.postData}
