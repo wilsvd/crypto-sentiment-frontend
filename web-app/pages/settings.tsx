@@ -1,7 +1,7 @@
 import { auth } from "@/config/firebase";
 import { selectUser, setUser } from "@/store/authslice";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { removeUser } from "@/utility/passAuth";
+import { deleteUserData } from "@/utility/firestore";
 import {
 	Container,
 	Text,
@@ -10,7 +10,7 @@ import {
 	Spacer,
 	Button,
 } from "@nextui-org/react";
-import { updateEmail, updateProfile } from "firebase/auth";
+import { deleteUser, updateEmail, updateProfile } from "firebase/auth";
 import Head from "next/head";
 import { useEffect, useState } from "react";
 
@@ -128,7 +128,6 @@ export default function AccountSettings() {
 								color="secondary"
 								onPress={() => {
 									updateUser(name, email);
-
 									setReadOnly(true);
 								}}
 							>
@@ -180,8 +179,16 @@ export default function AccountSettings() {
 									disabled={deleteDisabled}
 									auto
 									onPress={() => {
+										if (auth.currentUser) {
+											const user = auth.currentUser;
+											try {
+												deleteUser(user).then(() => {
+													// Delete user data from Firestore
+													deleteUserData(user.email!);
+												});
+											} catch (error) {}
+										}
 										closeHandler();
-										removeUser();
 									}}
 								>
 									Delete Account

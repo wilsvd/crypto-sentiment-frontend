@@ -14,6 +14,7 @@ import {
 	updateDoc,
 	setDoc,
 	addDoc,
+	deleteDoc,
 } from "firebase/firestore";
 
 export type LatestSentiment = {
@@ -33,6 +34,14 @@ export type Posts = {
 	sentiment: number;
 	title: string;
 }[];
+
+export async function deleteUserData(userId: string) {
+	try {
+		await deleteDoc(doc(firedb, "users", userId));
+	} catch {
+		console.log("Unable to delete your data");
+	}
+}
 
 async function getUserDocument(userId: string): Promise<DocumentData | null> {
 	const userRef = doc(firedb, "users", userId);
