@@ -106,22 +106,10 @@ export async function getAllLatestSentiments(): Promise<LatestSentiment[]> {
 	const sentiments: LatestSentiment[] = [];
 
 	for (const doc of snapshot.docs) {
-		const latestSentimentRef = collection(doc.ref, "history");
-		const latestSentimentQuery = query(
-			latestSentimentRef,
-			orderBy("datetime", "desc"),
-			limit(1)
-		);
-
-		const latestSentimentSnapshot = await getDocs(latestSentimentQuery);
-
-		if (latestSentimentSnapshot.docs.length > 0) {
-			const latestSentimentDoc = latestSentimentSnapshot.docs[0];
-			sentiments.push({
-				id: doc.id,
-				latestSentiment: latestSentimentDoc.data().sub_sentiment,
-			});
-		}
+		sentiments.push({
+			id: doc.id,
+			latestSentiment: doc.data().latest_sentiment,
+		});
 	}
 
 	return sentiments;
