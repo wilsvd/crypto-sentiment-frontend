@@ -1,7 +1,4 @@
-import { signOutAccount } from "@/utility/passAuth";
-import { Navbar, Text, Avatar, Dropdown, Input, Link } from "@nextui-org/react";
-
-import NextLink from "next/link";
+import { Navbar, Text, Avatar, Dropdown } from "@nextui-org/react";
 
 import { selectUser } from "@/store/authslice";
 import { useAppSelector } from "@/store/hooks";

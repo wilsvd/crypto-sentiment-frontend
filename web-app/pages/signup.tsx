@@ -10,7 +10,6 @@ import {
 } from "@nextui-org/react";
 import { useRouter } from "next/router";
 
-import { makeAccount } from "@/utility/passAuth";
 import Head from "next/head";
 import { createUserWithEmailAndPassword, signInWithPopup } from "firebase/auth";
 import { auth } from "@/config/firebase";
