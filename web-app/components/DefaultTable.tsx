@@ -14,7 +14,7 @@ import {
 	selectFavourites,
 	setFavourites,
 } from "@/store/usercryptoslice";
-import { columns, Row, Rows } from "@/types";
+import { columns, Row, Rows, TablePropsT } from "@/types";
 import dynamic from "next/dynamic";
 import {
 	selectCryptoData,
@@ -26,13 +26,12 @@ const DCryptoGauge = dynamic(() => import("@/components/CryptoGauge"), {
 	ssr: false,
 });
 
-export default function DefaultTable() {
+export default function DefaultTable({ cryptoData }: TablePropsT) {
 	const user = useAppSelector(selectUser);
 
 	const userFavourites = useAppSelector(selectFavourites);
 	const userFavouritesLoaded = useAppSelector(selectFavLoaded);
 
-	const cryptoData = useAppSelector(selectCryptoData);
 	const cryptoLoaded = useAppSelector(selectCryptoLoaded);
 
 	const dispatch = useAppDispatch();

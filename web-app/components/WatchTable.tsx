@@ -3,7 +3,7 @@ import React, { ReactNode } from "react";
 import Link from "next/link";
 import Image from "next/image";
 
-import { columns, Row, Rows } from "@/types";
+import { columns, Row, Rows, TablePropsT } from "@/types";
 import { useAppSelector, useAppDispatch } from "@/store/hooks";
 import { selectUser } from "@/store/authslice";
 import {
@@ -16,23 +16,18 @@ import {
 	selectFavourites,
 	setFavourites,
 } from "@/store/usercryptoslice";
-import {
-	selectCryptoData,
-	selectCryptoLoaded,
-	setCryptoData,
-} from "@/store/cryptoslice";
+import { selectCryptoLoaded, setCryptoData } from "@/store/cryptoslice";
 
 const DCryptoGauge = dynamic(() => import("@/components/CryptoGauge"), {
 	ssr: false,
 });
 
-export default function DefaultTable() {
+export default function DefaultTable({ cryptoData }: TablePropsT) {
 	const user = useAppSelector(selectUser);
 
 	const userFavourites = useAppSelector(selectFavourites);
 	const userFavouritesLoaded = useAppSelector(selectFavLoaded);
 
-	const cryptoData = useAppSelector(selectCryptoData);
 	const cryptoLoaded = useAppSelector(selectCryptoLoaded);
 
 	const dispatch = useAppDispatch();
