@@ -2,8 +2,13 @@ import React, { useState } from "react";
 import GaugeChart from "react-gauge-chart";
 import { LatestSentiment } from "@/utility/firestore";
 
+type GaugeData = {
+	id: string;
+	latestSentiment: number;
+};
+
 type Props = {
-	crypto: LatestSentiment;
+	crypto: GaugeData;
 };
 
 const EXTREME_LEFT_OG = -1;
