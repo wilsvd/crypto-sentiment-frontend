@@ -6,6 +6,8 @@ import NextLink from "next/link";
 import { selectUser } from "@/store/authslice";
 import { useAppSelector } from "@/store/hooks";
 import { useRouter } from "next/router";
+import { signOut } from "firebase/auth";
+import { auth } from "@/config/firebase";
 
 export default function SignedInNavbar() {
 	const user = useAppSelector(selectUser);
@@ -23,7 +25,14 @@ export default function SignedInNavbar() {
 				onAction={(actionKey) => {
 					switch (actionKey) {
 						case "logout":
-							signOutAccount();
+							signOut(auth)
+								.then(() => {
+									console.log("Sign out successful");
+								})
+								.catch((error) => {
+									console.log("Signing out error");
+									console.log(error);
+								});
 							break;
 						case "settings":
 							router.push("/settings");
