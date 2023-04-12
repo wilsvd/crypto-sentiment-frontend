@@ -1,10 +1,7 @@
+import { auth } from "@/config/firebase";
 import { selectUser, setUser } from "@/store/authslice";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import {
-	removeUser,
-	updateEmailAddress,
-	updateUserProfile,
-} from "@/utility/passAuth";
+import { deleteUserData } from "@/utility/firestore";
 import {
 	Container,
 	Text,
@@ -13,31 +10,67 @@ import {
 	Spacer,
 	Button,
 } from "@nextui-org/react";
+import { deleteUser, updateEmail, updateProfile } from "firebase/auth";
 import Head from "next/head";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function AccountSettings() {
 	const user = useAppSelector(selectUser)!;
 	const dispatch = useAppDispatch();
-	const [name, setName] = useState(() => {
-		if (user && user.displayName) {
-			return user.displayName;
+	const [name, setName] = useState<string>("");
+	const [email, setEmail] = useState<string>("");
+	const [OGname, setOGName] = useState<string>("");
+	const [OGemail, setOGEmail] = useState<string>("");
+
+	useEffect(() => {
+		if (user) {
+			setName(() => (user.displayName ? user.displayName : ""));
+			setEmail(() => (user.email ? user.email : ""));
+			setOGName(() => (user.displayName ? user.displayName : ""));
+			setOGEmail(() => (user.email ? user.email : ""));
 		}
-		return "N/A";
-	});
-	const [email, setEmail] = useState(() => {
-		if (user && user.email) {
-			return user.email;
-		}
-		return "N/A";
-	});
+	}, [user]);
+
 	const [readOnly, setReadOnly] = useState(true);
-
 	const [deleteDisabled, setDeleteDisabled] = useState(true);
-
 	const [visible, setVisible] = useState(false);
 	const openHandler = () => setVisible(true);
 	const closeHandler = () => setVisible(false);
+
+	function updateUser(name: string, newEmail: string) {
+		if (auth.currentUser) {
+			if (name == "") {
+				alert("Please enter a non-empty name");
+				return;
+			}
+			const currUser = auth.currentUser;
+			updateProfile(currUser, { displayName: name, photoURL: "" })
+				.then(() => {
+					if (user.email !== email) {
+						updateEmail(currUser, newEmail)
+							.then(() => {
+								dispatch(
+									setUser({
+										...user,
+										displayName: name,
+										email: email,
+									})
+								);
+							})
+							.catch((error) => {
+								alert("You have entered an invalid email");
+								// An error occurred
+								// ...
+							});
+					}
+				})
+				.catch((error) => {
+					alert("The display name you entered is invalid");
+				});
+		}
+		console.log(email);
+	}
+
 	return (
 		<Container fluid aria-labelledby="setting-container">
 			<Head aria-labelledby="setting-metadata">
@@ -56,20 +89,24 @@ export default function AccountSettings() {
 						<Text h5>Display Name</Text>
 						<Input
 							type="text"
-							fullWidth
-							aria-labelledby="setting-name"
-							readOnly={readOnly}
 							name="name"
+							fullWidth
+							readOnly={readOnly}
+							aria-labelledby="setting-name"
+							placeholder="Enter your display name"
+							initialValue={name ? name : undefined}
 							onChange={(e) => setName(e.target.value)}
 						/>
 						<Spacer y={1}></Spacer>
 						<Text h5>Email Address</Text>
 						<Input
 							type="email"
-							fullWidth
-							aria-labelledby="setting-email"
-							readOnly={readOnly}
 							name="email"
+							fullWidth
+							readOnly={readOnly}
+							aria-labelledby="setting-email"
+							placeholder="Enter your display name"
+							initialValue={email ? email : undefined}
 							onChange={(e) => setEmail(e.target.value)}
 						/>
 
@@ -78,9 +115,10 @@ export default function AccountSettings() {
 						<Container display="flex" justify="space-between">
 							<Button
 								auto
-								ghost
+								shadow
+								flat={readOnly}
 								color="warning"
-								onPress={() => setReadOnly(false)}
+								onPress={() => setReadOnly((prev) => !prev)}
 							>
 								Edit Account
 							</Button>
@@ -89,22 +127,7 @@ export default function AccountSettings() {
 								ghost
 								color="secondary"
 								onPress={() => {
-									console.log(name);
-									updateUserProfile({
-										displayName: name,
-										photoURL: "",
-									});
-									console.log(email);
-									user.email === email
-										? console.log("No change")
-										: updateEmailAddress(email);
-									dispatch(
-										setUser({
-											...user,
-											displayName: name,
-											email: email,
-										})
-									);
+									updateUser(name, email);
 									setReadOnly(true);
 								}}
 							>
@@ -156,8 +179,16 @@ export default function AccountSettings() {
 									disabled={deleteDisabled}
 									auto
 									onPress={() => {
+										if (auth.currentUser) {
+											const user = auth.currentUser;
+											try {
+												deleteUser(user).then(() => {
+													// Delete user data from Firestore
+													deleteUserData(user.email!);
+												});
+											} catch (error) {}
+										}
 										closeHandler();
-										removeUser();
 									}}
 								>
 									Delete Account

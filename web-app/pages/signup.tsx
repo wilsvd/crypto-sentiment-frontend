@@ -10,9 +10,8 @@ import {
 } from "@nextui-org/react";
 import { useRouter } from "next/router";
 
-import { makeAccount } from "@/utility/passAuth";
 import Head from "next/head";
-import { signInWithPopup } from "firebase/auth";
+import { createUserWithEmailAndPassword, signInWithPopup } from "firebase/auth";
 import { auth } from "@/config/firebase";
 import { provider } from "@/utility/googleAuth";
 
@@ -30,15 +29,25 @@ export default function Signup() {
 
 	function submitForm() {
 		if (password === confirmPassword) {
-			makeAccount(email, password).then((success) => {
-				if (success) {
-					setLoginIsFailure(false);
-					router.push("/");
-				} else {
-					// Get an better error message
-					console.log("SOMETHING WENT WRONG");
-				}
-			});
+			try {
+				const userCredential = createUserWithEmailAndPassword(
+					auth,
+					email,
+					password
+				).then((userCredential) => {
+					const success = userCredential.user ? true : false;
+					if (success) {
+						setLoginIsFailure(false);
+						router.push("/");
+					} else {
+						// Get an better error message
+						console.log("SOMETHING WENT WRONG");
+					}
+				});
+			} catch (error) {
+				// auth/email-already-in-use
+				console.log("SOMETHING WENT WRONG");
+			}
 		} else {
 			setLoginIsFailure(true);
 			console.log("FAILURE");
