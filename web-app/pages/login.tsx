@@ -87,9 +87,11 @@ export default function Login() {
 		console.log(emailInput);
 	}
 
+	const [message, setMessage] = useState("Please enter your email address.");
 	const [visible, setVisible] = useState(false);
 	const openForgotPassword = () => setVisible(true);
 	const closeForgotPassword = () => {
+		setMessage("Please enter your email address.");
 		setVisible(false);
 		console.log("closed");
 	};
@@ -190,6 +192,8 @@ export default function Login() {
 			<ForgotPasswordModal
 				visible={visible}
 				closeHandler={closeForgotPassword}
+				message={message}
+				setMessage={setMessage}
 			/>
 		</Container>
 	);
