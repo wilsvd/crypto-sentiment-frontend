@@ -1,4 +1,4 @@
-import { Navbar, Text, Button, Input } from "@nextui-org/react";
+import { Navbar, Text, Button, Input, Link } from "@nextui-org/react";
 import NextLink from "next/link";
 
 import { Spacer } from "@nextui-org/react";
@@ -10,10 +10,72 @@ import UserAuth from "./UserAuth";
 import { selectUser } from "@/store/authslice";
 import { useAppSelector } from "@/store/hooks";
 import NavbarSearch from "./NavbarSearch";
+import { useState } from "react";
 
 export default function DefaultNavbar() {
 	const { asPath } = useRouter();
 	const user = useAppSelector(selectUser);
+
+	const [toggleState, setToggleState] = useState(false);
+
+	const baseNavbar = [
+		["Dashboard", "/"],
+		["Watchlist", "/watchlist"],
+		["About", "/about"],
+	];
+
+	const yesUserNavbar = [
+		["Dashboard", "/"],
+		["Watchlist", "/watchlist"],
+		["About", "/about"],
+		["Account Settings", "/settings"],
+	];
+
+	const noUserNavbar = [
+		["Dashboard", "/"],
+		["Watchlist", "/watchlist"],
+		["About", "/about"],
+		["Login", "/login"],
+		["Sign Up", "/signup"],
+	];
+
+	function CollapseMenu() {
+		const collapseMenu = user ? yesUserNavbar : noUserNavbar;
+		return (
+			<>
+				{collapseMenu.map((item, index) => {
+					return asPath == `${item[1]}` ? (
+						<Navbar.CollapseItem
+							key={item[0]}
+							onClick={() => setToggleState(true)}
+							isActive={asPath == `${item[1]}` ? true : false}
+						>
+							{item[0]}
+						</Navbar.CollapseItem>
+					) : (
+						<Link
+							as={NextLink}
+							color="inherit"
+							css={{
+								minWidth: "100%",
+							}}
+							href={item[1]}
+						>
+							<Navbar.CollapseItem
+								key={item[0]}
+								onClick={() => setToggleState(true)}
+								isActive={asPath == `${item[1]}` ? true : false}
+							>
+								{item[0]}
+							</Navbar.CollapseItem>
+						</Link>
+					);
+				})}
+			</>
+		);
+	}
+
+	// console.log(Navbar.Toggle.defaultProps);
 	return (
 		<Navbar
 			isBordered
@@ -21,52 +83,52 @@ export default function DefaultNavbar() {
 			variant="sticky"
 			aria-labelledby="navbar-base"
 			maxWidth="fluid"
+			css={{ zIndex: "$10" }}
 		>
-			<Navbar.Brand css={{ mr: "$4" }}>
-				<Text b color="inherit" css={{ mr: "$11" }} hideIn="xs">
+			<Navbar.Toggle
+				// onClick={
+				// 	"document.body.style.overflow = document.body.style.overflow == 'hidden' ? 'auto' : 'hidden' "
+				// }
+				aria-label="toggle navigation"
+				showIn={"sm"}
+			/>
+
+			<Navbar.Brand>
+				<Text b color="inherit">
 					Crypto Sentiment for Reddit
 				</Text>
-				<Navbar.Content hideIn="xs" variant="highlight">
-					<Navbar.Link
-						aria-labelledby="dashboard-link-dashboard"
-						as={NextLink}
-						isActive={asPath == "/" ? true : false}
-						href="/"
-					>
-						Dashboard
-					</Navbar.Link>
-					<Navbar.Link
-						aria-labelledby="dashboard-link-watchlist"
-						as={NextLink}
-						isActive={asPath == "/watchlist" ? true : false}
-						href="/watchlist"
-					>
-						Watchlist
-					</Navbar.Link>
-					<Navbar.Link
-						aria-labelledby="dashboard-link-about"
-						as={NextLink}
-						isActive={asPath == "/about" ? true : false}
-						href="/about"
-					>
-						About
-					</Navbar.Link>
-				</Navbar.Content>
 			</Navbar.Brand>
+			<Spacer x={1} />
+
 			<Navbar.Content
-				css={{
-					"@xsMax": {
-						w: "100%",
-						jc: "space-between",
-					},
-				}}
+				enableCursorHighlight
+				hideIn="sm"
+				variant="underline"
+				css={{ marginRight: "auto" }}
 			>
+				{baseNavbar.map((item, index) => (
+					<Navbar.Link
+						key={item[0]}
+						aria-labelledby={`dashboard-link-${item[0]}`}
+						as={NextLink}
+						isActive={asPath == `${item[1]}` ? true : false}
+						href={item[1]}
+					>
+						{item[0]}
+					</Navbar.Link>
+				))}
+			</Navbar.Content>
+
+			<Navbar.Content>
 				<Navbar.Item>
 					<NavbarSearch />
 				</Navbar.Item>
-				<Spacer x={1} />
 				{user ? <UserDropdown /> : <UserAuth />}
 			</Navbar.Content>
+
+			<Navbar.Collapse>
+				<CollapseMenu />
+			</Navbar.Collapse>
 		</Navbar>
 	);
 }

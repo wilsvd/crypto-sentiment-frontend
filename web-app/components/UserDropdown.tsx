@@ -1,4 +1,4 @@
-import { Navbar, Text, Avatar, Dropdown } from "@nextui-org/react";
+import { Navbar, Text, Avatar, Dropdown, Image } from "@nextui-org/react";
 
 import { selectUser } from "@/store/authslice";
 import { useAppSelector } from "@/store/hooks";
@@ -9,11 +9,12 @@ import { auth } from "@/config/firebase";
 export default function SignedInNavbar() {
 	const user = useAppSelector(selectUser);
 	const router = useRouter();
+
 	return (
 		<Dropdown aria-labelledby="dropdown-user" placement="bottom-right">
 			<Navbar.Item>
 				<Dropdown.Trigger>
-					<Avatar bordered as="button" color="gradient" size="md" />
+					<Image src="/user-icon.svg" width={32} height={32} />
 				</Dropdown.Trigger>
 			</Navbar.Item>
 			<Dropdown.Menu

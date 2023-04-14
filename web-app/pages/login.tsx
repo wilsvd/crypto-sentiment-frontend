@@ -47,11 +47,17 @@ export default function Login() {
 
 		setPersistence(auth, persistType)
 			.then(() => {
-				signInWithEmailAndPassword(auth, emailInput, password).then(
-					(userCred) => {
-						userCred ? router.push("/") : setLoginIsFailure(true);
-					}
-				);
+				try {
+					signInWithEmailAndPassword(auth, emailInput, password).then(
+						(userCred) => {
+							userCred
+								? router.push("/")
+								: setLoginIsFailure(true);
+						}
+					);
+				} catch (error) {
+					console.log(error);
+				}
 			})
 			.catch((error) => {
 				const errorCode = error.code;
@@ -94,14 +100,32 @@ export default function Login() {
 			display="flex"
 			alignItems="center"
 			justify="center"
-			css={{ minHeight: "100vh" }}
 			aria-label="Login form"
 		>
 			<Head aria-labelledby="login-metadata">
 				<title>Login</title>
 				<meta property="og:Login" content="Login" key="login" />
 			</Head>
-			<Card css={{ mw: "420px", p: "20px" }} variant="bordered">
+			<Card
+				css={{
+					mw: "420px",
+					p: "20px",
+					marginTop: "$12",
+					"@xs": {
+						marginTop: "$14",
+					},
+					"@sm": {
+						marginTop: "$16",
+					},
+					"@md": {
+						marginTop: "$18",
+					},
+					"@lg": {
+						marginTop: "$20",
+					},
+				}}
+				variant="bordered"
+			>
 				<Text
 					size={24}
 					weight="bold"

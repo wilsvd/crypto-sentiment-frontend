@@ -164,6 +164,7 @@ export default function DefaultTable({ cryptoData }: TablePropsT) {
 				aria-labelledby="watchlist-table"
 				bordered={true}
 				shadow={false}
+				fixed
 				css={{
 					height: "auto",
 					minWidth: "100%",
