@@ -20,7 +20,7 @@ export type LatestSentiment = {
 };
 
 export type SentimentHistory = {
-	datetime: string;
+	datetime: Date;
 	sub_sentiment: number;
 };
 
@@ -153,16 +153,17 @@ export async function getSentimentHistoryInRange(
 	const sentimentQuery = query(
 		historyRef,
 		where("datetime", ">=", startTime),
-		where("datetime", "<=", endTime)
+		where("datetime", "<=", endTime),
+		orderBy("datetime", "asc")
 	);
 	const snapshot = await getDocs(sentimentQuery);
 
 	const history: SentimentHistory[] = [];
 	snapshot.forEach((doc) => {
 		const datetime: Date = doc.data().datetime.toDate();
-		const formDatetime = datetime.toISOString();
+
 		history.push({
-			datetime: formDatetime,
+			datetime: datetime,
 			sub_sentiment: doc.data().sub_sentiment,
 		});
 	});
