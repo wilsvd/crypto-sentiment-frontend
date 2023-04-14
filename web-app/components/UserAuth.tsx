@@ -6,7 +6,7 @@ export default function UserAuth() {
 	const { asPath } = useRouter();
 
 	return (
-		<Navbar.Content variant="highlight">
+		<Navbar.Content enableCursorHighlight hideIn={"sm"}>
 			<Navbar.Link
 				color="inherit"
 				href="/login"
