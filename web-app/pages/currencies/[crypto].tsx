@@ -151,7 +151,7 @@ function BigScreenContainer({ cryptoData, postData }: Props) {
 					style={{ width: 500, padding: 0, margin: 0 }}
 				></DCryptoGauge>
 				<Text h4>Historical Data</Text>
-				<CryptoChart crypto={cryptoData} style={{}}></CryptoChart>
+				<CryptoChart crypto={cryptoData}></CryptoChart>
 			</Grid>
 
 			<Grid justify="center">
