@@ -13,7 +13,7 @@ export default function SignedInNavbar() {
 	return (
 		<Dropdown aria-labelledby="dropdown-user" placement="bottom-right">
 			<Navbar.Item>
-				<Dropdown.Trigger>
+				<Dropdown.Trigger css={{ cursor: "pointer" }}>
 					<Image src="/user-icon.svg" width={32} height={32} />
 				</Dropdown.Trigger>
 			</Navbar.Item>
