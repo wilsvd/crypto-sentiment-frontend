@@ -42,11 +42,11 @@ export default function DefaultNavbar() {
 	function CollapseMenu() {
 		const collapseMenu = user ? yesUserNavbar : noUserNavbar;
 		return (
-			<>
+			<div>
 				{collapseMenu.map((item, index) => {
 					return asPath == `${item[1]}` ? (
 						<Navbar.CollapseItem
-							key={item[0]}
+							key={`collapse-item-${item[0]}-${index}`}
 							onClick={() => setToggleState(true)}
 							isActive={asPath == `${item[1]}` ? true : false}
 						>
@@ -54,6 +54,7 @@ export default function DefaultNavbar() {
 						</Navbar.CollapseItem>
 					) : (
 						<Link
+							key={`link-${item[0]}-${index}`}
 							as={NextLink}
 							color="inherit"
 							css={{
@@ -62,7 +63,7 @@ export default function DefaultNavbar() {
 							href={item[1]}
 						>
 							<Navbar.CollapseItem
-								key={item[0]}
+								key={`collapse-item-${item[0]}-${index}`}
 								onClick={() => setToggleState(true)}
 								isActive={asPath == `${item[1]}` ? true : false}
 							>
@@ -71,7 +72,7 @@ export default function DefaultNavbar() {
 						</Link>
 					);
 				})}
-			</>
+			</div>
 		);
 	}
 
@@ -108,7 +109,7 @@ export default function DefaultNavbar() {
 			>
 				{baseNavbar.map((item, index) => (
 					<Navbar.Link
-						key={item[0]}
+						key={`${item[0]}-${index}`}
 						aria-labelledby={`dashboard-link-${item[0]}`}
 						as={NextLink}
 						isActive={asPath == `${item[1]}` ? true : false}
