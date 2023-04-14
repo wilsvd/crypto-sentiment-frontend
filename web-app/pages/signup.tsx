@@ -78,7 +78,6 @@ export default function Signup() {
 			display="flex"
 			alignItems="center"
 			justify="center"
-			css={{ minHeight: "100vh" }}
 			aria-label="Signup form"
 		>
 			<Head aria-labelledby="signup-metadata">
@@ -87,7 +86,23 @@ export default function Signup() {
 			</Head>
 			<Card
 				aria-labelledby="signup-card"
-				css={{ mw: "420px", p: "20px" }}
+				css={{
+					mw: "420px",
+					p: "20px",
+					marginTop: "$12",
+					"@xs": {
+						marginTop: "$14",
+					},
+					"@sm": {
+						marginTop: "$16",
+					},
+					"@md": {
+						marginTop: "$18",
+					},
+					"@lg": {
+						marginTop: "$20",
+					},
+				}}
 				variant="bordered"
 			>
 				<Text
