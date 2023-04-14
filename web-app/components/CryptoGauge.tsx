@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import GaugeChart from "react-gauge-chart";
 import { LatestSentiment } from "@/utility/firestore";
+import { CSS } from "@nextui-org/react";
 
 type GaugeData = {
 	id: string;
@@ -9,7 +10,7 @@ type GaugeData = {
 
 type Props = {
 	crypto: GaugeData;
-	width: number;
+	style: React.CSSProperties;
 };
 
 const EXTREME_LEFT_OG = -1;
@@ -17,7 +18,7 @@ const EXTREME_RIGHT_OG = 1;
 const EXTREME_LEFT_NEW = 0;
 const EXTREME_RIGHT_NEW = 1;
 
-export default function CryptoGauge({ crypto, width }: Props) {
+export default function CryptoGauge({ crypto, style }: Props) {
 	// range from 0 to 1 on the gauge
 	// My range is from -1 to 0 to 1
 	// Map 0 to -1              -1 to 0 (Things need to map to (0 to 0.5))
@@ -36,12 +37,9 @@ export default function CryptoGauge({ crypto, width }: Props) {
 
 	const [gauge, setGauge] = useState<number>(crypto.latestSentiment);
 
-	const chartStyle = {
-		width: width,
-	};
 	return (
 		<GaugeChart
-			style={chartStyle}
+			style={style}
 			nrOfLevels={100}
 			arcPadding={0}
 			cornerRadius={0}

@@ -1,21 +1,28 @@
 import { Posts } from "@/utility/firestore";
-import { Container, Spacer, Textarea } from "@nextui-org/react";
+import {
+	Card,
+	Container,
+	Spacer,
+	Textarea,
+	Text,
+	Link,
+	Grid,
+} from "@nextui-org/react";
 import React from "react";
 
 type Props = {
 	posts: Posts;
+	subreddit: string;
+	style: React.CSSProperties;
 };
 
-export default function CryptoTestimonials({ posts }: Props) {
+export default function CryptoTestimonials({ posts, subreddit, style }: Props) {
 	const textAreas = posts
 		? posts.map((postData) => {
 				return (
 					<React.Fragment key={postData.id}>
 						<Textarea
 							aria-labelledby={`${postData.title}`}
-							css={{
-								width: "400px",
-							}}
 							readOnly
 							initialValue={postData.title}
 						/>
@@ -26,18 +33,19 @@ export default function CryptoTestimonials({ posts }: Props) {
 		: null;
 
 	return (
-		<Container
-			aria-labelledby="testimonials-container"
-			style={{
-				overflowY: "auto",
-				maxHeight: "600px",
-				display: "flex",
-				flexGrow: 1,
-				flexDirection: "row",
-				justifyItems: "flex-end",
-			}}
-		>
-			{textAreas}
-		</Container>
+		<Card aria-labelledby="testimonials-container">
+			<Card.Header css={{ justifyContent: "center" }}>
+				<Text h4>
+					<Link
+						href={`https://www.reddit.com/r/${subreddit}/`}
+						target="_blank"
+					>
+						Subreddit
+					</Link>
+					&nbsp;Testimonials
+				</Text>
+			</Card.Header>
+			<Card.Body style={style}>{textAreas}</Card.Body>
+		</Card>
 	);
 }
