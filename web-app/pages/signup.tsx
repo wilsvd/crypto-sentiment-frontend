@@ -74,6 +74,7 @@ export default function Signup() {
 
 	return (
 		<Container
+			fluid
 			aria-labelledby="signup-container"
 			display="flex"
 			alignItems="center"
