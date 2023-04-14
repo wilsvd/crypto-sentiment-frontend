@@ -1,16 +1,22 @@
 import { auth } from "@/config/firebase";
 import { sendPasswordResetEmail } from "@firebase/auth";
 import { Text, Input, Modal, Button } from "@nextui-org/react";
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 
 type Props = {
 	visible: boolean;
 	closeHandler: () => void;
+	message: string;
+	setMessage: Dispatch<SetStateAction<string>>;
 };
 
-export default function ForgotPasswordModal({ visible, closeHandler }: Props) {
+export default function ForgotPasswordModal({
+	visible,
+	closeHandler,
+	message,
+	setMessage,
+}: Props) {
 	const [emailInput, setEmailInput] = useState("");
-	const [message, setMessage] = useState("Please enter your email address.");
 
 	function handleChange(event: { target: { name: string; value: string } }) {
 		const { name, value } = event.target;
