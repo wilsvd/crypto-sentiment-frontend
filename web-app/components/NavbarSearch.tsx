@@ -116,7 +116,7 @@ export default function NavbarSearch() {
 											style={{
 												textDecoration: "underline",
 											}}
-											href={`currencies/${item.key}`}
+											href={`/currencies/${item.key}`}
 										>
 											<Text h5>{item.key}</Text>
 										</Link>
@@ -223,7 +223,7 @@ export default function NavbarSearch() {
 												style={{
 													textDecoration: "underline",
 												}}
-												href={`currencies/${item.key}`}
+												href={`/currencies/${item.key}`}
 											>
 												<Text h5>{item.key}</Text>
 											</Link>

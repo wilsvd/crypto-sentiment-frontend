@@ -116,7 +116,7 @@ export default function DefaultTable({ cryptoData }: TablePropsT) {
 						<Link
 							aria-labelledby="watchlist-table-crypto-link"
 							style={{ textDecoration: "underline" }}
-							href={`currencies/${cellValue}`}
+							href={`/currencies/${cellValue}`}
 						>
 							{cellValue}
 						</Link>
@@ -138,7 +138,7 @@ export default function DefaultTable({ cryptoData }: TablePropsT) {
 								id: item["cryptocurrency"],
 								latestSentiment: parseFloat(item["sentiment"]),
 							}}
-							width={50}
+							style={{ width: 50 }}
 						/>
 					</Container>
 				);
