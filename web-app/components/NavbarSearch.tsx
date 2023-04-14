@@ -49,12 +49,6 @@ export default function NavbarSearch() {
 		}
 	}
 
-	const { setVisible, bindings } = useModal();
-
-	function handleSearchClick() {
-		setVisible(true);
-	}
-
 	function SearchIcon({ width, height }: any) {
 		return (
 			<Image
@@ -66,93 +60,9 @@ export default function NavbarSearch() {
 		);
 	}
 
-	function renderSearchContainerSmallDevice() {
-		return (
-			<Modal
-				scroll
-				fullScreen
-				aria-labelledby="modal-search"
-				{...bindings}
-			>
-				<Spacer></Spacer>
-				<Modal.Header>
-					<Input // This query string logic needs to be improved as its not completely synced with the other <Input>
-						aria-labelledby="navbar-search"
-						bordered
-						fullWidth={true}
-						borderWeight="normal"
-						initialValue={queryString}
-						clearable
-						labelLeft={
-							<SearchIcon width={20} height={20}></SearchIcon>
-						}
-						disabled={cryptoData == null ? true : false}
-						placeholder={
-							cryptoData == null
-								? "One moment please..."
-								: "Search..."
-						}
-						onChange={handleChange}
-					/>
-					<Spacer></Spacer>
-					<Button auto flat onPress={() => setVisible(false)}>
-						Cancel
-					</Button>
-				</Modal.Header>
-				<Modal.Body>
-					{searchedCrypto && (
-						<Table
-							shadow={false}
-							compact
-							aria-labelledby="search-results"
-							css={{
-								height: "auto",
-								width: "auto",
-								padding: "$0",
-							}}
-						>
-							<Table.Header columns={columns}>
-								{(column) => (
-									<Table.Column
-										key={column.key}
-										align="start"
-										css={{ bg: "white" }}
-									>
-										{column.label}
-									</Table.Column>
-								)}
-							</Table.Header>
-
-							<Table.Body
-								items={searchedCrypto}
-								css={{
-									display: "block",
-									overflowY: "auto",
-									height: "100vh",
-								}}
-							>
-								{(item) => (
-									<Table.Row key={item.key}>
-										<Table.Cell>
-											<Link
-												aria-labelledby="dashboard-table-crypto-link"
-												style={{
-													textDecoration: "underline",
-												}}
-												href={`currencies/${item.key}`}
-											>
-												<Text h5>{item.key}</Text>
-											</Link>
-										</Table.Cell>
-									</Table.Row>
-								)}
-							</Table.Body>
-						</Table>
-					)}
-				</Modal.Body>
-			</Modal>
-		);
-	}
+	const [visible, setVisible] = useState(false);
+	const openHandler = () => setVisible(true);
+	const closeHandler = () => setVisible(false);
 
 	function renderSearchContainerLargerDevice() {
 		return (
@@ -165,6 +75,7 @@ export default function NavbarSearch() {
 			>
 				{searchedCrypto && (
 					<Table
+						fixed
 						compact
 						aria-labelledby="search-results"
 						css={{
@@ -222,12 +133,11 @@ export default function NavbarSearch() {
 	return (
 		<>
 			<Image
-				showSkeleton
 				aria-labelledby="search-icon"
 				src="/icons8-search.svg"
 				width={25}
 				height={25}
-				onClick={handleSearchClick}
+				onClick={openHandler}
 				css={{
 					cursor: "pointer",
 					"@xsMax": {
@@ -238,6 +148,92 @@ export default function NavbarSearch() {
 					},
 				}}
 			/>
+			<Modal
+				closeButton
+				blur
+				open={visible}
+				onClose={closeHandler}
+				fullScreen
+				aria-labelledby="modal-searching"
+			>
+				<Spacer></Spacer>
+				<Modal.Header>
+					<Input // This query string logic needs to be improved as its not completely synced with the other <Input>
+						aria-labelledby="navbar-search"
+						bordered
+						fullWidth={true}
+						borderWeight="normal"
+						initialValue={queryString}
+						clearable
+						labelLeft={
+							<SearchIcon width={20} height={20}></SearchIcon>
+						}
+						disabled={cryptoData == null ? true : false}
+						placeholder={
+							cryptoData == null
+								? "One moment please..."
+								: "Search..."
+						}
+						onChange={handleChange}
+					/>
+					<Spacer></Spacer>
+					<Button auto flat onPress={closeHandler}>
+						Cancel
+					</Button>
+				</Modal.Header>
+				<Modal.Body>
+					{searchedCrypto && (
+						<Table
+							shadow={false}
+							compact
+							fixed
+							aria-labelledby="search-results"
+							css={{
+								height: "auto",
+								width: "auto",
+								padding: "$0",
+							}}
+						>
+							<Table.Header columns={columns}>
+								{(column) => (
+									<Table.Column
+										key={column.key}
+										align="start"
+										css={{ bg: "white" }}
+									>
+										{column.label}
+									</Table.Column>
+								)}
+							</Table.Header>
+
+							<Table.Body
+								items={searchedCrypto}
+								css={{
+									display: "block",
+									overflowY: "auto",
+									height: "100vh",
+								}}
+							>
+								{(item) => (
+									<Table.Row key={item.key}>
+										<Table.Cell>
+											<Link
+												aria-labelledby="dashboard-table-crypto-link"
+												style={{
+													textDecoration: "underline",
+												}}
+												href={`currencies/${item.key}`}
+											>
+												<Text h5>{item.key}</Text>
+											</Link>
+										</Table.Cell>
+									</Table.Row>
+								)}
+							</Table.Body>
+						</Table>
+					)}
+				</Modal.Body>
+			</Modal>
 
 			<Input
 				aria-labelledby="navbar-search"
@@ -260,7 +256,6 @@ export default function NavbarSearch() {
 				}}
 			/>
 			{renderSearchContainerLargerDevice()}
-			{bindings.open && renderSearchContainerSmallDevice()}
 		</>
 	);
 }
