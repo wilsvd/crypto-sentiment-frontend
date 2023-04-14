@@ -105,7 +105,7 @@ export default function NavbarSearch() {
 							css={{
 								display: "block",
 								overflowY: "auto",
-								height: "50vh",
+								height: "50%",
 							}}
 						>
 							{(item) => (
@@ -212,7 +212,7 @@ export default function NavbarSearch() {
 								css={{
 									display: "block",
 									overflowY: "auto",
-									height: "100vh",
+									height: "100%",
 								}}
 							>
 								{(item) => (

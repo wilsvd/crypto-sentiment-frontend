@@ -10,22 +10,19 @@ import {
 	Legend,
 	ChartOptions,
 	ChartData,
-	Point,
 } from "chart.js";
 import { Line } from "react-chartjs-2";
 import {
 	getSentimentHistoryInRange,
 	LatestSentiment,
-	SentimentHistory,
 } from "@/utility/firestore";
-import { Container } from "@nextui-org/react";
+import { CSS } from "@nextui-org/react";
 
 type Props = {
 	crypto: LatestSentiment;
-	style: React.CSSProperties;
 };
 
-const CryptoChart = ({ crypto, style }: Props) => {
+const CryptoChart = ({ crypto }: Props) => {
 	ChartJS.register(
 		CategoryScale,
 		LinearScale,
@@ -46,7 +43,6 @@ const CryptoChart = ({ crypto, style }: Props) => {
 	const [data, setData] = useState<ChartData<"line">>();
 	const [options, setOptions] = useState<ChartOptions<"line">>({
 		responsive: true,
-		maintainAspectRatio: true,
 
 		scales: {
 			y: {

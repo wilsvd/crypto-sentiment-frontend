@@ -7,16 +7,17 @@ import {
 	Text,
 	Link,
 	Grid,
+	CSS,
 } from "@nextui-org/react";
 import React from "react";
 
 type Props = {
 	posts: Posts;
 	subreddit: string;
-	style: React.CSSProperties;
+	css: CSS;
 };
 
-export default function CryptoTestimonials({ posts, subreddit, style }: Props) {
+export default function CryptoTestimonials({ posts, subreddit, css }: Props) {
 	const textAreas = posts
 		? posts.map((postData) => {
 				return (
@@ -45,7 +46,7 @@ export default function CryptoTestimonials({ posts, subreddit, style }: Props) {
 					&nbsp;Testimonials
 				</Text>
 			</Card.Header>
-			<Card.Body style={style}>{textAreas}</Card.Body>
+			<Card.Body css={css}>{textAreas}</Card.Body>
 		</Card>
 	);
 }

@@ -83,6 +83,7 @@ export default function DefaultNavbar() {
 			variant="sticky"
 			aria-labelledby="navbar-base"
 			maxWidth="fluid"
+			containerCss={{ width: "100%" }}
 			css={{ zIndex: "$10" }}
 		>
 			<Navbar.Toggle aria-label="toggle navigation" showIn={"sm"} />
