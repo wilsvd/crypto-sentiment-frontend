@@ -86,7 +86,7 @@ export default function NavbarSearch() {
 						containerCss={{
 							backgroundColor: "White",
 							height: "auto",
-							width: "240px",
+							width: "220px",
 						}}
 					>
 						<Table.Header columns={columns}>
@@ -138,9 +138,10 @@ export default function NavbarSearch() {
 				width={25}
 				height={25}
 				onClick={openHandler}
-				css={{
+				containerCss={{
 					cursor: "pointer",
 					"@xsMax": {
+						paddingRight: "$4",
 						display: "block",
 					},
 					"@smMin": {

@@ -75,7 +75,6 @@ export default function DefaultNavbar() {
 		);
 	}
 
-	// console.log(Navbar.Toggle.defaultProps);
 	return (
 		<Navbar
 			isBordered
@@ -85,20 +84,21 @@ export default function DefaultNavbar() {
 			maxWidth="fluid"
 			css={{ zIndex: "$10" }}
 		>
-			<Navbar.Toggle
-				// onClick={
-				// 	"document.body.style.overflow = document.body.style.overflow == 'hidden' ? 'auto' : 'hidden' "
-				// }
-				aria-label="toggle navigation"
-				showIn={"sm"}
-			/>
+			<Navbar.Toggle aria-label="toggle navigation" showIn={"sm"} />
 
 			<Navbar.Brand>
 				<Text b color="inherit">
 					Crypto Sentiment for Reddit
 				</Text>
 			</Navbar.Brand>
-			<Spacer x={1} />
+			<Spacer
+				x={1}
+				css={{
+					"@smMax": {
+						display: "none",
+					},
+				}}
+			/>
 
 			<Navbar.Content
 				enableCursorHighlight
