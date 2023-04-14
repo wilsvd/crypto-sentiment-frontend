@@ -43,27 +43,39 @@ export default function DefaultNavbar() {
 		const collapseMenu = user ? yesUserNavbar : noUserNavbar;
 		return (
 			<>
-				{collapseMenu.map((item, index) => (
-					<Link
-						as={NextLink}
-						color="inherit"
-						css={{
-							minWidth: "100%",
-						}}
-						href={item[1]}
-					>
+				{collapseMenu.map((item, index) => {
+					return asPath == `${item[1]}` ? (
 						<Navbar.CollapseItem
 							key={item[0]}
-							onClick={() => setToggleState(false)}
+							onClick={() => setToggleState(true)}
+							isActive={asPath == `${item[1]}` ? true : false}
 						>
 							{item[0]}
 						</Navbar.CollapseItem>
-					</Link>
-				))}
+					) : (
+						<Link
+							as={NextLink}
+							color="inherit"
+							css={{
+								minWidth: "100%",
+							}}
+							href={item[1]}
+						>
+							<Navbar.CollapseItem
+								key={item[0]}
+								onClick={() => setToggleState(true)}
+								isActive={asPath == `${item[1]}` ? true : false}
+							>
+								{item[0]}
+							</Navbar.CollapseItem>
+						</Link>
+					);
+				})}
 			</>
 		);
 	}
 
+	// console.log(Navbar.Toggle.defaultProps);
 	return (
 		<Navbar
 			isBordered
@@ -74,8 +86,9 @@ export default function DefaultNavbar() {
 			css={{ zIndex: "$10" }}
 		>
 			<Navbar.Toggle
-				isSelected={toggleState}
-				onPress={() => setToggleState(!toggleState)}
+				// onClick={
+				// 	"document.body.style.overflow = document.body.style.overflow == 'hidden' ? 'auto' : 'hidden' "
+				// }
 				aria-label="toggle navigation"
 				showIn={"sm"}
 			/>
@@ -113,11 +126,9 @@ export default function DefaultNavbar() {
 				{user ? <UserDropdown /> : <UserAuth />}
 			</Navbar.Content>
 
-			{toggleState && (
-				<Navbar.Collapse>
-					<CollapseMenu />
-				</Navbar.Collapse>
-			)}
+			<Navbar.Collapse>
+				<CollapseMenu />
+			</Navbar.Collapse>
 		</Navbar>
 	);
 }
