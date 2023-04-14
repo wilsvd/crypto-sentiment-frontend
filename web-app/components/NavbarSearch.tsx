@@ -86,7 +86,7 @@ export default function NavbarSearch() {
 						containerCss={{
 							backgroundColor: "White",
 							height: "auto",
-							width: "240px",
+							width: "220px",
 						}}
 					>
 						<Table.Header columns={columns}>
@@ -105,7 +105,7 @@ export default function NavbarSearch() {
 							css={{
 								display: "block",
 								overflowY: "auto",
-								height: "50vh",
+								height: "50%",
 							}}
 						>
 							{(item) => (
@@ -116,7 +116,7 @@ export default function NavbarSearch() {
 											style={{
 												textDecoration: "underline",
 											}}
-											href={`currencies/${item.key}`}
+											href={`/currencies/${item.key}`}
 										>
 											<Text h5>{item.key}</Text>
 										</Link>
@@ -138,9 +138,10 @@ export default function NavbarSearch() {
 				width={25}
 				height={25}
 				onClick={openHandler}
-				css={{
+				containerCss={{
 					cursor: "pointer",
 					"@xsMax": {
+						paddingRight: "$4",
 						display: "block",
 					},
 					"@smMin": {
@@ -211,7 +212,7 @@ export default function NavbarSearch() {
 								css={{
 									display: "block",
 									overflowY: "auto",
-									height: "100vh",
+									height: "100%",
 								}}
 							>
 								{(item) => (
@@ -222,7 +223,7 @@ export default function NavbarSearch() {
 												style={{
 													textDecoration: "underline",
 												}}
-												href={`currencies/${item.key}`}
+												href={`/currencies/${item.key}`}
 											>
 												<Text h5>{item.key}</Text>
 											</Link>

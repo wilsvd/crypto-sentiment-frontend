@@ -84,7 +84,7 @@ export default function DefaultTable({ cryptoData }: TablePropsT) {
 					return (
 						<Image
 							style={{ cursor: "pointer" }}
-							aria-labelledby="watchlist-table-favourite"
+							aria-labelledby="dashboard-table-favourite"
 							src="/red-heart-icon.svg"
 							alt="me"
 							width="32"
@@ -98,7 +98,7 @@ export default function DefaultTable({ cryptoData }: TablePropsT) {
 					return (
 						<Image
 							style={{ cursor: "pointer" }}
-							aria-labelledby="watchlist-table-unfavourite"
+							aria-labelledby="dashboard-table-unfavourite"
 							src="/iconmonstr-heart-thin.svg"
 							alt="me"
 							width="32"
@@ -109,50 +109,36 @@ export default function DefaultTable({ cryptoData }: TablePropsT) {
 						/>
 					);
 				}
-
 			case "cryptocurrency":
 				return (
-					<Link
-						aria-labelledby="watchlist-table-crypto-link"
-						style={{ textDecoration: "underline" }}
-						href={`currencies/${cellValue}`}
-					>
-						<Text h5>{cellValue}</Text>
-					</Link>
+					<Text h5>
+						<Link
+							aria-labelledby="dashboard-table-crypto-link"
+							style={{ textDecoration: "underline" }}
+							href={`/currencies/${cellValue}`}
+						>
+							{cellValue}
+						</Link>
+					</Text>
 				);
 			case "sentiment":
 				return (
 					<Container
-						aria-labelledby="watchlist-table-sentiment-container-1"
+						aria-labelledby="dashboard-table-sentiment-container-1"
 						fluid
+						css={{ padding: "$0" }}
 						display="flex"
-						style={{
-							height: "50px",
-							width: "200px",
-							float: "left",
-							alignContent: "space-between",
-						}}
+						justify="flex-start"
 					>
-						<Text h5 css={{ float: "left" }}>
-							{cellValue}
-						</Text>
-						<Container
-							aria-labelledby="watchlist-table-sentiment-container-2"
-							style={{
-								marginRight: "0px",
-								height: "50px",
-								width: "110px",
+						<Text h5>{cellValue}</Text>
+
+						<DCryptoGauge
+							crypto={{
+								id: item["cryptocurrency"],
+								latestSentiment: parseFloat(item["sentiment"]),
 							}}
-						>
-							<DCryptoGauge
-								crypto={{
-									id: item["cryptocurrency"],
-									latestSentiment: parseFloat(
-										item["sentiment"]
-									),
-								}}
-							></DCryptoGauge>
-						</Container>
+							style={{ width: 50 }}
+						/>
 					</Container>
 				);
 		}

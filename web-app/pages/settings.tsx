@@ -112,7 +112,16 @@ export default function AccountSettings() {
 
 						<Spacer y={1}></Spacer>
 
-						<Container display="flex" justify="space-between">
+						<Container
+							display="flex"
+							justify="space-between"
+							css={{
+								padding: "$0",
+								"@xsMax": {
+									flexDirection: "column",
+								},
+							}}
+						>
 							<Button
 								auto
 								shadow
@@ -122,6 +131,14 @@ export default function AccountSettings() {
 							>
 								Edit Account
 							</Button>
+							<Spacer
+								css={{
+									display: "none",
+									"@xsMax": {
+										display: "block",
+									},
+								}}
+							/>
 							<Button
 								auto
 								ghost
@@ -133,6 +150,14 @@ export default function AccountSettings() {
 							>
 								Save Account
 							</Button>
+							<Spacer
+								css={{
+									display: "none",
+									"@xsMax": {
+										display: "block",
+									},
+								}}
+							/>
 							<Button
 								auto
 								ghost

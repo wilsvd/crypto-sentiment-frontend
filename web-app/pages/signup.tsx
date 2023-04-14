@@ -74,6 +74,7 @@ export default function Signup() {
 
 	return (
 		<Container
+			fluid
 			aria-labelledby="signup-container"
 			display="flex"
 			alignItems="center"
@@ -81,8 +82,8 @@ export default function Signup() {
 			aria-label="Signup form"
 		>
 			<Head aria-labelledby="signup-metadata">
-				<title>Signup</title>
-				<meta property="og:Signup" content="Signup" key="signup" />
+				<title>Sign Up</title>
+				<meta property="og:Sign Up" content="Sign Up" key="signup" />
 			</Head>
 			<Card
 				aria-labelledby="signup-card"
@@ -113,7 +114,7 @@ export default function Signup() {
 						mb: "20px",
 					}}
 				>
-					Signup
+					Sign Up
 				</Text>
 				{loginIsFailure && (
 					<Text h5>The passwords you entered do not match.</Text>

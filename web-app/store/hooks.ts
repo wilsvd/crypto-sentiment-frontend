@@ -45,6 +45,8 @@ export function listenForAuthChanges() {
 }
 
 async function fetchData(dispatch: AppDispatch, userFavourites: string[]) {
+	// Potentially don't need to do another fetch if I already have the data.
+	// If I have the data then I can potentially skip fetch and just map across the data according to user or no user.
 	const latestCryptoSentiments = await getAllLatestSentiments();
 
 	Promise.all(latestCryptoSentiments).then((cryptoData) => {
@@ -62,3 +64,30 @@ async function fetchData(dispatch: AppDispatch, userFavourites: string[]) {
 		dispatch(setCryptoData(result));
 	});
 }
+
+import { useState, useEffect } from "react";
+
+const useMediaQuery = (query: string) => {
+	const [matches, setMatches] = useState(false);
+
+	useEffect(() => {
+		const media = window.matchMedia(query);
+		if (media.matches !== matches) {
+			setMatches(media.matches);
+		}
+		const listener = () => setMatches(media.matches);
+		window.addEventListener("resize", listener);
+		return () => window.removeEventListener("resize", listener);
+	}, [matches, query]);
+
+	return matches;
+};
+export const MediaBreakpoints = {
+	xs: "650px",
+	sm: "960px",
+	md: "1280px",
+	lg: "1400px",
+	xl: "1920px",
+};
+
+export default useMediaQuery;

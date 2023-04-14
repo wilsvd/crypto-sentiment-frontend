@@ -96,6 +96,7 @@ export default function Login() {
 
 	return (
 		<Container
+			fluid
 			aria-labelledby="login-container"
 			display="flex"
 			alignItems="center"

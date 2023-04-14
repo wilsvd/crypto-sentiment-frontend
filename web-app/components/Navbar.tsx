@@ -42,11 +42,11 @@ export default function DefaultNavbar() {
 	function CollapseMenu() {
 		const collapseMenu = user ? yesUserNavbar : noUserNavbar;
 		return (
-			<>
+			<div>
 				{collapseMenu.map((item, index) => {
 					return asPath == `${item[1]}` ? (
 						<Navbar.CollapseItem
-							key={item[0]}
+							key={`collapse-item-${item[0]}-${index}`}
 							onClick={() => setToggleState(true)}
 							isActive={asPath == `${item[1]}` ? true : false}
 						>
@@ -54,6 +54,7 @@ export default function DefaultNavbar() {
 						</Navbar.CollapseItem>
 					) : (
 						<Link
+							key={`link-${item[0]}-${index}`}
 							as={NextLink}
 							color="inherit"
 							css={{
@@ -62,7 +63,7 @@ export default function DefaultNavbar() {
 							href={item[1]}
 						>
 							<Navbar.CollapseItem
-								key={item[0]}
+								key={`collapse-item-${item[0]}-${index}`}
 								onClick={() => setToggleState(true)}
 								isActive={asPath == `${item[1]}` ? true : false}
 							>
@@ -71,11 +72,10 @@ export default function DefaultNavbar() {
 						</Link>
 					);
 				})}
-			</>
+			</div>
 		);
 	}
 
-	// console.log(Navbar.Toggle.defaultProps);
 	return (
 		<Navbar
 			isBordered
@@ -83,22 +83,24 @@ export default function DefaultNavbar() {
 			variant="sticky"
 			aria-labelledby="navbar-base"
 			maxWidth="fluid"
+			containerCss={{ width: "100%" }}
 			css={{ zIndex: "$10" }}
 		>
-			<Navbar.Toggle
-				// onClick={
-				// 	"document.body.style.overflow = document.body.style.overflow == 'hidden' ? 'auto' : 'hidden' "
-				// }
-				aria-label="toggle navigation"
-				showIn={"sm"}
-			/>
+			<Navbar.Toggle aria-label="toggle navigation" showIn={"sm"} />
 
 			<Navbar.Brand>
 				<Text b color="inherit">
 					Crypto Sentiment for Reddit
 				</Text>
 			</Navbar.Brand>
-			<Spacer x={1} />
+			<Spacer
+				x={1}
+				css={{
+					"@smMax": {
+						display: "none",
+					},
+				}}
+			/>
 
 			<Navbar.Content
 				enableCursorHighlight
@@ -108,7 +110,7 @@ export default function DefaultNavbar() {
 			>
 				{baseNavbar.map((item, index) => (
 					<Navbar.Link
-						key={item[0]}
+						key={`${item[0]}-${index}`}
 						aria-labelledby={`dashboard-link-${item[0]}`}
 						as={NextLink}
 						isActive={asPath == `${item[1]}` ? true : false}
