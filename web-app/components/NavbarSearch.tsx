@@ -3,14 +3,14 @@ import useMediaQuery, { MediaBreakpoints, useAppSelector } from "@/store/hooks";
 import {
 	Container,
 	Input,
-	Link,
 	Table,
-	Text,
 	Image,
 	Button,
 	Modal,
 	Spacer,
+	Text,
 } from "@nextui-org/react";
+import Link from "next/link";
 import { useState } from "react";
 
 export default function NavbarSearch() {
