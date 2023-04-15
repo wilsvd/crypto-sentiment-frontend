@@ -39,43 +39,41 @@ export default function ForgotPasswordModal({
 			});
 	}
 	return (
-		<div>
-			<Modal
-				closeButton
-				blur
-				aria-labelledby="password-modal-title"
-				open={visible}
-				onClose={closeHandler}
-			>
-				<Modal.Header>
-					<Text id="password-modal-title" size={18}>
-						{message}
-					</Text>
-				</Modal.Header>
-				<Modal.Body>
-					<Input
-						type="email"
-						clearable
-						bordered
-						fullWidth
-						color="primary"
-						size="lg"
-						name="emailInput"
-						placeholder="Email"
-						onChange={handleChange}
-					/>
-				</Modal.Body>
-				<Modal.Footer>
-					<Button
-						auto
-						flat
-						color="secondary"
-						onPress={resetPasswordHandler}
-					>
-						Reset Password
-					</Button>
-				</Modal.Footer>
-			</Modal>
-		</div>
+		<Modal
+			closeButton
+			blur
+			aria-labelledby="password-modal-title"
+			open={visible}
+			onClose={closeHandler}
+		>
+			<Modal.Header>
+				<Text id="password-modal-title" size={18}>
+					{message}
+				</Text>
+			</Modal.Header>
+			<Modal.Body>
+				<Input
+					type="email"
+					clearable
+					bordered
+					fullWidth
+					color="primary"
+					size="lg"
+					name="emailInput"
+					placeholder="Email"
+					onChange={handleChange}
+				/>
+			</Modal.Body>
+			<Modal.Footer>
+				<Button
+					auto
+					flat
+					color="secondary"
+					onPress={resetPasswordHandler}
+				>
+					Reset Password
+				</Button>
+			</Modal.Footer>
+		</Modal>
 	);
 }

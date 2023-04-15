@@ -5,7 +5,6 @@ import {
 	Button,
 	Text,
 	Input,
-	Row,
 	Container,
 } from "@nextui-org/react";
 import { useRouter } from "next/router";
@@ -22,6 +21,7 @@ export default function Signup() {
 	const [password, setPassword] = useState("");
 	const [confirmPassword, setConfirmPassword] = useState("");
 	const [loginIsFailure, setLoginIsFailure] = useState(false);
+	const [loginMessage, setLoginMessage] = useState("");
 
 	useEffect(() => {
 		router.prefetch("/");
@@ -29,36 +29,61 @@ export default function Signup() {
 
 	function submitForm() {
 		if (password === confirmPassword) {
-			try {
-				const userCredential = createUserWithEmailAndPassword(
-					auth,
-					email,
-					password
-				).then((userCredential) => {
-					const success = userCredential.user ? true : false;
-					if (success) {
-						setLoginIsFailure(false);
-						router.push("/");
-					} else {
-						// Get an better error message
-						console.log("SOMETHING WENT WRONG");
+			createUserWithEmailAndPassword(auth, email, password)
+				.then((userCred) => {
+					router.push("/");
+					setLoginIsFailure(false);
+				})
+				.catch((error) => {
+					switch (error.code) {
+						case "auth/invalid-email":
+							setLoginMessage("Invalid email address.");
+							break;
+						case "auth/weak-password":
+							setLoginMessage(
+								"Invalid password. Passwords must be longer than 6 characters."
+							);
+							break;
+						case "auth/email-already-in-use":
+							setLoginMessage(
+								"Account specified already exists."
+							);
+							break;
+						default:
+							break;
 					}
+					console.log(error.code);
+					setLoginIsFailure(true);
 				});
-			} catch (error) {
-				// auth/email-already-in-use
-				console.log("SOMETHING WENT WRONG");
-			}
 		} else {
 			setLoginIsFailure(true);
-			console.log("FAILURE");
+			setLoginMessage("Passwords entered do not match");
 		}
 	}
 
 	function submitGoogle() {
-		signInWithPopup(auth, provider).then((userCred) => {
-			// userCred ? router.push("/") : null;
-			setLoginIsFailure(false);
-		});
+		setLoginIsFailure(false);
+		setLoginMessage("");
+
+		signInWithPopup(auth, provider)
+			.then((userCred) => {
+				router.push("/");
+				setLoginIsFailure(false);
+			})
+			.catch((error) => {
+				switch (error.code) {
+					case "auth/popup-closed-by-user":
+						// This is a controlled event by the user and as such login is not being set to failure
+						break;
+
+					default:
+						setLoginMessage("Popup error. Please try again.");
+						setLoginIsFailure(true);
+						break;
+				}
+
+				setLoginIsFailure(true);
+			});
 	}
 
 	function handleChange(event: { target: { name: string; value: string } }) {
@@ -117,7 +142,9 @@ export default function Signup() {
 					Sign Up
 				</Text>
 				{loginIsFailure && (
-					<Text h5>The passwords you entered do not match.</Text>
+					<Text h5 color="error">
+						{loginMessage}
+					</Text>
 				)}
 				<Input
 					type="email"

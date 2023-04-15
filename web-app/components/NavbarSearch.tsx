@@ -1,22 +1,22 @@
 import { cryptoDataT, selectCryptoData } from "@/store/cryptoslice";
-import { useAppSelector } from "@/store/hooks";
+import useMediaQuery, { MediaBreakpoints, useAppSelector } from "@/store/hooks";
 import {
-	Col,
 	Container,
 	Input,
 	Link,
-	Row,
 	Table,
 	Text,
 	Image,
 	Button,
-	useModal,
 	Modal,
 	Spacer,
 } from "@nextui-org/react";
 import { useState } from "react";
 
 export default function NavbarSearch() {
+	const isSmallScreen = useMediaQuery(`(max-width: ${MediaBreakpoints.sm})`);
+	const isTinyScreen = useMediaQuery(`(max-width: ${412})`);
+
 	const columns = [
 		{
 			key: "cryptocurrency",
@@ -70,7 +70,6 @@ export default function NavbarSearch() {
 				css={{
 					position: "absolute",
 					top: 50,
-					"@smMax": { display: "none" },
 				}}
 			>
 				{searchedCrypto && (
@@ -132,39 +131,121 @@ export default function NavbarSearch() {
 
 	return (
 		<>
-			<Image
-				aria-labelledby="search-icon"
-				src="/icons8-search.svg"
-				width={25}
-				height={25}
-				onClick={openHandler}
-				containerCss={{
-					cursor: "pointer",
-					"@xsMax": {
-						paddingRight: "$4",
-						display: "block",
-					},
-					"@smMin": {
-						display: "none",
-					},
-				}}
-			/>
-			<Modal
-				closeButton
-				blur
-				open={visible}
-				onClose={closeHandler}
-				fullScreen
-				aria-labelledby="modal-searching"
-			>
-				<Spacer></Spacer>
-				<Modal.Header>
-					<Input // This query string logic needs to be improved as its not completely synced with the other <Input>
+			{isSmallScreen ? (
+				<>
+					<Image
+						aria-labelledby="search-icon"
+						src="/icons8-search.svg"
+						width={25}
+						height={25}
+						onClick={openHandler}
+						containerCss={{
+							cursor: "pointer",
+							paddingRight: "$4",
+							display: "block",
+						}}
+					/>
+					<Modal
+						closeButton
+						blur
+						open={visible}
+						onClose={closeHandler}
+						fullScreen
+						aria-labelledby="modal-searching"
+					>
+						<Spacer></Spacer>
+						<Modal.Header>
+							<Input // This query string logic needs to be improved as its not completely synced with the other <Input>
+								aria-labelledby="navbar-search"
+								bordered
+								fullWidth={true}
+								borderWeight="normal"
+								initialValue={queryString}
+								clearable
+								labelLeft={
+									<SearchIcon
+										width={20}
+										height={20}
+									></SearchIcon>
+								}
+								disabled={cryptoData == null ? true : false}
+								placeholder={
+									cryptoData == null
+										? "One moment please..."
+										: "Search..."
+								}
+								onChange={handleChange}
+							/>
+							<Spacer></Spacer>
+							<Button auto flat onPress={closeHandler}>
+								Cancel
+							</Button>
+						</Modal.Header>
+						<Modal.Body>
+							{searchedCrypto && (
+								<Table
+									shadow={false}
+									compact
+									fixed
+									aria-labelledby="search-results"
+									css={{
+										height: "auto",
+										width: "auto",
+										padding: "$0",
+									}}
+								>
+									<Table.Header columns={columns}>
+										{(column) => (
+											<Table.Column
+												key={column.key}
+												align="start"
+												css={{ bg: "white" }}
+											>
+												{column.label}
+											</Table.Column>
+										)}
+									</Table.Header>
+
+									<Table.Body
+										items={searchedCrypto}
+										css={{
+											display: "block",
+											overflowY: "auto",
+											height: "100%",
+										}}
+									>
+										{(item) => (
+											<Table.Row key={item.key}>
+												<Table.Cell>
+													<Link
+														aria-labelledby="dashboard-table-crypto-link"
+														style={{
+															textDecoration:
+																"underline",
+														}}
+														href={`/currencies/${item.key}`}
+													>
+														<Text h5>
+															{item.key}
+														</Text>
+													</Link>
+												</Table.Cell>
+											</Table.Row>
+										)}
+									</Table.Body>
+								</Table>
+							)}
+						</Modal.Body>
+					</Modal>
+				</>
+			) : (
+				<>
+					<Input
 						aria-labelledby="navbar-search"
 						bordered
 						fullWidth={true}
 						borderWeight="normal"
-						initialValue={queryString}
+						initialValue={queryString} // This query string logic needs to be improved as its not completely synced with the other <Input>
 						clearable
 						labelLeft={
 							<SearchIcon width={20} height={20}></SearchIcon>
@@ -177,86 +258,9 @@ export default function NavbarSearch() {
 						}
 						onChange={handleChange}
 					/>
-					<Spacer></Spacer>
-					<Button auto flat onPress={closeHandler}>
-						Cancel
-					</Button>
-				</Modal.Header>
-				<Modal.Body>
-					{searchedCrypto && (
-						<Table
-							shadow={false}
-							compact
-							fixed
-							aria-labelledby="search-results"
-							css={{
-								height: "auto",
-								width: "auto",
-								padding: "$0",
-							}}
-						>
-							<Table.Header columns={columns}>
-								{(column) => (
-									<Table.Column
-										key={column.key}
-										align="start"
-										css={{ bg: "white" }}
-									>
-										{column.label}
-									</Table.Column>
-								)}
-							</Table.Header>
-
-							<Table.Body
-								items={searchedCrypto}
-								css={{
-									display: "block",
-									overflowY: "auto",
-									height: "100%",
-								}}
-							>
-								{(item) => (
-									<Table.Row key={item.key}>
-										<Table.Cell>
-											<Link
-												aria-labelledby="dashboard-table-crypto-link"
-												style={{
-													textDecoration: "underline",
-												}}
-												href={`/currencies/${item.key}`}
-											>
-												<Text h5>{item.key}</Text>
-											</Link>
-										</Table.Cell>
-									</Table.Row>
-								)}
-							</Table.Body>
-						</Table>
-					)}
-				</Modal.Body>
-			</Modal>
-
-			<Input
-				aria-labelledby="navbar-search"
-				bordered
-				fullWidth={true}
-				borderWeight="normal"
-				initialValue={queryString} // This query string logic needs to be improved as its not completely synced with the other <Input>
-				clearable
-				labelLeft={<SearchIcon width={20} height={20}></SearchIcon>}
-				disabled={cryptoData == null ? true : false}
-				placeholder={
-					cryptoData == null ? "One moment please..." : "Search..."
-				}
-				onChange={handleChange}
-				css={{
-					cursor: "pointer",
-					"@smMax": {
-						display: "none",
-					},
-				}}
-			/>
-			{renderSearchContainerLargerDevice()}
+					{renderSearchContainerLargerDevice()}
+				</>
+			)}
 		</>
 	);
 }

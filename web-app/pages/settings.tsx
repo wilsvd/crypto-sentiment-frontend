@@ -10,63 +10,93 @@ import {
 	Spacer,
 	Button,
 } from "@nextui-org/react";
-import { deleteUser, updateEmail, updateProfile } from "firebase/auth";
+import { User, deleteUser, updateEmail, updateProfile } from "firebase/auth";
 import Head from "next/head";
+import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
 export default function AccountSettings() {
+	const router = useRouter();
 	const user = useAppSelector(selectUser)!;
 	const dispatch = useAppDispatch();
 	const [name, setName] = useState<string>("");
 	const [email, setEmail] = useState<string>("");
-	const [OGname, setOGName] = useState<string>("");
-	const [OGemail, setOGEmail] = useState<string>("");
 
 	useEffect(() => {
 		if (user) {
 			setName(() => (user.displayName ? user.displayName : ""));
 			setEmail(() => (user.email ? user.email : ""));
-			setOGName(() => (user.displayName ? user.displayName : ""));
-			setOGEmail(() => (user.email ? user.email : ""));
 		}
 	}, [user]);
 
 	const [readOnly, setReadOnly] = useState(true);
 	const [deleteDisabled, setDeleteDisabled] = useState(true);
 	const [visible, setVisible] = useState(false);
+
 	const openHandler = () => setVisible(true);
 	const closeHandler = () => setVisible(false);
 
+	function updateUserProfile(user: User, name: string) {
+		updateProfile(user, { displayName: name, photoURL: "" })
+			.then(() => {
+				dispatch(
+					setUser({
+						...user,
+						displayName: name,
+					})
+				);
+			})
+			.catch((error) => {
+				alert("The display name you entered is invalid");
+			});
+	}
+	function udateUserEmail(user: User, newEmail: string) {
+		updateEmail(user, newEmail)
+			.then(() => {
+				dispatch(
+					setUser({
+						...user,
+						displayName: name,
+						email: email,
+					})
+				);
+			})
+			.catch((error) => {
+				switch (error.code) {
+					case "auth/invalid-email":
+						alert("You have entered an invalid email");
+						break;
+					case "auth/requires-recent-login":
+						const res = confirm(
+							"Please re-validate your account. You will be redirected to the login page."
+						);
+						closeHandler();
+						if (res) {
+							router.push("/login");
+						}
+
+						break;
+					case "auth/email-already-in-use":
+						alert("Account specified already exists.");
+						break;
+					default:
+						break;
+				}
+			});
+	}
+
 	function updateUser(name: string, newEmail: string) {
 		if (auth.currentUser) {
-			if (name == "") {
-				alert("Please enter a non-empty name");
-				return;
-			}
 			const currUser = auth.currentUser;
-			updateProfile(currUser, { displayName: name, photoURL: "" })
-				.then(() => {
-					if (user.email !== email) {
-						updateEmail(currUser, newEmail)
-							.then(() => {
-								dispatch(
-									setUser({
-										...user,
-										displayName: name,
-										email: email,
-									})
-								);
-							})
-							.catch((error) => {
-								alert("You have entered an invalid email");
-								// An error occurred
-								// ...
-							});
-					}
-				})
-				.catch((error) => {
-					alert("The display name you entered is invalid");
-				});
+			if (name !== user.displayName && email === user.email) {
+				updateUserProfile(currUser, name);
+			} else if (name === user.displayName && email !== user.email) {
+				udateUserEmail(currUser, email);
+			} else if (name === user.displayName && email !== user.email) {
+				udateUserEmail(currUser, name);
+				updateUserProfile(currUser, email);
+			}
+			return;
 		}
 		console.log(email);
 	}
@@ -207,10 +237,32 @@ export default function AccountSettings() {
 										if (auth.currentUser) {
 											const user = auth.currentUser;
 											try {
-												deleteUser(user).then(() => {
-													// Delete user data from Firestore
-													deleteUserData(user.email!);
-												});
+												deleteUser(user)
+													.then(() => {
+														// Delete user data from Firestore
+														deleteUserData(
+															user.email!
+														);
+													})
+													.catch((error) => {
+														switch (error.code) {
+															case "auth/requires-recent-login":
+																const res =
+																	confirm(
+																		"Please re-validate your account. You will be redirected to the login page."
+																	);
+																closeHandler();
+																if (res) {
+																	router.push(
+																		"/login"
+																	);
+																}
+																break;
+
+															default:
+																break;
+														}
+													});
 											} catch (error) {}
 										}
 										closeHandler();
@@ -233,3 +285,5 @@ export default function AccountSettings() {
 		</Container>
 	);
 }
+
+import React from "react";
