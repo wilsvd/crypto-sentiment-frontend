@@ -223,6 +223,7 @@ export default function NavbarSearch() {
 															textDecoration:
 																"underline",
 														}}
+														onClick={closeHandler}
 														href={`/currencies/${item.key}`}
 													>
 														<Text h5>
