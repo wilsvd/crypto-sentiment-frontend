@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
 	Card,
 	Spacer,
@@ -8,7 +8,6 @@ import {
 	Row,
 	Checkbox,
 	Container,
-	Link,
 } from "@nextui-org/react";
 import { useRouter } from "next/router";
 import { useAppSelector } from "@/store/hooks";
@@ -18,15 +17,18 @@ import Head from "next/head";
 import { auth } from "@/config/firebase";
 import {
 	setPersistence,
-	browserSessionPersistence,
 	signInWithPopup,
 	browserLocalPersistence,
-	GoogleAuthProvider,
 	signInWithEmailAndPassword,
 	inMemoryPersistence,
 } from "firebase/auth";
 import ForgotPasswordModal from "@/components/ForgotPasswordModal";
 import { provider } from "@/utility/googleAuth";
+
+// auth/email-already-exists
+// auth/invalid-email
+// auth/invalid-password
+// auth/user-not-found
 
 export default function Login() {
 	const user = useAppSelector(selectUser);
@@ -35,6 +37,8 @@ export default function Login() {
 	const [emailInput, setEmailInput] = useState("");
 	const [password, setPassword] = useState("");
 	const [loginIsFailure, setLoginIsFailure] = useState(false);
+	const [loginMessage, setLoginMessage] = useState("");
+
 	const [rememberMe, setRememberMe] = useState(false);
 
 	useEffect(() => {
@@ -44,24 +48,25 @@ export default function Login() {
 		const persistType = rememberMe
 			? browserLocalPersistence
 			: inMemoryPersistence;
-
 		setPersistence(auth, persistType)
 			.then(() => {
-				try {
-					signInWithEmailAndPassword(auth, emailInput, password).then(
-						(userCred) => {
-							userCred
-								? router.push("/")
-								: setLoginIsFailure(true);
-						}
-					);
-				} catch (error) {
-					console.log(error);
-				}
+				signInWithEmailAndPassword(auth, emailInput, password)
+					.then((userCred) => {
+						router.push("/");
+						setLoginIsFailure(false);
+					})
+					.catch((error) => {
+						setLoginMessage(
+							"You entered an invalid email or password."
+						);
+						setLoginIsFailure(true);
+					});
 			})
 			.catch((error) => {
-				const errorCode = error.code;
-				const errorMessage = error.message;
+				setLoginMessage(
+					"Error occurred with the 'remember me' setting. Please try again later."
+				);
+				setLoginIsFailure(true);
 			});
 	}
 
@@ -69,16 +74,37 @@ export default function Login() {
 		const persistType = rememberMe
 			? browserLocalPersistence
 			: inMemoryPersistence;
-
+		setLoginIsFailure(false);
+		setLoginMessage("");
 		setPersistence(auth, persistType)
 			.then(() => {
-				signInWithPopup(auth, provider).then((userCred) => {
-					userCred ? router.push("/") : null;
-				});
+				signInWithPopup(auth, provider)
+					.then((userCred) => {
+						router.push("/");
+						setLoginIsFailure(false);
+					})
+					.catch((error) => {
+						switch (error.code) {
+							case "auth/popup-closed-by-user":
+								// This is a controlled event by the user and as such login is not being set to failure
+								break;
+
+							default:
+								setLoginMessage(
+									"Popup error. Please try again."
+								);
+								setLoginIsFailure(true);
+								break;
+						}
+
+						setLoginIsFailure(true);
+					});
 			})
 			.catch((error) => {
-				const errorCode = error.code;
-				const errorMessage = error.message;
+				setLoginMessage(
+					"Error occurred with the 'remember me' setting. Please try again later."
+				);
+				setLoginIsFailure(true);
 			});
 	}
 	function handleChange(event: { target: { name: string; value: string } }) {
@@ -140,7 +166,9 @@ export default function Login() {
 					Login
 				</Text>
 				{loginIsFailure && (
-					<Text h5>You entered an incorrect email or password</Text>
+					<Text h5 color="error">
+						{loginMessage}
+					</Text>
 				)}
 				<Input
 					type="email"
