@@ -1,4 +1,4 @@
-import { Navbar, Text, Button, Input, Link } from "@nextui-org/react";
+import { Navbar, Text, Button, Input, Link, Modal } from "@nextui-org/react";
 import NextLink from "next/link";
 
 import { Spacer } from "@nextui-org/react";
@@ -7,31 +7,32 @@ import { useRouter } from "next/router";
 import UserDropdown from "./UserDropdown";
 import UserAuth from "./UserAuth";
 
-import { selectUser } from "@/store/authslice";
-import { useAppSelector } from "@/store/hooks";
+import { User, selectUser } from "@/store/authslice";
+import useMediaQuery, { MediaBreakpoints, useAppSelector } from "@/store/hooks";
 import NavbarSearch from "./NavbarSearch";
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 export default function DefaultNavbar() {
+	const isSmallScreen = useMediaQuery(`(max-width: ${MediaBreakpoints.sm})`);
+	const isTinyScreen = useMediaQuery(`(max-width: ${412})`);
+
 	const { asPath } = useRouter();
 	const user = useAppSelector(selectUser);
 
-	const [toggleState, setToggleState] = useState(false);
-
-	const baseNavbar = [
+	const baseNavbar: string[][] = [
 		["Dashboard", "/"],
 		["Watchlist", "/watchlist"],
 		["About", "/about"],
 	];
 
-	const yesUserNavbar = [
+	const yesUserNavbar: string[][] = [
 		["Dashboard", "/"],
 		["Watchlist", "/watchlist"],
 		["About", "/about"],
 		["Account Settings", "/settings"],
 	];
 
-	const noUserNavbar = [
+	const noUserNavbar: string[][] = [
 		["Dashboard", "/"],
 		["Watchlist", "/watchlist"],
 		["About", "/about"],
@@ -39,15 +40,85 @@ export default function DefaultNavbar() {
 		["Sign Up", "/signup"],
 	];
 
-	function CollapseMenu() {
-		const collapseMenu = user ? yesUserNavbar : noUserNavbar;
-		return (
-			<div>
+	const navbarItems = [baseNavbar, yesUserNavbar, noUserNavbar];
+
+	return (
+		<Navbar
+			isBordered
+			borderWeight="bold"
+			variant="sticky"
+			aria-labelledby="navbar-base"
+			maxWidth="fluid"
+			containerCss={{ width: "100%" }}
+			css={{ zIndex: "$10" }}
+		>
+			{isSmallScreen ? (
+				<SmallScreenNavbar
+					user={user}
+					navbarItems={navbarItems}
+					asPath={asPath}
+				></SmallScreenNavbar>
+			) : (
+				<BigScreenNavbar
+					user={user}
+					navbarItems={navbarItems}
+					asPath={asPath}
+				></BigScreenNavbar>
+			)}
+			<Navbar.Content>
+				<Navbar.Item>
+					<NavbarSearch />
+				</Navbar.Item>
+				{user ? <UserDropdown /> : <UserAuth />}
+			</Navbar.Content>
+		</Navbar>
+	);
+}
+
+type NavPropsT = {
+	user: User | null;
+	navbarItems: string[][][];
+	asPath: string;
+};
+
+function SmallScreenNavbar({ user, navbarItems, asPath }: NavPropsT) {
+	const [toggleState, setToggleState] = useState(false);
+
+	const baseNavbar = navbarItems[0];
+	const yesUserNavbar = navbarItems[1];
+	const noUserNavbar = navbarItems[2];
+
+	const navbarToggleRef = useRef<any>();
+	const [isSideMenuOpen, setIsSideMenuOpen] = useState(false);
+
+	const HandleSideMenu = () => {
+		isSideMenuOpen && navbarToggleRef?.current?.click();
+	};
+
+	const collapseMenu = user ? yesUserNavbar : noUserNavbar;
+
+	console.log("IsOpen", toggleState);
+	return (
+		<>
+			<Navbar.Toggle
+				ref={navbarToggleRef}
+				onChange={() => {
+					setIsSideMenuOpen(!toggleState);
+					setToggleState(!toggleState);
+				}}
+			/>
+
+			<Navbar.Brand>
+				<Text b color="inherit">
+					Crypto Sentiment for Reddit
+				</Text>
+			</Navbar.Brand>
+
+			<Navbar.Collapse css={{ bg: "White" }}>
 				{collapseMenu.map((item, index) => {
 					return asPath == `${item[1]}` ? (
 						<Navbar.CollapseItem
 							key={`collapse-item-${item[0]}-${index}`}
-							onClick={() => setToggleState(true)}
 							isActive={asPath == `${item[1]}` ? true : false}
 						>
 							{item[0]}
@@ -64,47 +135,32 @@ export default function DefaultNavbar() {
 						>
 							<Navbar.CollapseItem
 								key={`collapse-item-${item[0]}-${index}`}
-								onClick={() => setToggleState(true)}
 								isActive={asPath == `${item[1]}` ? true : false}
+								onClick={() => HandleSideMenu()}
 							>
 								{item[0]}
 							</Navbar.CollapseItem>
 						</Link>
 					);
 				})}
-			</div>
-		);
-	}
+			</Navbar.Collapse>
+		</>
+	);
+}
 
+export function BigScreenNavbar({ user, navbarItems, asPath }: NavPropsT) {
+	const baseNavbar = navbarItems[0];
 	return (
-		<Navbar
-			isBordered
-			borderWeight="bold"
-			variant="sticky"
-			aria-labelledby="navbar-base"
-			maxWidth="fluid"
-			containerCss={{ width: "100%" }}
-			css={{ zIndex: "$10" }}
-		>
-			<Navbar.Toggle aria-label="toggle navigation" showIn={"sm"} />
-
+		<>
 			<Navbar.Brand>
 				<Text b color="inherit">
 					Crypto Sentiment for Reddit
 				</Text>
 			</Navbar.Brand>
-			<Spacer
-				x={1}
-				css={{
-					"@smMax": {
-						display: "none",
-					},
-				}}
-			/>
+			<Spacer x={1} />
 
 			<Navbar.Content
 				enableCursorHighlight
-				hideIn="sm"
 				variant="underline"
 				css={{ marginRight: "auto" }}
 			>
@@ -120,17 +176,6 @@ export default function DefaultNavbar() {
 					</Navbar.Link>
 				))}
 			</Navbar.Content>
-
-			<Navbar.Content>
-				<Navbar.Item>
-					<NavbarSearch />
-				</Navbar.Item>
-				{user ? <UserDropdown /> : <UserAuth />}
-			</Navbar.Content>
-
-			<Navbar.Collapse>
-				<CollapseMenu />
-			</Navbar.Collapse>
-		</Navbar>
+		</>
 	);
 }
