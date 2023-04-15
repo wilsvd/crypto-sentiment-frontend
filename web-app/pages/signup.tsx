@@ -5,7 +5,6 @@ import {
 	Button,
 	Text,
 	Input,
-	Row,
 	Container,
 } from "@nextui-org/react";
 import { useRouter } from "next/router";
@@ -14,7 +13,6 @@ import Head from "next/head";
 import { createUserWithEmailAndPassword, signInWithPopup } from "firebase/auth";
 import { auth } from "@/config/firebase";
 import { provider } from "@/utility/googleAuth";
-import { error } from "console";
 
 export default function Signup() {
 	const router = useRouter();
@@ -69,12 +67,10 @@ export default function Signup() {
 
 		signInWithPopup(auth, provider)
 			.then((userCred) => {
-				userCred ? router.push("/") : null;
+				router.push("/");
 				setLoginIsFailure(false);
 			})
 			.catch((error) => {
-				console.log(error);
-				console.log(error.code);
 				switch (error.code) {
 					case "auth/popup-closed-by-user":
 						// This is a controlled event by the user and as such login is not being set to failure
