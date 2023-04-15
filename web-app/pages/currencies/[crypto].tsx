@@ -9,11 +9,15 @@ import {
 	Spacer,
 	Text,
 } from "@nextui-org/react";
+
+import Image from "next/image";
 import {
+	addFavouriteCryptocurrency,
 	getAllPosts,
 	getCryptoLatestSentiment,
 	LatestSentiment,
 	Posts,
+	removeFavouriteCryptocurrency,
 } from "@/utility/firestore";
 import CryptoChart from "@/components/CryptoChart";
 import CryptoTestimonials from "@/components/CryptoTestimonials";
@@ -40,7 +44,23 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
 
 import dynamic from "next/dynamic";
 import Head from "next/head";
-import useMediaQuery, { MediaBreakpoints } from "@/store/hooks";
+import useMediaQuery, {
+	MediaBreakpoints,
+	useAppDispatch,
+	useAppSelector,
+} from "@/store/hooks";
+import {
+	selectCryptoData,
+	selectCryptoLoaded,
+	setCryptoData,
+} from "@/store/cryptoslice";
+import {
+	selectFavLoaded,
+	selectFavourites,
+	setFavourites,
+} from "@/store/usercryptoslice";
+import { selectUser } from "@/store/authslice";
+import { useState } from "react";
 
 const DCryptoGauge = dynamic(() => import("@/components/CryptoGauge"), {
 	ssr: false,
@@ -50,12 +70,64 @@ type Props = {
 	cryptoData: LatestSentiment;
 	postData: Posts;
 };
+
 function CryptoPage({ cryptoData, postData }: Props) {
 	const isSmallScreen = useMediaQuery(`(max-width: ${MediaBreakpoints.sm})`);
 	const isTinyScreen = useMediaQuery(`(max-width: ${412})`);
 
-	const router = useRouter();
+	const fullData = useAppSelector(selectCryptoData);
+	const dispatch = useAppDispatch();
 
+	const user = useAppSelector(selectUser);
+	const userFavourites = useAppSelector(selectFavourites);
+	const [isFavourite, setIsFavourite] = useState<boolean>(
+		userFavourites.includes(cryptoData.id)
+	);
+
+	const userFavouritesLoaded = useAppSelector(selectFavLoaded);
+	const cryptoLoaded = useAppSelector(selectCryptoLoaded);
+
+	const toggleFavorite = (crypto: string) => {
+		if (!user || !user.email) {
+			alert(
+				"You are not logged in. Please create an account or login to favourite cryptocurrencies."
+			);
+			return;
+		}
+
+		const isFavorited = userFavourites.includes(crypto);
+		setIsFavourite(!isFavorited);
+		const updateFavoritedCrypto = () => {
+			const result = fullData.map((data) => {
+				if (data.cryptocurrency === crypto) {
+					return {
+						...data,
+						favourite: isFavorited ? false : true,
+					};
+				}
+				return { ...data };
+			});
+			dispatch(setCryptoData(result));
+
+			if (isFavorited) {
+				dispatch(
+					setFavourites(
+						userFavourites.filter(
+							(favourite) => favourite !== crypto
+						)
+					)
+				);
+				removeFavouriteCryptocurrency(user.email!, crypto);
+			} else {
+				dispatch(setFavourites([...userFavourites, crypto]));
+				addFavouriteCryptocurrency(user.email!, crypto);
+			}
+		};
+
+		updateFavoritedCrypto();
+	};
+
+	const router = useRouter();
 	const tinyStyle: CSS = isTinyScreen
 		? { padding: "10px", overflowX: "auto" }
 		: { padding: "10px" };
@@ -74,7 +146,33 @@ function CryptoPage({ cryptoData, postData }: Props) {
 				/>
 			</Head>
 			<Container fluid css={tinyStyle}>
-				<Text h2>{cryptoData.id}</Text>
+				<div style={{ display: "flex", alignItems: "center" }}>
+					<Text h2>{cryptoData.id}</Text>
+					<Spacer x={0.5}></Spacer>
+					{isFavourite ? (
+						<Image
+							style={{ cursor: "pointer" }}
+							aria-labelledby="dashboard-table-favourite"
+							src="/red-heart-icon.svg"
+							alt="me"
+							onClick={() => toggleFavorite(cryptoData.id)}
+							width={28}
+							height={28}
+						/>
+					) : (
+						<Image
+							sizes=""
+							style={{ cursor: "pointer" }}
+							aria-labelledby="dashboard-table-unfavourite"
+							src="/iconmonstr-heart-thin.svg"
+							alt="me"
+							onClick={() => toggleFavorite(cryptoData.id)}
+							width={28}
+							height={28}
+						/>
+					)}
+				</div>
+
 				{isSmallScreen ? (
 					<SmallScreenContainer
 						cryptoData={cryptoData}
