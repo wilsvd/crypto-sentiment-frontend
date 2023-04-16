@@ -1,16 +1,11 @@
-import { GetServerSideProps } from "next";
+import dynamic from "next/dynamic";
+import Head from "next/head";
 import { useRouter } from "next/router";
-import {
-	CSS,
-	Container,
-	Divider,
-	Grid,
-	Link,
-	Spacer,
-	Text,
-} from "@nextui-org/react";
-
 import Image from "next/image";
+import { GetServerSideProps } from "next";
+import { useState } from "react";
+
+import { CSS, Container, Grid, Spacer, Text } from "@nextui-org/react";
 import {
 	addFavouriteCryptocurrency,
 	getAllPosts,
@@ -19,8 +14,25 @@ import {
 	Posts,
 	removeFavouriteCryptocurrency,
 } from "@/utility/firestore";
-import CryptoChart from "@/components/CryptoChart";
-import CryptoTestimonials from "@/components/CryptoTestimonials";
+import CryptoChart from "@/components/cryptodata/CryptoChart";
+import CryptoTestimonials from "@/components/cryptodata/CryptoTestimonials";
+
+import useMediaQuery, {
+	MediaBreakpoints,
+	useAppDispatch,
+	useAppSelector,
+} from "@/store/hooks";
+import {
+	selectCryptoData,
+	selectCryptoLoaded,
+	setCryptoData,
+} from "@/store/cryptoslice";
+import {
+	selectFavLoaded,
+	selectFavourites,
+	setFavourites,
+} from "@/store/usercryptoslice";
+import { selectUser } from "@/store/authslice";
 
 export const getServerSideProps: GetServerSideProps = async ({ params }) => {
 	const itemID = params?.crypto as string;
@@ -42,29 +54,12 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
 	};
 };
 
-import dynamic from "next/dynamic";
-import Head from "next/head";
-import useMediaQuery, {
-	MediaBreakpoints,
-	useAppDispatch,
-	useAppSelector,
-} from "@/store/hooks";
-import {
-	selectCryptoData,
-	selectCryptoLoaded,
-	setCryptoData,
-} from "@/store/cryptoslice";
-import {
-	selectFavLoaded,
-	selectFavourites,
-	setFavourites,
-} from "@/store/usercryptoslice";
-import { selectUser } from "@/store/authslice";
-import { useState } from "react";
-
-const DCryptoGauge = dynamic(() => import("@/components/CryptoGauge"), {
-	ssr: false,
-});
+const DCryptoGauge = dynamic(
+	() => import("@/components/cryptodata/CryptoGauge"),
+	{
+		ssr: false,
+	}
+);
 
 type Props = {
 	cryptoData: LatestSentiment;

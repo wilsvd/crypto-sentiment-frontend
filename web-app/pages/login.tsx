@@ -56,6 +56,7 @@ export default function Login() {
 						setLoginIsFailure(false);
 					})
 					.catch((error) => {
+						console.log(error);
 						setLoginMessage(
 							"You entered an invalid email or password."
 						);

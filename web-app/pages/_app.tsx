@@ -1,10 +1,10 @@
 import "@/styles/globals.css";
 import type { AppProps } from "next/app";
 
-import Navbar from "@/components/Navbar";
+import Navbar from "@/components/navbar/Navbar";
 import { NextUIProvider } from "@nextui-org/react";
 import { Provider } from "react-redux";
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import store from "@/store/store";
 
 import { listenForAuthChanges } from "@/store/hooks";
