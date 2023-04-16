@@ -3,9 +3,9 @@ import Head from "next/head";
 import React from "react";
 
 import { Container, Spacer, Text } from "@nextui-org/react";
-import DefaultTable from "@/components/DefaultTable";
 import { selectCryptoData } from "@/store/cryptoslice";
 import { useAppSelector } from "@/store/hooks";
+import DashboardTable from "@/components/cryptodata/CryptoTable";
 
 export default function Home() {
 	const cryptoData = useAppSelector(selectCryptoData);
@@ -35,7 +35,10 @@ export default function Home() {
 					{subheading}
 				</Text>
 				<Spacer y={1}></Spacer>
-				<DefaultTable cryptoData={cryptoData}></DefaultTable>
+				<DashboardTable
+					cryptoData={cryptoData}
+					watchlist={null}
+				></DashboardTable>
 			</Container>
 		</Container>
 	);
