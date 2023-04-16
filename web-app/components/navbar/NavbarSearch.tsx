@@ -15,7 +15,6 @@ import { useState } from "react";
 
 export default function NavbarSearch() {
 	const isSmallScreen = useMediaQuery(`(max-width: ${MediaBreakpoints.sm})`);
-	const isTinyScreen = useMediaQuery(`(max-width: ${412})`);
 
 	const columns = [
 		{
