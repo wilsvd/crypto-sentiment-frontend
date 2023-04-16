@@ -35,7 +35,6 @@ export default function NavbarSearch() {
 	function handleChange(event: { target: { name: string; value: string } }) {
 		const value = event.target.value.toLowerCase();
 		setQueryString(value);
-		console.log(value);
 		if (value.length > 0) {
 			const results = cryptoData.filter(
 				(crypto: { cryptocurrency: string }) => {

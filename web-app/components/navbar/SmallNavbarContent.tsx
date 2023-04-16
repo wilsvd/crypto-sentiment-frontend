@@ -25,21 +25,20 @@ export default function SmallNavbarContent({ user, asPath }: NavPropsT) {
 	];
 
 	const navbarToggleRef = useRef<any>();
-	const [isSideMenuOpen, setIsSideMenuOpen] = useState(false);
+	const [isMenuOpen, setisMenuOpen] = useState(false);
 
-	const HandleSideMenu = () => {
-		isSideMenuOpen && navbarToggleRef?.current?.click();
+	const HandleMenu = () => {
+		isMenuOpen && navbarToggleRef?.current?.click();
 	};
 
 	const collapseMenu = user ? yesUserMenu : noUserMenu;
 
-	console.log("IsOpen", toggleState);
 	return (
 		<>
 			<Navbar.Toggle
 				ref={navbarToggleRef}
 				onChange={() => {
-					setIsSideMenuOpen(!toggleState);
+					setisMenuOpen(!toggleState);
 					setToggleState(!toggleState);
 				}}
 			/>
@@ -72,7 +71,7 @@ export default function SmallNavbarContent({ user, asPath }: NavPropsT) {
 							<Navbar.CollapseItem
 								key={`collapse-item-${item[0]}-${index}`}
 								isActive={asPath == `${item[1]}` ? true : false}
-								onClick={() => HandleSideMenu()}
+								onClick={() => HandleMenu()}
 							>
 								{item[0]}
 							</Navbar.CollapseItem>

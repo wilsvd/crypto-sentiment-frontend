@@ -13,7 +13,7 @@ interface CryptoState {
 	loaded: boolean;
 }
 
-const initialState: CryptoState = {
+export const initialState: CryptoState = {
 	data: [],
 	loaded: false,
 };

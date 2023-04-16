@@ -10,15 +10,19 @@ import DashboardTable from "@/components/cryptodata/CryptoTable";
 export default function Home() {
 	const cryptoData = useAppSelector(selectCryptoData);
 
-	var marketSum: number = 0;
-	for (var item of cryptoData) {
-		marketSum += parseFloat(item.sentiment);
+	function getMarketAverage() {
+		var marketSum: number = 0;
+		for (var item of cryptoData) {
+			marketSum += parseFloat(item.sentiment);
+		}
+		const marketSentiment: string = (marketSum / cryptoData.length).toFixed(
+			2
+		);
+		return marketSentiment;
 	}
 
-	const marketSentiment: string = (marketSum / cryptoData.length).toFixed(2);
-
 	const heading = "Today's Cryptocurrency Sentiment";
-	const subheading = `The global crypto market sentiment is ${marketSentiment}`;
+	const subheading = `The global crypto market sentiment is ${getMarketAverage()}`;
 	return (
 		<Container fluid>
 			<Head>

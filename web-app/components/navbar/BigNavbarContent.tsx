@@ -47,10 +47,6 @@ export default function BigNavbarContent({ user, asPath }: NavPropsT) {
 	);
 }
 
-// type AuthRouteT = {
-// 	asPath: string
-// }
-
 function AuthRoutes({ asPath }: { asPath: string }) {
 	return (
 		<Navbar.Content enableCursorHighlight={true}>

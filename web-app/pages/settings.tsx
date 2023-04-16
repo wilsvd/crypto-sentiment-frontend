@@ -67,7 +67,6 @@ export default function AccountSettings() {
 						if (res) {
 							router.push("/login");
 						}
-
 						break;
 					case "auth/email-already-in-use":
 						alert("Account specified already exists.");
@@ -91,7 +90,6 @@ export default function AccountSettings() {
 			}
 			return;
 		}
-		console.log(email);
 	}
 
 	return (

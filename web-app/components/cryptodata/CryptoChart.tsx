@@ -16,7 +16,6 @@ import {
 	getSentimentHistoryInRange,
 	LatestSentiment,
 } from "@/utility/firestore";
-import { CSS } from "@nextui-org/react";
 
 type Props = {
 	crypto: LatestSentiment;
@@ -41,16 +40,15 @@ const CryptoChart = ({ crypto }: Props) => {
 	const [rangeSelected, setRangeSelected] = useState<string>("month");
 
 	const [data, setData] = useState<ChartData<"line">>();
-	const [options, setOptions] = useState<ChartOptions<"line">>({
+	const options: ChartOptions<"line"> = {
 		responsive: true,
-
 		scales: {
 			y: {
 				min: -1,
 				max: 1,
 			},
 		},
-	});
+	};
 
 	// Labels are set according to the value.datetime
 	// If the date chosen is in the last day
@@ -134,7 +132,6 @@ const CryptoChart = ({ crypto }: Props) => {
 				style={{ float: "right" }}
 				onChange={(e) => {
 					const selected = e.target.value;
-					console.log(selected);
 					setRangeSelected(selected);
 					var resultDate: Date = startDateTime;
 					switch (selected) {

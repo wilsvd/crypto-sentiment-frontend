@@ -12,6 +12,13 @@ type Props = {
 
 export default function DeleteAccountModal({ visible, closeHandler }: Props) {
 	const [deleteDisabled, setDeleteDisabled] = useState(true);
+
+	function handleChange(event: { target: { name: string; value: string } }) {
+		event.target.value == "DELETE"
+			? setDeleteDisabled(false)
+			: setDeleteDisabled(true);
+	}
+
 	return (
 		<Modal
 			closeButton
@@ -35,11 +42,7 @@ export default function DeleteAccountModal({ visible, closeHandler }: Props) {
 					size="lg"
 					name="confirmDelete"
 					placeholder="Type DELETE to confirm"
-					onChange={(e) => {
-						e.target.value == "DELETE"
-							? setDeleteDisabled(false)
-							: setDeleteDisabled(true);
-					}}
+					onChange={handleChange}
 				/>
 			</Modal.Body>
 			<Modal.Footer justify="center">

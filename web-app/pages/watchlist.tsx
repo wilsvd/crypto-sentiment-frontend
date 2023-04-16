@@ -6,6 +6,10 @@ import Head from "next/head";
 
 export default function Watchlist() {
 	const cryptoData = useAppSelector(selectCryptoData);
+
+	function getWatchList() {
+		return cryptoData.filter((value) => value.favourite);
+	}
 	return (
 		<Container fluid>
 			<Head>
@@ -20,7 +24,7 @@ export default function Watchlist() {
 				<Text h3>Watchlist</Text>
 				<WatchTable
 					cryptoData={cryptoData}
-					watchlist={cryptoData.filter((value) => value.favourite)}
+					watchlist={getWatchList()}
 				></WatchTable>
 			</Container>
 		</Container>
