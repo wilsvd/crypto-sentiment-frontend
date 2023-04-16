@@ -1,28 +1,29 @@
 import { cryptoDataT, selectCryptoData } from "@/store/cryptoslice";
 import useMediaQuery, { MediaBreakpoints, useAppSelector } from "@/store/hooks";
-import {
-	Container,
-	Input,
-	Table,
-	Image,
-	Button,
-	Modal,
-	Spacer,
-	Text,
-} from "@nextui-org/react";
+import { Container, Input, Table, Image, Text } from "@nextui-org/react";
 import Link from "next/link";
 import { useState } from "react";
+import NavbarSearchModal from "../modals/NavbarSearchModal";
+
+export function SearchIcon({ width, height }: any) {
+	return (
+		<Image
+			aria-labelledby="search-icon"
+			src="/icons8-search.svg"
+			width={width}
+			height={height}
+		/>
+	);
+}
+export const columns = [
+	{
+		key: "cryptocurrency",
+		label: "Cryptocurrency",
+	},
+];
 
 export default function NavbarSearch() {
 	const isSmallScreen = useMediaQuery(`(max-width: ${MediaBreakpoints.sm})`);
-	const isTinyScreen = useMediaQuery(`(max-width: ${412})`);
-
-	const columns = [
-		{
-			key: "cryptocurrency",
-			label: "Cryptocurrency",
-		},
-	];
 
 	const [searchedCrypto, setSearchedCrypto] = useState<cryptoDataT[] | null>(
 		null
@@ -47,17 +48,6 @@ export default function NavbarSearch() {
 			setQueryString("");
 			setSearchedCrypto(null);
 		}
-	}
-
-	function SearchIcon({ width, height }: any) {
-		return (
-			<Image
-				aria-labelledby="search-icon"
-				src="/icons8-search.svg"
-				width={width}
-				height={height}
-			/>
-		);
 	}
 
 	const [visible, setVisible] = useState(false);
@@ -145,98 +135,14 @@ export default function NavbarSearch() {
 							display: "block",
 						}}
 					/>
-					<Modal
-						closeButton
-						blur
-						open={visible}
-						onClose={closeHandler}
-						fullScreen
-						aria-labelledby="modal-searching"
-					>
-						<Spacer></Spacer>
-						<Modal.Header>
-							<Input // This query string logic needs to be improved as its not completely synced with the other <Input>
-								aria-labelledby="navbar-search"
-								bordered
-								fullWidth={true}
-								borderWeight="normal"
-								initialValue={queryString}
-								clearable
-								labelLeft={
-									<SearchIcon
-										width={20}
-										height={20}
-									></SearchIcon>
-								}
-								disabled={cryptoData == null ? true : false}
-								placeholder={
-									cryptoData == null
-										? "One moment please..."
-										: "Search..."
-								}
-								onChange={handleChange}
-							/>
-							<Spacer></Spacer>
-							<Button auto flat onPress={closeHandler}>
-								Cancel
-							</Button>
-						</Modal.Header>
-						<Modal.Body>
-							{searchedCrypto && (
-								<Table
-									shadow={false}
-									compact
-									fixed
-									aria-labelledby="search-results"
-									css={{
-										height: "auto",
-										width: "auto",
-										padding: "$0",
-									}}
-								>
-									<Table.Header columns={columns}>
-										{(column) => (
-											<Table.Column
-												key={column.key}
-												align="start"
-												css={{ bg: "white" }}
-											>
-												{column.label}
-											</Table.Column>
-										)}
-									</Table.Header>
-
-									<Table.Body
-										items={searchedCrypto}
-										css={{
-											display: "block",
-											overflowY: "auto",
-											height: "100%",
-										}}
-									>
-										{(item) => (
-											<Table.Row key={item.key}>
-												<Table.Cell>
-													<Link
-														aria-labelledby="dashboard-table-crypto-link"
-														style={{
-															textDecoration:
-																"underline",
-														}}
-														href={`/currencies/${item.key}`}
-													>
-														<Text h5>
-															{item.key}
-														</Text>
-													</Link>
-												</Table.Cell>
-											</Table.Row>
-										)}
-									</Table.Body>
-								</Table>
-							)}
-						</Modal.Body>
-					</Modal>
+					<NavbarSearchModal
+						visible={visible}
+						closeHandler={closeHandler}
+						cryptoData={cryptoData}
+						queryString={queryString}
+						searchedCrypto={searchedCrypto}
+						handleChange={handleChange}
+					></NavbarSearchModal>
 				</>
 			) : (
 				<>

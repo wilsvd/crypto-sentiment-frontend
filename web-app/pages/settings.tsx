@@ -1,19 +1,12 @@
+import Head from "next/head";
 import { auth } from "@/config/firebase";
 import { selectUser, setUser } from "@/store/authslice";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { deleteUserData } from "@/utility/firestore";
-import {
-	Container,
-	Text,
-	Input,
-	Modal,
-	Spacer,
-	Button,
-} from "@nextui-org/react";
-import { User, deleteUser, updateEmail, updateProfile } from "firebase/auth";
-import Head from "next/head";
+import { Container, Text, Input, Spacer, Button } from "@nextui-org/react";
+import { User, updateEmail, updateProfile } from "firebase/auth";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import DeleteAccountModal from "@/components/modals/DeleteAccountModal";
 
 export default function AccountSettings() {
 	const router = useRouter();
@@ -30,7 +23,7 @@ export default function AccountSettings() {
 	}, [user]);
 
 	const [readOnly, setReadOnly] = useState(true);
-	const [deleteDisabled, setDeleteDisabled] = useState(true);
+
 	const [visible, setVisible] = useState(false);
 
 	const openHandler = () => setVisible(true);
@@ -197,81 +190,10 @@ export default function AccountSettings() {
 								Delete Account
 							</Button>
 						</Container>
-
-						<Modal
-							closeButton
-							blur
-							aria-labelledby="modal-title"
-							open={visible}
-							onClose={closeHandler}
-						>
-							<Modal.Header>
-								<Text id="modal-title" size={18}>
-									Are you sure you would like to delete your
-									account?
-								</Text>
-							</Modal.Header>
-							<Modal.Body>
-								<Input
-									aria-labelledby="setting-delete"
-									clearable
-									bordered
-									fullWidth
-									color="primary"
-									size="lg"
-									name="confirmDelete"
-									placeholder="Type DELETE to confirm"
-									onChange={(e) => {
-										e.target.value == "DELETE"
-											? setDeleteDisabled(false)
-											: setDeleteDisabled(true);
-									}}
-								/>
-							</Modal.Body>
-							<Modal.Footer justify="center">
-								<Button
-									color={"error"}
-									disabled={deleteDisabled}
-									auto
-									onPress={() => {
-										if (auth.currentUser) {
-											const user = auth.currentUser;
-											try {
-												deleteUser(user)
-													.then(() => {
-														// Delete user data from Firestore
-														deleteUserData(
-															user.email!
-														);
-													})
-													.catch((error) => {
-														switch (error.code) {
-															case "auth/requires-recent-login":
-																const res =
-																	confirm(
-																		"Please re-validate your account. You will be redirected to the login page."
-																	);
-																closeHandler();
-																if (res) {
-																	router.push(
-																		"/login"
-																	);
-																}
-																break;
-
-															default:
-																break;
-														}
-													});
-											} catch (error) {}
-										}
-										closeHandler();
-									}}
-								>
-									Delete Account
-								</Button>
-							</Modal.Footer>
-						</Modal>
+						<DeleteAccountModal
+							visible={visible}
+							closeHandler={closeHandler}
+						/>
 					</Container>
 				) : (
 					<>
@@ -285,5 +207,3 @@ export default function AccountSettings() {
 		</Container>
 	);
 }
-
-import React from "react";

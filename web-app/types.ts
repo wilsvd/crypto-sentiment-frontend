@@ -2,6 +2,7 @@ import { cryptoDataT } from "./store/cryptoslice";
 
 export type TablePropsT = {
 	cryptoData: cryptoDataT[];
+	watchlist: cryptoDataT[] | null;
 };
 
 export type Col = {

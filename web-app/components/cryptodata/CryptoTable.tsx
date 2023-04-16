@@ -17,12 +17,18 @@ import {
 	setFavourites,
 } from "@/store/usercryptoslice";
 import { selectCryptoLoaded, setCryptoData } from "@/store/cryptoslice";
+import { useRouter } from "next/router";
 
-const DCryptoGauge = dynamic(() => import("@/components/CryptoGauge"), {
-	ssr: false,
-});
+const DCryptoGauge = dynamic(
+	() => import("@/components/cryptodata/CryptoGauge"),
+	{
+		ssr: false,
+	}
+);
 
-export default function DefaultTable({ cryptoData }: TablePropsT) {
+export default function CryptoTable({ cryptoData, watchlist }: TablePropsT) {
+	const router = useRouter();
+
 	const user = useAppSelector(selectUser);
 
 	const userFavourites = useAppSelector(selectFavourites);
@@ -31,10 +37,6 @@ export default function DefaultTable({ cryptoData }: TablePropsT) {
 	const cryptoLoaded = useAppSelector(selectCryptoLoaded);
 
 	const dispatch = useAppDispatch();
-
-	const watchlist = cryptoData.filter((value) => value.favourite);
-
-	// Temporary data to experiment with using table component
 
 	const toggleFavorite = (crypto: string) => {
 		if (!user || !user.email) {
@@ -109,7 +111,6 @@ export default function DefaultTable({ cryptoData }: TablePropsT) {
 						/>
 					);
 				}
-
 			case "cryptocurrency":
 				return (
 					<Text h5>
@@ -162,7 +163,12 @@ export default function DefaultTable({ cryptoData }: TablePropsT) {
 			>
 				<Table.Header columns={columns}>
 					{(column) => (
-						<Table.Column key={column.key}>
+						<Table.Column
+							key={column.key}
+							css={{
+								width: "50",
+							}}
+						>
 							{column.label}
 						</Table.Column>
 					)}
@@ -190,25 +196,35 @@ export default function DefaultTable({ cryptoData }: TablePropsT) {
 	};
 
 	function handleDisplayLogic(): ReactNode {
-		if (!user) {
-			return (
-				<Text h5>
-					You must have an account to be able to keep a watchlist
-				</Text>
-			);
-		} else {
-			if (cryptoLoaded && watchlist.length > 0) {
-				return <>{renderTable(watchlist)}</>;
-			} else if (cryptoLoaded && watchlist.length === 0) {
-				return (
-					<Text h5>
-						You have not added any cryptocurrencies to your
-						watchlist
-					</Text>
-				);
-			} else {
-				return <p>Loading</p>;
+		if (cryptoLoaded) {
+			switch (router.asPath) {
+				case "/":
+					return renderTable(cryptoData);
+				case "/watchlist":
+					if (!user) {
+						return (
+							<Text h5>
+								You must have an account to be able to keep a
+								watchlist
+							</Text>
+						);
+					} else {
+						if (watchlist && watchlist.length > 0) {
+							return <>{renderTable(watchlist)}</>;
+						} else {
+							return (
+								<Text h5>
+									You have not added any cryptocurrencies to
+									your watchlist
+								</Text>
+							);
+						}
+					}
+				default:
+					return null;
 			}
+		} else {
+			<Text h5>Loading</Text>;
 		}
 	}
 	return <>{handleDisplayLogic()}</>;
