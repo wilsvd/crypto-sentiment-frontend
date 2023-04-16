@@ -1,11 +1,11 @@
-import { Navbar, Text, Link } from "@nextui-org/react";
+import { Navbar } from "@nextui-org/react";
 
 import { useRouter } from "next/router";
 
 import { User, selectUser } from "@/store/authslice";
 import useMediaQuery, { MediaBreakpoints, useAppSelector } from "@/store/hooks";
 import BigNavbarContent from "./BigNavbarContent";
-import SmallNavbarContent from "./SmallNavbarConten1t";
+import SmallNavbarContent from "./SmallNavbarContent";
 
 export type NavPropsT = {
 	user: User | null;

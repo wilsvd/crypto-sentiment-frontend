@@ -22,13 +22,8 @@ import {
 	signInWithEmailAndPassword,
 	inMemoryPersistence,
 } from "firebase/auth";
-import ForgotPasswordModal from "@/components/ForgotPasswordModal";
+import ForgotPasswordModal from "@/components/modals/ForgotPasswordModal";
 import { provider } from "@/utility/googleAuth";
-
-// auth/email-already-exists
-// auth/invalid-email
-// auth/invalid-password
-// auth/user-not-found
 
 export default function Login() {
 	const user = useAppSelector(selectUser);
