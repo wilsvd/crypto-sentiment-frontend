@@ -7,6 +7,11 @@ import useMediaQuery, { MediaBreakpoints, useAppSelector } from "@/store/hooks";
 import BigNavbarContent from "./BigNavbarContent";
 import SmallNavbarContent from "./SmallNavbarConten1t";
 
+export type NavPropsT = {
+	user: User | null;
+	asPath: string;
+};
+
 export default function DefaultNavbar() {
 	const isSmallScreen = useMediaQuery(`(max-width: ${MediaBreakpoints.sm})`);
 
@@ -37,8 +42,3 @@ export default function DefaultNavbar() {
 		</Navbar>
 	);
 }
-
-export type NavPropsT = {
-	user: User | null;
-	asPath: string;
-};

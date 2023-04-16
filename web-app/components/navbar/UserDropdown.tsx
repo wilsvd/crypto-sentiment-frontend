@@ -1,4 +1,4 @@
-import { Navbar, Text, Avatar, Dropdown, Image } from "@nextui-org/react";
+import { Navbar, Text, Dropdown, Image } from "@nextui-org/react";
 
 import { selectUser } from "@/store/authslice";
 import { useAppSelector } from "@/store/hooks";
@@ -14,7 +14,12 @@ export default function SignedInNavbar() {
 		<Dropdown aria-labelledby="dropdown-user" placement="bottom-right">
 			<Navbar.Item>
 				<Dropdown.Trigger css={{ cursor: "pointer" }}>
-					<Image src="/user-icon.svg" width={32} height={32} />
+					<Image
+						showSkeleton
+						src="/user-icon.svg"
+						width={32}
+						height={32}
+					/>
 				</Dropdown.Trigger>
 			</Navbar.Item>
 			<Dropdown.Menu
