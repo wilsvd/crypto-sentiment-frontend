@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { test, expect, Page } from "@playwright/test";
 import { sleep } from "@/tests/utility";
 
 test.describe("test crypto page drown menu for historical chart", () => {
@@ -81,12 +81,12 @@ test.describe("test navigation from bitcoin page", () => {
 		// Start waiting for new page before clicking. Note no await.
 
 		const [newPage] = await Promise.all([
-			new Promise((resolve) => page.once("popup", resolve)),
+			new Promise<Page>((resolve) => page.once("popup", resolve)),
 			// Clicking the link should open a new page. If it doesn't, the test will fail here.
 		]);
 
 		// Check if the new tab has the URL "https://www.reddit.com/r/bitcoin/"
-		const url = await newPage.url();
+		const url = newPage.url();
 		expect(url).toBe("https://www.reddit.com/r/bitcoin/");
 
 		// Close the new tab
