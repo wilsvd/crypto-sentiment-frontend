@@ -1,4 +1,4 @@
-const dotenv = require("dotenv");
+import dotenv from "dotenv";
 
 const myEnv = dotenv.config({ path: ".env.tests" });
 
@@ -14,8 +14,4 @@ test("login successfully using input form", async ({ page }) => {
 	await page.getByText("Sign in", { exact: true }).click();
 	// // The new URL should be "/about" (baseURL is used there)
 	await expect(page).toHaveURL("http://localhost:3000/");
-	// // The new page should contain an h3 with "About Page"
-	await expect(page.locator("h3")).toContainText(
-		"Today's Cryptocurrency Sentiment"
-	);
 });

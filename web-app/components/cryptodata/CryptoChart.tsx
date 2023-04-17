@@ -129,6 +129,8 @@ const CryptoChart = ({ crypto }: Props) => {
 	return (
 		<>
 			<select
+				aria-labelledby="drop-down-historical-range"
+				data-testid="crypto-chart-selector"
 				style={{ float: "right" }}
 				onChange={(e) => {
 					const selected = e.target.value;
@@ -163,9 +165,15 @@ const CryptoChart = ({ crypto }: Props) => {
 					setStartDateTime(resultDate);
 				}}
 			>
-				<option value={"month"}>1 Month</option>
-				<option value={"week"}>7 Days</option>
-				<option value={"day"}>1 Day</option>
+				<option value={"month"} data-testid="crypto-chart-value-month">
+					1 Month
+				</option>
+				<option value={"week"} data-testid="crypto-chart-value-week">
+					7 Days
+				</option>
+				<option value={"day"} data-testid="crypto-chart-value-day">
+					1 Day
+				</option>
 			</select>
 			{data ? <Line options={options} data={data} /> : null}
 		</>

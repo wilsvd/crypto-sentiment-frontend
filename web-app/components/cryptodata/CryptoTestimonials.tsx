@@ -38,6 +38,7 @@ export default function CryptoTestimonials({ posts, subreddit, css }: Props) {
 			<Card.Header css={{ justifyContent: "center" }}>
 				<Text h4>
 					<Link
+						data-testid="testimonial-subreddit-link"
 						href={`https://www.reddit.com/r/${subreddit}/`}
 						target="_blank"
 					>

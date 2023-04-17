@@ -63,6 +63,7 @@ export default function NavbarSearch() {
 			>
 				{searchedCrypto && (
 					<Table
+						data-testid="big-screen-navbar-search-result-container"
 						fixed
 						compact
 						aria-labelledby="search-results"
@@ -146,6 +147,7 @@ export default function NavbarSearch() {
 			) : (
 				<>
 					<Input
+						data-testid="big-screen-navbar-search-input"
 						aria-labelledby="navbar-search"
 						bordered
 						fullWidth={true}

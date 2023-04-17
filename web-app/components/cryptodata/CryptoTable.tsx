@@ -85,8 +85,10 @@ export default function CryptoTable({ cryptoData, watchlist }: TablePropsT) {
 				if (cellValue) {
 					return (
 						<Image
+							key={`favourite-image-${item.key}`}
+							data-testid={`favourite-image-${item.key}`}
 							style={{ cursor: "pointer" }}
-							aria-labelledby="watchlist-table-favourite"
+							aria-labelledby={`favourite-image-${item.key}`}
 							src="/red-heart-icon.svg"
 							alt="me"
 							width="32"
@@ -99,8 +101,10 @@ export default function CryptoTable({ cryptoData, watchlist }: TablePropsT) {
 				} else {
 					return (
 						<Image
+							key={`unfavourite-image-${item.key}`}
+							data-testid={`unfavourite-image-${item.key}`}
 							style={{ cursor: "pointer" }}
-							aria-labelledby="watchlist-table-unfavourite"
+							aria-labelledby={`unfavourite-image-${item.key}`}
 							src="/iconmonstr-heart-thin.svg"
 							alt="me"
 							width="32"
@@ -115,7 +119,8 @@ export default function CryptoTable({ cryptoData, watchlist }: TablePropsT) {
 				return (
 					<Text h5>
 						<Link
-							aria-labelledby="watchlist-table-crypto-link"
+							key={`link-${item.key}`}
+							aria-labelledby={`link-${item.key}`}
 							style={{ textDecoration: "underline" }}
 							href={`/currencies/${cellValue}`}
 						>
@@ -126,7 +131,8 @@ export default function CryptoTable({ cryptoData, watchlist }: TablePropsT) {
 			case "sentiment":
 				return (
 					<Container
-						aria-labelledby="watchlist-table-sentiment-container-1"
+						key={`sentiment-container-${item.key}`}
+						aria-labelledby={`sentiment-container-${item.key}`}
 						fluid
 						css={{ padding: "$0" }}
 						display="flex"
@@ -149,22 +155,24 @@ export default function CryptoTable({ cryptoData, watchlist }: TablePropsT) {
 	const renderTable = (liveData: Rows) => {
 		return (
 			<Table
-				aria-labelledby="watchlist-table"
-				bordered={true}
-				shadow={false}
-				fixed
-				css={{
-					height: "auto",
-					minWidth: "100%",
+				aria-labelledby="crypto-table"
+				data-testid="crypto-table"
+				// bordered={true}
+				// shadow={false}
+				// fixed
+				// css={{
+				// 	height: "auto",
+				// 	minWidth: "100%",
 
-					padding: "10px",
-					zIndex: "0",
-				}}
+				// 	padding: "10px",
+				// 	zIndex: "0",
+				// }}
 			>
 				<Table.Header columns={columns}>
 					{(column) => (
 						<Table.Column
 							key={column.key}
+							aria-labelledby={column.key}
 							css={{
 								width: "50",
 							}}
@@ -173,7 +181,7 @@ export default function CryptoTable({ cryptoData, watchlist }: TablePropsT) {
 						</Table.Column>
 					)}
 				</Table.Header>
-				<Table.Body items={liveData}>
+				<Table.Body items={liveData} aria-labelledby={"table-body"}>
 					{(item) => (
 						<Table.Row key={item.key}>
 							{(columnKey) => (
@@ -203,7 +211,7 @@ export default function CryptoTable({ cryptoData, watchlist }: TablePropsT) {
 				case "/watchlist":
 					if (!user) {
 						return (
-							<Text h5>
+							<Text h5 data-testid={`account-required`}>
 								You must have an account to be able to keep a
 								watchlist
 							</Text>
@@ -213,7 +221,11 @@ export default function CryptoTable({ cryptoData, watchlist }: TablePropsT) {
 							return <>{renderTable(watchlist)}</>;
 						} else {
 							return (
-								<Text h5>
+								<Text
+									h5
+									aria-labelledby="no-cryptos-added"
+									data-testid="no-cryptos-added"
+								>
 									You have not added any cryptocurrencies to
 									your watchlist
 								</Text>

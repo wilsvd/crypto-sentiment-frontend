@@ -146,6 +146,7 @@ function CryptoPage({ cryptoData, postData }: Props) {
 					<Spacer x={0.5}></Spacer>
 					{isFavourite ? (
 						<Image
+							data-testid="favourite-image"
 							style={{ cursor: "pointer" }}
 							aria-labelledby="dashboard-table-favourite"
 							src="/red-heart-icon.svg"
@@ -156,6 +157,7 @@ function CryptoPage({ cryptoData, postData }: Props) {
 						/>
 					) : (
 						<Image
+							data-testid="favourite-image"
 							sizes=""
 							style={{ cursor: "pointer" }}
 							aria-labelledby="dashboard-table-unfavourite"
