@@ -2,7 +2,7 @@ import { test, expect } from "@playwright/test";
 import dotenv from "dotenv";
 import { sleep } from "@/tests/utility";
 
-const myEnv = dotenv.config({ path: ".env.tests" });
+const myEnv = dotenv.config({ path: ".env.test" });
 // Test id for the unfavourite image
 // data-testid="unfavourite-image"
 
@@ -23,15 +23,19 @@ const myEnv = dotenv.config({ path: ".env.tests" });
 
 test.describe("Test favouriting of cryptocurrencies of various pages", () => {
 	test.beforeEach(async ({ page }) => {
+		if (myEnv.parsed == undefined) return;
 		await page.goto("http://localhost:3000/login");
+		await sleep(100);
 		// Find an element with the text 'About Page' and click on it
-		await page.getByPlaceholder("Email").fill(myEnv.parsed.FORM_USERNAME);
+		await page
+			.getByPlaceholder("Email")
+			.fill(myEnv.parsed.E2E_FORM_USERNAME);
 		await page
 			.getByPlaceholder("Password")
-			.fill(myEnv.parsed.FORM_PASSWORD);
+			.fill(myEnv.parsed.E2E_FORM_PASSWORD);
 		await page.getByText("Sign in", { exact: true }).click();
 		await expect(page).toHaveURL("http://localhost:3000/");
-		await sleep(1000);
+		await sleep(2000);
 	});
 
 	test("Favouriting/unfavouriting a cryptocurrency on dashboard", async ({
