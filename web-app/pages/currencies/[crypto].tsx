@@ -7,12 +7,10 @@ import { useState } from "react";
 
 import { CSS, Container, Grid, Spacer, Text } from "@nextui-org/react";
 import {
-	addFavouriteCryptocurrency,
 	getAllPosts,
 	getCryptoLatestSentiment,
 	LatestSentiment,
 	Posts,
-	removeFavouriteCryptocurrency,
 } from "@/utility/firestore";
 import CryptoChart from "@/components/cryptodata/CryptoChart";
 import CryptoTestimonials from "@/components/cryptodata/CryptoTestimonials";
@@ -22,21 +20,13 @@ import useMediaQuery, {
 	useAppDispatch,
 	useAppSelector,
 } from "@/store/hooks";
-import {
-	selectCryptoData,
-	selectCryptoLoaded,
-	setCryptoData,
-} from "@/store/cryptoslice";
-import {
-	selectFavLoaded,
-	selectFavourites,
-	setFavourites,
-} from "@/store/usercryptoslice";
+import { selectCryptoData } from "@/store/cryptoslice";
+import { selectFavourites } from "@/store/usercryptoslice";
 import { selectUser } from "@/store/authslice";
+import { toggleFavorite } from "@/utility/favouriting";
 
 export const getServerSideProps: GetServerSideProps = async ({ params }) => {
 	const itemID = params?.crypto as string;
-	console.log("ID: " + itemID);
 	const foundItem = await getCryptoLatestSentiment(itemID);
 
 	if (!foundItem) {
@@ -70,57 +60,15 @@ function CryptoPage({ cryptoData, postData }: Props) {
 	const isSmallScreen = useMediaQuery(`(max-width: ${MediaBreakpoints.sm})`);
 	const isTinyScreen = useMediaQuery(`(max-width: ${412})`);
 
+	const user = useAppSelector(selectUser);
 	const fullData = useAppSelector(selectCryptoData);
+	const userFavourites = useAppSelector(selectFavourites);
+
 	const dispatch = useAppDispatch();
 
-	const user = useAppSelector(selectUser);
-	const userFavourites = useAppSelector(selectFavourites);
 	const [isFavourite, setIsFavourite] = useState<boolean>(
 		userFavourites.includes(cryptoData.id)
 	);
-
-	const userFavouritesLoaded = useAppSelector(selectFavLoaded);
-	const cryptoLoaded = useAppSelector(selectCryptoLoaded);
-
-	const toggleFavorite = (crypto: string) => {
-		if (!user || !user.email) {
-			alert(
-				"You are not logged in. Please create an account or login to favourite cryptocurrencies."
-			);
-			return;
-		}
-
-		const isFavorited = userFavourites.includes(crypto);
-		setIsFavourite(!isFavorited);
-		const updateFavoritedCrypto = () => {
-			const result = fullData.map((data) => {
-				if (data.cryptocurrency === crypto) {
-					return {
-						...data,
-						favourite: isFavorited ? false : true,
-					};
-				}
-				return { ...data };
-			});
-			dispatch(setCryptoData(result));
-
-			if (isFavorited) {
-				dispatch(
-					setFavourites(
-						userFavourites.filter(
-							(favourite) => favourite !== crypto
-						)
-					)
-				);
-				removeFavouriteCryptocurrency(user.email!, crypto);
-			} else {
-				dispatch(setFavourites([...userFavourites, crypto]));
-				addFavouriteCryptocurrency(user.email!, crypto);
-			}
-		};
-
-		updateFavoritedCrypto();
-	};
 
 	const router = useRouter();
 	const tinyStyle: CSS = isTinyScreen
@@ -151,19 +99,37 @@ function CryptoPage({ cryptoData, postData }: Props) {
 							aria-labelledby="dashboard-table-favourite"
 							src="/red-heart-icon.svg"
 							alt="me"
-							onClick={() => toggleFavorite(cryptoData.id)}
+							onClick={() =>
+								toggleFavorite(
+									user,
+									fullData,
+									userFavourites,
+									cryptoData.id,
+									dispatch,
+									setIsFavourite
+								)
+							}
 							width={28}
 							height={28}
 						/>
 					) : (
 						<Image
-							data-testid="favourite-image"
+							data-testid="unfavourite-image"
 							sizes=""
 							style={{ cursor: "pointer" }}
 							aria-labelledby="dashboard-table-unfavourite"
 							src="/iconmonstr-heart-thin.svg"
 							alt="me"
-							onClick={() => toggleFavorite(cryptoData.id)}
+							onClick={() =>
+								toggleFavorite(
+									user,
+									fullData,
+									userFavourites,
+									cryptoData.id,
+									dispatch,
+									setIsFavourite
+								)
+							}
 							width={28}
 							height={28}
 						/>
@@ -196,7 +162,6 @@ function SmallScreenContainer(props: {
 }) {
 	const cryptoData = props.cryptoData;
 	const postData = props.postData;
-	const isTinyScreen = props.isTinyScreen;
 	return (
 		<Grid.Container>
 			<Grid>

@@ -18,6 +18,8 @@ import {
 } from "@/store/usercryptoslice";
 import { selectCryptoLoaded, setCryptoData } from "@/store/cryptoslice";
 import { useRouter } from "next/router";
+import { AppDispatch } from "@/store/store";
+import { toggleFavorite } from "@/utility/favouriting";
 
 const DCryptoGauge = dynamic(
 	() => import("@/components/cryptodata/CryptoGauge"),
@@ -38,46 +40,6 @@ export default function CryptoTable({ cryptoData, watchlist }: TablePropsT) {
 
 	const dispatch = useAppDispatch();
 
-	const toggleFavorite = (crypto: string) => {
-		if (!user || !user.email) {
-			alert(
-				"You are not logged in. Please create an account or login to favourite cryptocurrencies."
-			);
-			return;
-		}
-
-		const isFavorited = userFavourites.includes(crypto);
-
-		const updateFavoritedCrypto = () => {
-			const result = cryptoData.map((data) => {
-				if (data.cryptocurrency === crypto) {
-					return {
-						...data,
-						favourite: isFavorited ? false : true,
-					};
-				}
-				return { ...data };
-			});
-			dispatch(setCryptoData(result));
-
-			if (isFavorited) {
-				dispatch(
-					setFavourites(
-						userFavourites.filter(
-							(favourite) => favourite !== crypto
-						)
-					)
-				);
-				removeFavouriteCryptocurrency(user.email!, crypto);
-			} else {
-				dispatch(setFavourites([...userFavourites, crypto]));
-				addFavouriteCryptocurrency(user.email!, crypto);
-			}
-		};
-
-		updateFavoritedCrypto();
-	};
-
 	const renderCell = (item: Row, columnKey: React.Key) => {
 		const cellValue = item[columnKey];
 		switch (columnKey) {
@@ -94,7 +56,13 @@ export default function CryptoTable({ cryptoData, watchlist }: TablePropsT) {
 							width="32"
 							height="32"
 							onClick={() =>
-								toggleFavorite(item["cryptocurrency"])
+								toggleFavorite(
+									user,
+									cryptoData,
+									userFavourites,
+									item["cryptocurrency"],
+									dispatch
+								)
 							}
 						/>
 					);
@@ -110,7 +78,13 @@ export default function CryptoTable({ cryptoData, watchlist }: TablePropsT) {
 							width="32"
 							height="32"
 							onClick={() =>
-								toggleFavorite(item["cryptocurrency"])
+								toggleFavorite(
+									user,
+									cryptoData,
+									userFavourites,
+									item["cryptocurrency"],
+									dispatch
+								)
 							}
 						/>
 					);
@@ -197,7 +171,6 @@ export default function CryptoTable({ cryptoData, watchlist }: TablePropsT) {
 					noMargin
 					align="center"
 					rowsPerPage={20}
-					onPageChange={(page) => console.log({ page })}
 				/>
 			</Table>
 		);
