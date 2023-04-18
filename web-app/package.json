@@ -7,7 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "test:e2e": "playwright test"
+    "test:server": "NODE_ENV=test next dev",
+    "test:e2e": "playwright test --debug",
+    "test:integ": "playwright test tests/integration/"
   },
   "dependencies": {
     "@nextui-org/react": "^1.0.0-beta.12",
