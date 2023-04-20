@@ -15,7 +15,9 @@ import { Line } from "react-chartjs-2";
 import {
 	getSentimentHistoryInRange,
 	LatestSentiment,
+	SentimentHistory,
 } from "@/utility/firestore";
+import { getLabels, getSelectedDate, getValues } from "@/utility/units";
 
 type Props = {
 	crypto: LatestSentiment;
@@ -50,30 +52,6 @@ const CryptoChart = ({ crypto }: Props) => {
 		},
 	};
 
-	// Labels are set according to the value.datetime
-	// If the date chosen is in the last day
-	// -	Show the time of the data (We know this is going to be a 00:00 or 12:00)
-	// If the date chosen is in the last 7 days
-	// 	-	Show a number which represents the date.
-	// If the date chosen is in the last month days
-	// -	Show the date of the month
-
-	// It should show a different value if the timespan crosses the month threshold
-	// If the last day is selected but 7 hours ago it became April then it should show April
-	// If the last 7 days is selected but 3 days ago it became April then it should April
-	// If the last month is selected but 20 days ago it became April then it should show April
-
-	// Date Format
-	// Day, Month, Year, (Time)
-	// If the time is 00:00
-	// 		If the day coincides with being a new month
-	// 			Show the month
-	// 		else:
-	// 			Show the day
-	// else:
-	// 		Show the time
-	//
-
 	useEffect(() => {
 		async function getNewHistory() {
 			getSentimentHistoryInRange(
@@ -81,41 +59,12 @@ const CryptoChart = ({ crypto }: Props) => {
 				startDateTime,
 				endDateTime
 			).then((history) => {
-				const labels = history.map((value) => {
-					const datetime = value.datetime;
-					var formDateTime = "";
-
-					if (datetime.getUTCDate() == 1) {
-						formDateTime = datetime.toLocaleString("en", {
-							month: "long",
-							day: "numeric",
-						});
-					} else {
-						switch (rangeSelected) {
-							case "day":
-								formDateTime = datetime.toLocaleString("en", {
-									hour: "2-digit",
-									minute: "2-digit",
-								});
-								break;
-
-							default:
-								formDateTime = datetime.toLocaleString("en", {
-									day: "2-digit",
-								});
-								break;
-						}
-					}
-
-					return formDateTime;
-				});
-
 				setData({
-					labels: labels,
+					labels: getLabels(history, rangeSelected),
 					datasets: [
 						{
 							label: `${crypto.id}`,
-							data: history.map((value) => value.sub_sentiment),
+							data: getValues(history),
 							borderColor: "rgb(255, 99, 132)",
 							backgroundColor: "rgba(255, 99, 132, 0.5)",
 						},
@@ -126,6 +75,8 @@ const CryptoChart = ({ crypto }: Props) => {
 		getNewHistory();
 	}, [rangeSelected, crypto.id]);
 
+	console.log(rangeSelected);
+
 	return (
 		<>
 			<select
@@ -135,32 +86,8 @@ const CryptoChart = ({ crypto }: Props) => {
 				onChange={(e) => {
 					const selected = e.target.value;
 					setRangeSelected(selected);
-					var resultDate: Date = startDateTime;
-					switch (selected) {
-						case "day":
-							resultDate = new Date(
-								new Date().setUTCDate(
-									endDateTime.getUTCDate() - 1
-								)
-							);
-							break;
-						case "week":
-							resultDate = new Date(
-								new Date().setUTCDate(
-									endDateTime.getUTCDate() - 7
-								)
-							);
-							break;
-						case "month":
-							resultDate = new Date(
-								new Date().setUTCMonth(
-									endDateTime.getUTCMonth() - 1
-								)
-							);
-							break;
-						default:
-							break;
-					}
+
+					const resultDate = getSelectedDate(selected, endDateTime);
 
 					setStartDateTime(resultDate);
 				}}

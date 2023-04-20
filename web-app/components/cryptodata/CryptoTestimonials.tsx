@@ -17,7 +17,7 @@ type Props = {
 	css: CSS;
 };
 
-export default function CryptoTestimonials({ posts, subreddit, css }: Props) {
+export function getTextArea(posts: Posts) {
 	const textAreas = posts
 		? posts.map((postData) => {
 				return (
@@ -26,13 +26,17 @@ export default function CryptoTestimonials({ posts, subreddit, css }: Props) {
 							aria-labelledby={`${postData.title}`}
 							readOnly
 							initialValue={postData.title}
+							data-testid="post_title"
 						/>
 						<Spacer y={0.5} />
 					</React.Fragment>
 				);
 		  })
 		: null;
+	return textAreas;
+}
 
+export default function CryptoTestimonials({ posts, subreddit, css }: Props) {
 	return (
 		<Card aria-labelledby="testimonials-container">
 			<Card.Header css={{ justifyContent: "center" }}>
@@ -47,7 +51,7 @@ export default function CryptoTestimonials({ posts, subreddit, css }: Props) {
 					&nbsp;Testimonials
 				</Text>
 			</Card.Header>
-			<Card.Body css={css}>{textAreas}</Card.Body>
+			<Card.Body css={css}>{getTextArea(posts)}</Card.Body>
 		</Card>
 	);
 }
