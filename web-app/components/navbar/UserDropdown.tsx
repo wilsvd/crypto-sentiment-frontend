@@ -15,6 +15,7 @@ export default function SignedInNavbar() {
 			<Navbar.Item>
 				<Dropdown.Trigger css={{ cursor: "pointer" }}>
 					<Image
+						data-testid="dropdown-user"
 						showSkeleton
 						src="/user-icon.svg"
 						width={32}
@@ -58,6 +59,7 @@ export default function SignedInNavbar() {
 					</Text>
 				</Dropdown.Item>
 				<Dropdown.Item
+					data-testid="dropdown-user-account"
 					textValue="dropdown-user-settings"
 					key="settings"
 					withDivider
@@ -66,6 +68,7 @@ export default function SignedInNavbar() {
 					Account Settings
 				</Dropdown.Item>
 				<Dropdown.Item
+					data-testid="dropdown-user-logout"
 					textValue="dropdown-user-logout"
 					key="logout"
 					withDivider

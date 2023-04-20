@@ -56,13 +56,12 @@ test.describe("test navigation from bitcoin page", () => {
 	});
 
 	test("Navigate to alternative cryptocurrency page", async ({ page }) => {
+		await sleep(1000);
 		const searcBar = page.getByTestId("big-screen-navbar-search-input");
 		await searcBar.fill("Ethereum");
-		await sleep(2000);
 		const table = page.getByTestId(
 			"big-screen-navbar-search-result-container"
 		);
-
 		await table
 			.getByRole("link", { name: "Ethereum", exact: true })
 			.click();
