@@ -1,24 +1,19 @@
 import Head from "next/head";
-
 import React from "react";
 
 import { Container, Spacer, Text } from "@nextui-org/react";
 import { selectCryptoData } from "@/store/cryptoslice";
 import { useAppSelector } from "@/store/hooks";
 import DashboardTable from "@/components/cryptodata/CryptoTable";
+import { getMarketAverage } from "@/utility/units";
 
 export default function Home() {
 	const cryptoData = useAppSelector(selectCryptoData);
 
-	var marketSum: number = 0;
-	for (var item of cryptoData) {
-		marketSum += parseFloat(item.sentiment);
-	}
-
-	const marketSentiment: string = (marketSum / cryptoData.length).toFixed(2);
-
 	const heading = "Today's Cryptocurrency Sentiment";
-	const subheading = `The global crypto market sentiment is ${marketSentiment}`;
+	const subheading = `The global crypto market sentiment is ${getMarketAverage(
+		cryptoData
+	)}`;
 	return (
 		<Container fluid>
 			<Head>

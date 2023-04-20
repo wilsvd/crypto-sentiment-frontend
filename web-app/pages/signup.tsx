@@ -132,7 +132,7 @@ export default function Signup() {
 				variant="bordered"
 			>
 				<Text
-					size={24}
+					h3
 					weight="bold"
 					css={{
 						as: "center",

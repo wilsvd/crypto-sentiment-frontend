@@ -7,6 +7,7 @@ export type TablePropsT = {
 
 export type Col = {
 	[key: string]: string;
+	key: string;
 	label: string;
 };
 
@@ -29,6 +30,7 @@ export const columns: Cols = [
 
 export type Row = {
 	[key: string]: any;
+	key: string;
 	favourite: boolean;
 	cryptocurrency: string;
 	sentiment: string;

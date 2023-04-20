@@ -1,11 +1,13 @@
+import Head from "next/head";
 import WatchTable from "@/components/cryptodata/CryptoTable";
 import { selectCryptoData } from "@/store/cryptoslice";
 import { useAppSelector } from "@/store/hooks";
+import { getWatchList } from "@/utility/units";
 import { Container, Text } from "@nextui-org/react";
-import Head from "next/head";
 
 export default function Watchlist() {
 	const cryptoData = useAppSelector(selectCryptoData);
+
 	return (
 		<Container fluid>
 			<Head>
@@ -20,7 +22,7 @@ export default function Watchlist() {
 				<Text h3>Watchlist</Text>
 				<WatchTable
 					cryptoData={cryptoData}
-					watchlist={cryptoData.filter((value) => value.favourite)}
+					watchlist={getWatchList(cryptoData)}
 				></WatchTable>
 			</Container>
 		</Container>
