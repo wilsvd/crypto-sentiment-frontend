@@ -1,13 +1,5 @@
-import { describe, test, expect, vi, it } from "vitest";
-
-import { initializeApp } from "firebase/app";
-import { getAuth } from "firebase/auth";
-import { getFirestore } from "firebase/firestore";
-
+import { describe, expect, it } from "vitest";
 import { mapping } from "@/utility/units";
-// function sum(a: number, b: number) {
-// 	return a + b;
-// }
 
 describe("crypto gauge mapping", () => {
 	it("should map -1.00 to 0.00", () => {
