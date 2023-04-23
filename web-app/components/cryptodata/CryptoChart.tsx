@@ -15,15 +15,26 @@ import { Line } from "react-chartjs-2";
 import {
 	getSentimentHistoryInRange,
 	LatestSentiment,
-	SentimentHistory,
 } from "@/utility/firestore";
 import { getLabels, getSelectedDate, getValues } from "@/utility/units";
 
-type Props = {
+/**
+ * Props for CryptoChart component.
+ *
+ * @typedef {Object} ChartProps - A new type named 'ChartProps'.
+ * @property {LatestSentiment} crypto - The latest sentiment data of a a cryptocurrency.
+ */
+type ChartProps = {
 	crypto: LatestSentiment;
 };
 
-const CryptoChart = ({ crypto }: Props) => {
+/**
+ * A chart to show historical sentiment.
+ *
+ * @param {ChartProps} props - The props for the component.
+ * @returns {JSX.Element} The rendered component.
+ */
+export default function CryptoChart({ crypto }: ChartProps): JSX.Element {
 	ChartJS.register(
 		CategoryScale,
 		LinearScale,
@@ -53,6 +64,9 @@ const CryptoChart = ({ crypto }: Props) => {
 	};
 
 	useEffect(() => {
+		/**
+		 * Gets the sentiment history for the selected time range and sets the chart data.
+		 */
 		async function getNewHistory() {
 			getSentimentHistoryInRange(
 				crypto.id,
@@ -102,9 +116,8 @@ const CryptoChart = ({ crypto }: Props) => {
 					1 Day
 				</option>
 			</select>
-			{data ? <Line options={options} data={data} /> : null}
+			{/** * Displays the sentiment history chart if data is available. */}
+			{data && <Line options={options} data={data} />}
 		</>
 	);
-};
-
-export default CryptoChart;
+}

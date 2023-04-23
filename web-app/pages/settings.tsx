@@ -8,13 +8,21 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import DeleteAccountModal from "@/components/modals/DeleteAccountModal";
 
-export default function AccountSettings() {
+/**
+ * This component displays the account settings page where the user can update their display name and email address.
+ * @returns {JSX.Element} JSX element
+ */
+export default function AccountSettings(): JSX.Element {
 	const router = useRouter();
+
+	// Get the current user from the Redux store
 	const user = useAppSelector(selectUser)!;
 	const dispatch = useAppDispatch();
+	// Initialize the name and email state variables to empty strings
 	const [name, setName] = useState<string>("");
 	const [email, setEmail] = useState<string>("");
 
+	// When the component mounts or the user state changes, update the name and email state variables
 	useEffect(() => {
 		if (user) {
 			setName(() => (user.displayName ? user.displayName : ""));
@@ -29,6 +37,12 @@ export default function AccountSettings() {
 	const openHandler = () => setVisible(true);
 	const closeHandler = () => setVisible(false);
 
+	/**
+	 * Update the user's display name in Firebase and the Redux store.
+	 *
+	 * @param user - the current Firebase user
+	 * @param name - the new display name
+	 */
 	function updateUserProfile(user: User, name: string) {
 		updateProfile(user, { displayName: name, photoURL: "" })
 			.then(() => {
@@ -43,6 +57,13 @@ export default function AccountSettings() {
 				alert("The display name you entered is invalid");
 			});
 	}
+
+	/**
+	 * Update the user's email address in Firebase and the Redux store.
+	 *
+	 * @param user - the current Firebase user
+	 * @param newEmail - the new email address
+	 */
 	function udateUserEmail(user: User, newEmail: string) {
 		updateEmail(user, newEmail)
 			.then(() => {
@@ -77,16 +98,22 @@ export default function AccountSettings() {
 			});
 	}
 
+	/**
+	 * Update the user's display name and email address in Firebase and the Redux store.
+	 *
+	 * @param name - the new display name
+	 * @param newEmail - the new email address
+	 */
 	function updateUser(name: string, newEmail: string) {
 		if (auth.currentUser) {
 			const currUser = auth.currentUser;
-			if (name !== user.displayName && email === user.email) {
+			if (name !== user.displayName && newEmail === user.email) {
 				updateUserProfile(currUser, name);
-			} else if (name === user.displayName && email !== user.email) {
-				udateUserEmail(currUser, email);
-			} else if (name === user.displayName && email !== user.email) {
+			} else if (name === user.displayName && newEmail !== user.email) {
+				udateUserEmail(currUser, newEmail);
+			} else if (name === user.displayName && newEmail !== user.email) {
 				udateUserEmail(currUser, name);
-				updateUserProfile(currUser, email);
+				updateUserProfile(currUser, newEmail);
 			}
 			return;
 		}
@@ -103,8 +130,10 @@ export default function AccountSettings() {
 				/>
 			</Head>
 
+			{/* Display the user's account settings */}
 			<Container css={{ padding: "10px" }}>
 				<Text h3>Account Settings</Text>
+				{/* Check if a user is logged in */}
 				{user ? (
 					<Container fluid>
 						<Text h5>Display Name</Text>
@@ -112,10 +141,13 @@ export default function AccountSettings() {
 							type="text"
 							name="name"
 							fullWidth
+							// Set the input to be read-only if the read-only flag is true
 							readOnly={readOnly}
 							aria-labelledby="setting-name"
 							placeholder="Enter your display name"
+							// Set the initial value of the input to the user's display name
 							initialValue={name ? name : undefined}
+							// Call the setName function when the input value changes
 							onChange={(e) => setName(e.target.value)}
 						/>
 						<Spacer y={1}></Spacer>
@@ -124,15 +156,18 @@ export default function AccountSettings() {
 							type="email"
 							name="email"
 							fullWidth
+							// Set the input to be read-only if the read-only flag is true
 							readOnly={readOnly}
 							aria-labelledby="setting-email"
 							placeholder="Enter your display name"
+							// Set the initial value of the input to the user's email address
 							initialValue={email ? email : undefined}
+							// Call the setEmail function when the input value changes
 							onChange={(e) => setEmail(e.target.value)}
 						/>
 
 						<Spacer y={1}></Spacer>
-
+						{/* Display the edit, save, and delete account buttons */}
 						<Container
 							display="flex"
 							justify="space-between"
@@ -143,6 +178,7 @@ export default function AccountSettings() {
 								},
 							}}
 						>
+							{/* Display the edit account button */}
 							<Button
 								auto
 								shadow
@@ -160,6 +196,7 @@ export default function AccountSettings() {
 									},
 								}}
 							/>
+							{/* Display the save account button */}
 							<Button
 								auto
 								ghost
@@ -179,6 +216,7 @@ export default function AccountSettings() {
 									},
 								}}
 							/>
+							{/* Display the delete account button */}
 							<Button
 								auto
 								ghost
@@ -188,6 +226,7 @@ export default function AccountSettings() {
 								Delete Account
 							</Button>
 						</Container>
+						{/* Open the delete account model if user clicks delete account */}
 						<DeleteAccountModal
 							visible={visible}
 							closeHandler={closeHandler}

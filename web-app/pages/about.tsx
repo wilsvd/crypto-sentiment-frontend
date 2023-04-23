@@ -1,9 +1,12 @@
-import { selectCryptoData } from "@/store/cryptoslice";
-import { useAppSelector } from "@/store/hooks";
-import { Button, Card, Container, Link, Spacer, Text } from "@nextui-org/react";
+import { Card, Container, Link, Spacer, Text } from "@nextui-org/react";
 import Head from "next/head";
 
-export default function About() {
+/**
+ * About page component that displays information about the application
+ * and its functionality.
+ * @returns {JSX.Element}
+ */
+export default function About(): JSX.Element {
 	return (
 		<Container fluid aria-labelledby="about-container">
 			<Head aria-labelledby="about-metadata">

@@ -1,8 +1,19 @@
-import { configureStore, ThunkAction, Action } from "@reduxjs/toolkit";
+import {
+	configureStore,
+	ThunkAction,
+	Action,
+	EnhancedStore,
+	Dispatch,
+} from "@reduxjs/toolkit";
 import authReducer from "./authslice";
 import userCryptoSlice from "./usercryptoslice";
 import cryptoSlice from "./cryptoslice";
 
+/**
+ * Configures and returns a new Redux store with three reducers.
+ * @function makeStore
+ * @returns A new Redux store.
+ */
 export function makeStore() {
 	return configureStore({
 		reducer: {

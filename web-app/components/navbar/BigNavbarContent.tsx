@@ -1,10 +1,19 @@
 import { Navbar, Spacer, Text } from "@nextui-org/react";
-import { NavPropsT } from "./Navbar";
+import { NavProps } from "./Navbar";
 import NavbarSearch from "./NavbarSearch";
 import UserDropdown from "./UserDropdown";
 import NextLink from "next/link";
 
-export default function BigNavbarContent({ user, asPath }: NavPropsT) {
+/**
+ * Renders the content for a big navbar, including the brand, base navbar links, search bar, and user dropdown or authentication routes.
+ * @param {NavProps} props - Props for the BigNavbarContent component.
+ * @returns {JSX.Element} - The JSX element for the big navbar content.
+ */
+export default function BigNavbarContent({
+	user,
+	asPath,
+}: NavProps): JSX.Element {
+	// Define the base navbar links as an array of arrays.
 	const baseNavbar: string[][] = [
 		["Dashboard", "/"],
 		["Watchlist", "/watchlist"],
@@ -37,6 +46,7 @@ export default function BigNavbarContent({ user, asPath }: NavPropsT) {
 				))}
 			</Navbar.Content>
 
+			{/* Render the search bar and user dropdown or authentication routes */}
 			<Navbar.Content>
 				<Navbar.Item>
 					<NavbarSearch />
@@ -47,7 +57,13 @@ export default function BigNavbarContent({ user, asPath }: NavPropsT) {
 	);
 }
 
-function AuthRoutes({ asPath }: { asPath: string }) {
+/**
+ * Renders the authentication routes for the big navbar.
+ * @param {Object} props - The props object.
+ * @param {string} props.asPath - The path of the current page.
+ * @returns {JSX.Element} The JSX element for the authentication routes.
+ */
+function AuthRoutes({ asPath }: { asPath: string }): JSX.Element {
 	return (
 		<Navbar.Content enableCursorHighlight={true}>
 			<Navbar.Link

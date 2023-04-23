@@ -5,14 +5,35 @@ import { deleteUserData } from "@/utility/firestore";
 import { deleteUser } from "firebase/auth";
 import { auth } from "@/config/firebase";
 
-type Props = {
+/**
+ * Props for DeleteAccountModal component
+ * @typedef {Object} DeleteProps - A new type named 'DeleteProps'
+ * @property {boolean} visible - A boolean value indicating if the modal is visible or not.
+ * @property {function} closeHandler - A function to close the modal when triggered.
+ */
+type DeleteProps = {
 	visible: boolean;
 	closeHandler: () => void;
 };
 
-export default function DeleteAccountModal({ visible, closeHandler }: Props) {
+/**
+ * Component that displays a modal to confirm the deletion of a user's account
+ * @param {Props} props - The properties of the component
+ * @returns {JSX.Element} - The DeleteAccountModal component
+ */
+export default function DeleteAccountModal({
+	visible,
+	closeHandler,
+}: DeleteProps): JSX.Element {
 	const [deleteDisabled, setDeleteDisabled] = useState(true);
 
+	/**
+	 * Function that checks if "DELETE" has been typed
+	 * @param {object} event - The input change event
+	 * @param {object} event.target - The target element of the event
+	 * @param {string} event.target.name - The name of the input
+	 * @param {string} event.target.value - The value of the input
+	 */
 	function handleChange(event: { target: { name: string; value: string } }) {
 		event.target.value == "DELETE"
 			? setDeleteDisabled(false)

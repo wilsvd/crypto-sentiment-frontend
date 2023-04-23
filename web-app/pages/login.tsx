@@ -10,8 +10,6 @@ import {
 	Container,
 } from "@nextui-org/react";
 import { useRouter } from "next/router";
-import { useAppSelector } from "@/store/hooks";
-import { selectUser } from "@/store/authslice";
 import Head from "next/head";
 
 import { auth } from "@/config/firebase";
@@ -25,28 +23,41 @@ import {
 import ForgotPasswordModal from "@/components/modals/ForgotPasswordModal";
 import { provider } from "@/utility/googleAuth";
 
-export default function Login() {
-	const user = useAppSelector(selectUser);
+/**
+ * Login page component for user login
+ * @returns {JSX.Element}
+ */
+export default function Login(): JSX.Element {
 	const router = useRouter();
 
+	// Local state variables
 	const [emailInput, setEmailInput] = useState("");
 	const [password, setPassword] = useState("");
 	const [loginIsFailure, setLoginIsFailure] = useState(false);
 	const [loginMessage, setLoginMessage] = useState("");
 
 	const [rememberMe, setRememberMe] = useState(false);
+	const [message, setMessage] = useState("Please enter your email address.");
+	const [visible, setVisible] = useState(false);
 
+	// Prefetch the homepage for faster navigation
 	useEffect(() => {
 		router.prefetch("/");
 	});
+
+	/**
+	 * Sign in with email and password
+	 */
 	function submitForm() {
 		const persistType = rememberMe
 			? browserLocalPersistence
 			: inMemoryPersistence;
+
+		// Persist user
 		setPersistence(auth, persistType)
 			.then(() => {
 				signInWithEmailAndPassword(auth, emailInput, password)
-					.then((userCred) => {
+					.then(() => {
 						router.push("/");
 						setLoginIsFailure(false);
 					})
@@ -58,7 +69,7 @@ export default function Login() {
 						setLoginIsFailure(true);
 					});
 			})
-			.catch((error) => {
+			.catch(() => {
 				setLoginMessage(
 					"Error occurred with the 'remember me' setting. Please try again later."
 				);
@@ -66,16 +77,20 @@ export default function Login() {
 			});
 	}
 
+	/**
+	 * Sign in with Google
+	 */
 	function submitGoogle() {
 		const persistType = rememberMe
 			? browserLocalPersistence
 			: inMemoryPersistence;
 		setLoginIsFailure(false);
 		setLoginMessage("");
+		// Persist user
 		setPersistence(auth, persistType)
 			.then(() => {
 				signInWithPopup(auth, provider)
-					.then((userCred) => {
+					.then(() => {
 						router.push("/");
 						setLoginIsFailure(false);
 					})
@@ -96,22 +111,31 @@ export default function Login() {
 						setLoginIsFailure(true);
 					});
 			})
-			.catch((error) => {
+			.catch(() => {
 				setLoginMessage(
 					"Error occurred with the 'remember me' setting. Please try again later."
 				);
 				setLoginIsFailure(true);
 			});
 	}
+
+	/**
+	 * Function that handles the change event of input fields
+	 *
+	 * @param {Object} event - The event object
+	 * @param {Object} event.target - The target element of the event
+	 * @param {string} event.target.name - The name of the input field being changed
+	 * @param {string} event.target.value - The new value of the input field
+	 */
 	function handleChange(event: { target: { name: string; value: string } }) {
 		const { name, value } = event.target;
 		name === "emailInput" ? setEmailInput(value) : setPassword(value);
 		console.log(emailInput);
 	}
 
-	const [message, setMessage] = useState("Please enter your email address.");
-	const [visible, setVisible] = useState(false);
+	// Show forgot password modal
 	const openForgotPassword = () => setVisible(true);
+	// Close forgot password modal
 	const closeForgotPassword = () => {
 		setMessage("Please enter your email address.");
 		setVisible(false);
@@ -176,10 +200,9 @@ export default function Login() {
 					size="lg"
 					name="emailInput"
 					placeholder="Email"
-					onChange={handleChange}
+					onChange={handleChange} // calls the handleChange function when the email input is changed
 				/>
 				<Spacer y={1} />
-
 				<Input.Password
 					type="password"
 					aria-labelledby="login-pass-input"
@@ -191,10 +214,9 @@ export default function Login() {
 					name="password"
 					placeholder="Password"
 					css={{ mb: "6px" }}
-					onChange={handleChange}
+					onChange={handleChange} // calls the handleChange function when the password input is changed
 				/>
 				<Spacer y={1} />
-
 				<Row justify="space-between">
 					<Checkbox
 						onClick={() => setRememberMe((oldVal) => !oldVal)}
@@ -202,14 +224,14 @@ export default function Login() {
 						<Text size={14}>Remember me</Text>
 					</Checkbox>
 
-					{/* TODO:  Implement a method to request for forgotten password*/}
 					<Button auto flat size={"sm"} onPress={openForgotPassword}>
 						<Text size={14}>Forgot password?</Text>
 					</Button>
 				</Row>
 				<Spacer y={1.6} />
-				<Button onPress={submitForm}>Sign in</Button>
-				<Spacer y={1} />
+				{/**calls the submitForm function when the "Sign in" button is clicked */}
+				<Button onPress={submitForm}>Sign in</Button> <Spacer y={1} />
+				{/**calls the submitGoogle function when the "Sign in with Google" button is clicked */}
 				<Button onPress={submitGoogle}>Sign in with Google</Button>
 			</Card>
 
