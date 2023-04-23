@@ -1,18 +1,34 @@
 import { Modal, Button, Spacer, Input, Table, Text } from "@nextui-org/react";
 
-import { cryptoDataT } from "@/store/cryptoslice";
+import { CryptoData } from "@/store/cryptoslice";
 import { SearchIcon, columns } from "../navbar/NavbarSearch";
 import Link from "next/link";
 
-type Props = {
+/**
+ * SearchProps for the NavbarSearchModal component.
+ *
+ * @typedef {Object} SearchProps - A new type named 'SearchProps'
+ * @property {boolean} visible - Whether the modal is visible or not.
+ * @property {Function} closeHandler - Function to close the modal.
+ * @property {CryptoData[]} cryptoData - Array of objects containing cryptocurrency data.
+ * @property {string} queryString - The query string used to search for cryptocurrencies.
+ * @property {CryptoData[] | null} searchedCrypto - Array of objects containing cryptocurrency data that match the search query.
+ * @property {Function} handleChange - Function to handle changes to the search input field.
+ */
+type SearchProps = {
 	visible: boolean;
 	closeHandler: () => void;
-	cryptoData: cryptoDataT[];
+	cryptoData: CryptoData[];
 	queryString: string;
-	searchedCrypto: cryptoDataT[] | null;
+	searchedCrypto: CryptoData[] | null;
 	handleChange: (event: { target: { name: string; value: string } }) => void;
 };
 
+/**
+ * A component that displays a modal for searching cryptocurrencies.
+ * @param {SearchProps} props - Props for the NavbarSearchModal component.
+ * @returns {JSX.Element} - JSX element.
+ */
 export default function NavbarSearchModal({
 	visible,
 	closeHandler,
@@ -20,7 +36,7 @@ export default function NavbarSearchModal({
 	queryString,
 	searchedCrypto,
 	handleChange,
-}: Props) {
+}: SearchProps) {
 	return (
 		<Modal
 			closeButton

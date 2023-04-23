@@ -7,9 +7,16 @@ import { useAppSelector } from "@/store/hooks";
 import DashboardTable from "@/components/cryptodata/CryptoTable";
 import { getMarketAverage } from "@/utility/units";
 
-export default function Home() {
+/**
+ * The default home page component that displays the sentiment of the cryptocurrency market
+ * and a table of cryptocurrency data.
+ * @returns {JSX.Element} The home page component with market sentiment and cryptocurrency data table.
+ */
+export default function Home(): JSX.Element {
+	// Select crypto data from the global Redux store
 	const cryptoData = useAppSelector(selectCryptoData);
 
+	// Set heading and subheading text
 	const heading = "Today's Cryptocurrency Sentiment";
 	const subheading = `The global crypto market sentiment is ${getMarketAverage(
 		cryptoData

@@ -1,15 +1,35 @@
 import Link from "next/link";
 import Image from "next/image";
 import dynamic from "next/dynamic";
-import React, { ReactNode } from "react";
+import React from "react";
 import { Container, Table, Text } from "@nextui-org/react";
-import { columns, Row, Rows, TablePropsT } from "@/types";
+import { Cols, Row, Rows, TablePropsT } from "@/types";
 import { useAppSelector, useAppDispatch } from "@/store/hooks";
 import { selectUser } from "@/store/authslice";
 import { selectFavLoaded, selectFavourites } from "@/store/usercryptoslice";
 import { selectCryptoLoaded } from "@/store/cryptoslice";
 import { useRouter } from "next/router";
 import { toggleFavorite } from "@/utility/favouriting";
+
+/**
+ * An array of column objects used to define the columns in the CryptoTable component.
+ *
+ * @type {Cols}
+ */
+export const columns: Cols = [
+	{
+		key: "favourite",
+		label: "Favourite",
+	},
+	{
+		key: "cryptocurrency",
+		label: "Cryptocurrency",
+	},
+	{
+		key: "sentiment",
+		label: "Sentiment (-1 to 1)",
+	},
+];
 
 const DCryptoGauge = dynamic(
 	() => import("@/components/cryptodata/CryptoGauge"),
@@ -18,7 +38,18 @@ const DCryptoGauge = dynamic(
 	}
 );
 
-export default function CryptoTable({ cryptoData, watchlist }: TablePropsT) {
+/**
+ * A table component that displays cryptocurrency data.
+ *
+ * @param {TablePropsT} props - The properties of the table.
+ * @param {CryptoData[]} props.cryptoData An array of cryptocurrency data.
+ * @param {CryptoData[] | null} props.watchlist An array of cryptocurrencies that are marked as favourites by the user.
+ * @returns {JSX.Element} - The table displaying cryptocurrency data.
+ */
+export default function CryptoTable({
+	cryptoData,
+	watchlist,
+}: TablePropsT): JSX.Element {
 	const router = useRouter();
 
 	const user = useAppSelector(selectUser);
@@ -30,7 +61,17 @@ export default function CryptoTable({ cryptoData, watchlist }: TablePropsT) {
 
 	const dispatch = useAppDispatch();
 
-	const renderCell = (item: Row, columnKey: React.Key) => {
+	/**
+	 * A function that renders a cell in the table.
+	 *
+	 * @param {Row} item The data of the row.
+	 * @param {React.Key} columnKey The key of the column to render.
+	 * @returns {JSX.Element | null} The JSX code to render the cell.
+	 */
+	const renderCell = (
+		item: Row,
+		columnKey: React.Key
+	): JSX.Element | null => {
 		const cellValue = item[columnKey];
 		switch (columnKey) {
 			case "favourite":
@@ -113,24 +154,31 @@ export default function CryptoTable({ cryptoData, watchlist }: TablePropsT) {
 						/>
 					</Container>
 				);
+			default:
+				return null;
 		}
 	};
 
-	const renderTable = (liveData: Rows) => {
+	/**
+	Renders a table component with live data
+	@param {Rows} liveData The live data to be displayed in the table
+	@returns {JSX.Element} A JSX element representing the table component with live data
+	*/
+	const renderTable = (liveData: Rows): JSX.Element => {
 		return (
 			<Table
 				aria-labelledby="crypto-table"
 				data-testid="crypto-table"
-				// bordered={true}
-				// shadow={false}
-				// fixed
-				// css={{
-				// 	height: "auto",
-				// 	minWidth: "100%",
+				bordered={true}
+				shadow={false}
+				fixed
+				css={{
+					height: "auto",
+					minWidth: "100%",
 
-				// 	padding: "10px",
-				// 	zIndex: "0",
-				// }}
+					padding: "10px",
+					zIndex: "0",
+				}}
 			>
 				<Table.Header columns={columns}>
 					{(column) => (
@@ -166,7 +214,12 @@ export default function CryptoTable({ cryptoData, watchlist }: TablePropsT) {
 		);
 	};
 
-	function handleDisplayLogic(): ReactNode {
+	/**
+	 * Determines the display logic based on the current route and the state of the application.
+	 *
+	 * @returns {JSX.Element | null} The JSX element to be displayed on the page.
+	 */
+	function handleDisplayLogic(): JSX.Element | null {
 		if (cryptoLoaded) {
 			switch (router.asPath) {
 				case "/":
@@ -199,7 +252,7 @@ export default function CryptoTable({ cryptoData, watchlist }: TablePropsT) {
 					return null;
 			}
 		} else {
-			<Text h5>Loading</Text>;
+			return <Text h5>Loading</Text>;
 		}
 	}
 	return <>{handleDisplayLogic()}</>;

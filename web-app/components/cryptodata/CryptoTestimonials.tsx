@@ -1,23 +1,27 @@
 import { Posts } from "@/utility/firestore";
-import {
-	Card,
-	Container,
-	Spacer,
-	Textarea,
-	Text,
-	Link,
-	Grid,
-	CSS,
-} from "@nextui-org/react";
+import { Card, Spacer, Textarea, Text, Link, CSS } from "@nextui-org/react";
 import React from "react";
 
-type Props = {
+/**
+ * TestimonialProps for the CryptoTestimonials component.
+ *
+ * @typedef {Object} TestimonialProps - A new type named 'TestimonialProps'.
+ * @property {Posts} posts - The posts data to be displayed.
+ * @property {string} subreddit - The subreddit to fetch the testimonials from.
+ * @property {CSS} css - Custom styles to be applied to the component.
+ */
+type TestimonialProps = {
 	posts: Posts;
 	subreddit: string;
 	css: CSS;
 };
 
-export function getTextArea(posts: Posts) {
+/**
+ * Returns an array of JSX textareas containing the titles of the given posts.
+ * @param {Posts} posts - The array of post data to extract titles from.
+ * @returns {JSX.Element[] | null} An array of JSX textareas containing the titles of the given posts.
+ */
+export function getTextArea(posts: Posts): JSX.Element[] | null {
 	const textAreas = posts
 		? posts.map((postData) => {
 				return (
@@ -36,7 +40,17 @@ export function getTextArea(posts: Posts) {
 	return textAreas;
 }
 
-export default function CryptoTestimonials({ posts, subreddit, css }: Props) {
+/**
+ * CryptoTestimonials component
+ *
+ * @param {TestimonialProps} props - Component props
+ * @returns {JSX.Element} - Rendered component
+ */
+export default function CryptoTestimonials({
+	posts,
+	subreddit,
+	css,
+}: TestimonialProps): JSX.Element {
 	return (
 		<Card aria-labelledby="testimonials-container">
 			<Card.Header css={{ justifyContent: "center" }}>

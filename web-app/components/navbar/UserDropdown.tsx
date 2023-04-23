@@ -6,9 +6,39 @@ import { useRouter } from "next/router";
 import { signOut } from "firebase/auth";
 import { auth } from "@/config/firebase";
 
-export default function SignedInNavbar() {
-	const user = useAppSelector(selectUser);
-	const router = useRouter();
+/**
+ * Component for the signed-in user navbar, which includes a dropdown menu with options for user account settings and logout.
+ * @returns {JSX.Element} JSX element of the signed-in user navbar
+ */
+export default function SignedInNavbar(): JSX.Element {
+	const user = useAppSelector(selectUser); // Get the user information from the Redux store
+	const router = useRouter(); // Get the Next.js router object to navigate to different pages
+
+	/**
+	 * Function to handle user actions from the dropdown menu.
+	 * @param actionKey - The key of the selected action in the dropdown menu
+	 */
+	function handleAction(actionKey: string): void {
+		switch (actionKey) {
+			case "logout":
+				// Sign out the user using Firebase authentication
+				signOut(auth)
+					.then(() => {
+						console.log("Sign out successful");
+					})
+					.catch((error) => {
+						console.log("Signing out error");
+						console.log(error);
+					});
+				break;
+			case "settings":
+				// Navigate to the user settings page using Next.js router
+				router.push("/settings");
+				break;
+			default:
+				break;
+		}
+	}
 
 	return (
 		<Dropdown aria-labelledby="dropdown-user" placement="bottom-right">
@@ -27,23 +57,7 @@ export default function SignedInNavbar() {
 				aria-labelledby="dropdown-user-menu"
 				color="secondary"
 				onAction={(actionKey) => {
-					switch (actionKey) {
-						case "logout":
-							signOut(auth)
-								.then(() => {
-									console.log("Sign out successful");
-								})
-								.catch((error) => {
-									console.log("Signing out error");
-									console.log(error);
-								});
-							break;
-						case "settings":
-							router.push("/settings");
-							break;
-						default:
-							break;
-					}
+					handleAction(actionKey.toString());
 				}}
 			>
 				<Dropdown.Item

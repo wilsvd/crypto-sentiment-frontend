@@ -4,12 +4,19 @@ import type { AppProps } from "next/app";
 import Navbar from "@/components/navbar/Navbar";
 import { NextUIProvider } from "@nextui-org/react";
 import { Provider } from "react-redux";
-import { useEffect } from "react";
+import { ReactNode, useEffect } from "react";
 import store from "@/store/store";
 
 import { listenForAuthChanges } from "@/store/hooks";
 
-function MyApp({ Component, pageProps }: AppProps) {
+/**
+ * Custom App component that wraps around Next.js App component.
+ * It provides the NextUIProvider, Navbar and Redux Provider.
+ * @param {AppProps} props - The AppProps passed from Next.js App component.
+ * @returns {ReactNode} The App component with providers and navbar.
+ */
+function MyApp({ Component, pageProps }: AppProps): ReactNode {
+	// Listen for authentication changes
 	useEffect(() => {
 		store.dispatch(listenForAuthChanges());
 	}, []);

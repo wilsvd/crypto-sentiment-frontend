@@ -14,19 +14,32 @@ import { createUserWithEmailAndPassword, signInWithPopup } from "firebase/auth";
 import { auth } from "@/config/firebase";
 import { provider } from "@/utility/googleAuth";
 
-export default function Signup() {
+/**
+ * Signup component that allows a user to sign up with their email and password or via Google authentication.
+ *
+ * @returns {JSX.Element}
+ */
+export default function Signup(): JSX.Element {
 	const router = useRouter();
 
+	// State variables for the email, password, and confirmation password input fields
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	const [confirmPassword, setConfirmPassword] = useState("");
+
+	// State variables for displaying login failure message
 	const [loginIsFailure, setLoginIsFailure] = useState(false);
 	const [loginMessage, setLoginMessage] = useState("");
 
+	// Prefetch the homepage for faster navigation
 	useEffect(() => {
 		router.prefetch("/");
 	});
 
+	/**
+	 * Submits the signup form by creating a user with the email and password provided.
+	 * If successful, the user is redirected to the homepage. Otherwise, a login failure message is displayed.
+	 */
 	function submitForm() {
 		if (password === confirmPassword) {
 			createUserWithEmailAndPassword(auth, email, password)
@@ -61,6 +74,10 @@ export default function Signup() {
 		}
 	}
 
+	/**
+	 * Submits the signup form via Google authentication. If successful, the user is redirected to the homepage.
+	 * Otherwise, a login failure message is displayed.
+	 */
 	function submitGoogle() {
 		setLoginIsFailure(false);
 		setLoginMessage("");
@@ -86,6 +103,14 @@ export default function Signup() {
 			});
 	}
 
+	/**
+	 * Handles change event for email, password, and confirm password inputs
+	 *
+	 * @param {Object} event - The event object
+	 * @param {Object} event.target - The target element of the event
+	 * @param {string} event.target.name - The name of the input field being changed
+	 * @param {string} event.target.value - The new value of the input field
+	 */
 	function handleChange(event: { target: { name: string; value: string } }) {
 		const { name, value } = event.target;
 		if (name === "email") {
@@ -141,11 +166,13 @@ export default function Signup() {
 				>
 					Sign Up
 				</Text>
+				{/* Render error message if login attempt failed */}
 				{loginIsFailure && (
 					<Text h5 color="error">
 						{loginMessage}
 					</Text>
 				)}
+				{/* Email input field */}
 				<Input
 					type="email"
 					aria-labelledby="signup-email-input"
@@ -159,7 +186,7 @@ export default function Signup() {
 					onChange={handleChange}
 				/>
 				<Spacer y={1} />
-
+				{/* Password input field */}
 				<Input.Password
 					type="password"
 					aria-labelledby="signup-pass-input"
@@ -174,7 +201,7 @@ export default function Signup() {
 					onChange={handleChange}
 				/>
 				<Spacer y={1} />
-
+				{/* Confirm password input field */}
 				<Input.Password
 					type="password"
 					aria-labelledby="signup-confirm-pass-input"

@@ -7,12 +7,24 @@ import useMediaQuery, { MediaBreakpoints, useAppSelector } from "@/store/hooks";
 import BigNavbarContent from "./BigNavbarContent";
 import SmallNavbarContent from "./SmallNavbarContent";
 
-export type NavPropsT = {
+/**
+ * The props for the `BigNavbarContent` and `SmallNavbarContent` components.
+ *
+ * @typedef NavProps - A new type named 'NavProps'
+ * @property {User | null} user - The authenticated user data.
+ * @property {string} asPath - The current route.
+ */
+export type NavProps = {
 	user: User | null;
 	asPath: string;
 };
 
-export default function DefaultNavbar() {
+/**
+ * The default navigation bar component which renders either a big or a small navbar based on the screen size.
+ *
+ * @return {JSX.Element} The JSX code for the default navigation bar.
+ */
+export default function DefaultNavbar(): JSX.Element {
 	const isSmallScreen = useMediaQuery(`(max-width: ${MediaBreakpoints.sm})`);
 
 	const { asPath } = useRouter();

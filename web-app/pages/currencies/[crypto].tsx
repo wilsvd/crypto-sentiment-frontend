@@ -2,8 +2,8 @@ import dynamic from "next/dynamic";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import Image from "next/image";
-import { GetServerSideProps } from "next";
-import { useState } from "react";
+import { GetServerSideProps, GetServerSidePropsResult } from "next";
+import React, { useState } from "react";
 
 import { CSS, Container, Grid, Spacer, Text } from "@nextui-org/react";
 import {
@@ -25,7 +25,15 @@ import { selectFavourites } from "@/store/usercryptoslice";
 import { selectUser } from "@/store/authslice";
 import { toggleFavorite } from "@/utility/favouriting";
 
-export const getServerSideProps: GetServerSideProps = async ({ params }) => {
+/**
+ * Fetches the latest sentiment data and posts data for a specific cryptocurrency from Firestore.
+ * Returns `notFound: true` if the cryptocurrency is not found.
+ * @param params - Object containing the ID of the cryptocurrency.
+ * @returns {Promise<GetServerSidePropsResult<{ [key: string]: any; }>>} Object containing the fetched latest sentiment data and posts data.
+ */
+export const getServerSideProps: GetServerSideProps = async ({
+	params,
+}): Promise<GetServerSidePropsResult<{ [key: string]: any }>> => {
 	const itemID = params?.crypto as string;
 	const foundItem = await getCryptoLatestSentiment(itemID);
 
@@ -51,33 +59,60 @@ const DCryptoGauge = dynamic(
 	}
 );
 
-type Props = {
+/**
+CryptoPageProps type defines the props for the CryptoPage component.
+
+@typedef {Object} - A new type named 'CryptoPageProps'.
+@property {LatestSentiment} cryptoData - Latest sentiment data of the cryptocurrency.
+@property {Posts} postData - Post data related to the cryptocurrency.
+*/
+type CryptoPageProps = {
 	cryptoData: LatestSentiment;
 	postData: Posts;
 };
 
-function CryptoPage({ cryptoData, postData }: Props) {
+/**
+ * CryptoPage component is a page that displays the sentiment data and related posts for a cryptocurrency.
+ *
+ * @param {CryptoPageProps} props - Props for the CryptoPage component.
+ * @returns {JSX.Element} - Rendered CryptoPage component.
+ */
+export default function CryptoPage({
+	cryptoData,
+	postData,
+}: CryptoPageProps): JSX.Element {
+	// Checks if the screen width is less than or equal to MediaBreakpoints.sm
 	const isSmallScreen = useMediaQuery(`(max-width: ${MediaBreakpoints.sm})`);
+	// Checks if the screen width is less than or equal to 412 pixels
 	const isTinyScreen = useMediaQuery(`(max-width: ${412})`);
 
+	// Selects the user from the Redux store
 	const user = useAppSelector(selectUser);
+	// Selects the full cryptocurrency data from the Redux store
 	const fullData = useAppSelector(selectCryptoData);
+	// Selects the user's favorite cryptocurrencies from the Redux store
 	const userFavourites = useAppSelector(selectFavourites);
 
 	const dispatch = useAppDispatch();
 
+	// Determines whether the cryptocurrency is a favorite of the user
 	const [isFavourite, setIsFavourite] = useState<boolean>(
 		userFavourites.includes(cryptoData.id)
 	);
 
 	const router = useRouter();
+
+	// CSS styles to be applied when the screen width is less than or equal to 412 pixels
 	const tinyStyle: CSS = isTinyScreen
 		? { padding: "10px", overflowX: "auto" }
 		: { padding: "10px" };
 
+	// Returns a loading screen when the data is still being fetched
 	if (router.isFallback) {
 		return <h1>Loading...</h1>;
 	}
+
+	// Returns the rendered CryptoPage component
 	return (
 		<Container fluid aria-labelledby="cryptocurrency-container">
 			<Head aria-labelledby={`${cryptoData.id}-metadata`}>
@@ -89,6 +124,7 @@ function CryptoPage({ cryptoData, postData }: Props) {
 				/>
 			</Head>
 			<Container fluid css={tinyStyle}>
+				{/* Displays the cryptocurrency name and a favorite icon */}
 				<div style={{ display: "flex", alignItems: "center" }}>
 					<Text h2>{cryptoData.id}</Text>
 					<Spacer x={0.5}></Spacer>
@@ -153,13 +189,20 @@ function CryptoPage({ cryptoData, postData }: Props) {
 	);
 }
 
-export default CryptoPage;
-
+/**
+ * SmallScreenContainer component renders a container of components for small screens.
+ *
+ * @param {Object} props - The props object of the component.
+ * @param {LatestSentiment} props.cryptoData - Latest sentiment data of the cryptocurrency.
+ * @param {Posts} props.postData - Post data related to the cryptocurrency.
+ * @param {boolean} props.isTinyScreen - Flag for identifying if the screen is tiny.
+ * @returns {JSX.Element} - A JSX.Element representing the small screen container.
+ */
 function SmallScreenContainer(props: {
 	cryptoData: LatestSentiment;
 	postData: Posts;
-	isTinyScreen: any;
-}) {
+	isTinyScreen: boolean;
+}): JSX.Element {
 	const cryptoData = props.cryptoData;
 	const postData = props.postData;
 	return (
@@ -168,6 +211,7 @@ function SmallScreenContainer(props: {
 				<Text h4>Sentiment : {cryptoData.latestSentiment}</Text>
 
 				<Container css={{ padding: "$1", margin: 0 }}>
+					{/* Crypto gauge component */}
 					<DCryptoGauge
 						crypto={cryptoData}
 						style={{ padding: 0, margin: 0 }}
@@ -176,9 +220,11 @@ function SmallScreenContainer(props: {
 				<Spacer></Spacer>
 				<Container css={{ padding: "$1", margin: 0 }}>
 					<Text h4>Historical Data</Text>
+					{/* Crypto chart component */}
 					<CryptoChart crypto={cryptoData}></CryptoChart>
 				</Container>
 				<Spacer></Spacer>
+				{/* Crypto testimonials component */}
 				<CryptoTestimonials
 					posts={postData}
 					subreddit={cryptoData.subreddit}
@@ -189,7 +235,15 @@ function SmallScreenContainer(props: {
 	);
 }
 
-function BigScreenContainer({ cryptoData, postData }: Props) {
+/**
+ * Renders a container for the crypto data on large screens.
+ * @param {CryptoPageProps} props - The props object.
+ * @returns {JSX.Element} - The JSX Element for the big screen container.
+ */
+function BigScreenContainer({
+	cryptoData,
+	postData,
+}: CryptoPageProps): JSX.Element {
 	return (
 		<Grid.Container
 			justify="space-between"
@@ -205,16 +259,18 @@ function BigScreenContainer({ cryptoData, postData }: Props) {
 				}}
 			>
 				<Text h4>Sentiment : {cryptoData.latestSentiment}</Text>
-
+				{/* Crypto gauge component */}
 				<DCryptoGauge
 					crypto={cryptoData}
 					style={{ width: 500, padding: 0, margin: 0 }}
 				></DCryptoGauge>
 				<Text h4>Historical Data</Text>
+				{/* Crypto chart component */}
 				<CryptoChart crypto={cryptoData}></CryptoChart>
 			</Grid>
 
 			<Grid justify="center">
+				{/* Crypto testimonials component */}
 				<CryptoTestimonials
 					posts={postData}
 					subreddit={cryptoData.subreddit}

@@ -1,4 +1,4 @@
-import { cryptoDataT, selectCryptoData } from "@/store/cryptoslice";
+import { CryptoData, selectCryptoData } from "@/store/cryptoslice";
 import useMediaQuery, { MediaBreakpoints, useAppSelector } from "@/store/hooks";
 import { Container, Input, Table, Image, Text } from "@nextui-org/react";
 import Link from "next/link";
@@ -22,16 +22,27 @@ export const columns = [
 	},
 ];
 
+/**
+ * A component for searching cryptocurrencies in the navbar.
+ * @returns JSX.Element
+ */
 export default function NavbarSearch() {
+	// check if the screen is smaller than specified breakpoint value
 	const isSmallScreen = useMediaQuery(`(max-width: ${MediaBreakpoints.sm})`);
 
-	const [searchedCrypto, setSearchedCrypto] = useState<cryptoDataT[] | null>(
+	// state variables
+	const [searchedCrypto, setSearchedCrypto] = useState<CryptoData[] | null>(
 		null
 	);
 	const [queryString, setQueryString] = useState<string>("");
 
+	// get cryptocurrency data from the redux store
 	const cryptoData = useAppSelector(selectCryptoData);
 
+	/**
+	 * Handle the search input field's change event
+	 * @param {Object} event The event object containing the input's target object with its value
+	 */
 	function handleChange(event: { target: { name: string; value: string } }) {
 		const value = event.target.value.toLowerCase();
 		setQueryString(value);
@@ -53,7 +64,11 @@ export default function NavbarSearch() {
 	const openHandler = () => setVisible(true);
 	const closeHandler = () => setVisible(false);
 
-	function renderSearchContainerLargerDevice() {
+	/**
+	 * Render the search container for larger devices
+	 * @returns {JSX.Element}
+	 */
+	function renderSearchContainerLargerDevice(): JSX.Element {
 		return (
 			<Container
 				css={{
@@ -122,6 +137,7 @@ export default function NavbarSearch() {
 	return (
 		<>
 			{isSmallScreen ? (
+				/* Render search icon and modal for small screens */
 				<>
 					<Image
 						aria-labelledby="search-icon"
@@ -145,6 +161,7 @@ export default function NavbarSearch() {
 					></NavbarSearchModal>
 				</>
 			) : (
+				/* Render search input and search container for larger screens */
 				<>
 					<Input
 						data-testid="big-screen-navbar-search-input"
