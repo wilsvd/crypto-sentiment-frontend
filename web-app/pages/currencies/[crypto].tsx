@@ -275,7 +275,7 @@ function BigScreenContainer({
 					posts={postData}
 					subreddit={cryptoData.subreddit}
 					css={{
-						height: 600,
+						height: 660,
 						width: 400,
 						"@smMin": { width: 350 },
 						"@mdMin": { width: 400 },
