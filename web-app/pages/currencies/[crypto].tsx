@@ -3,7 +3,7 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import Image from "next/image";
 import { GetServerSideProps, GetServerSidePropsResult } from "next";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { CSS, Container, Grid, Spacer, Text } from "@nextui-org/react";
 import {
@@ -96,9 +96,12 @@ export default function CryptoPage({
 	const dispatch = useAppDispatch();
 
 	// Determines whether the cryptocurrency is a favorite of the user
-	const [isFavourite, setIsFavourite] = useState<boolean>(
-		userFavourites.includes(cryptoData.id)
-	);
+	const [isFavourite, setIsFavourite] = useState<boolean>(false);
+
+	useEffect(() => {
+		console.log(userFavourites);
+		setIsFavourite(() => userFavourites.includes(cryptoData.id));
+	}, [fullData, cryptoData.id]);
 
 	const router = useRouter();
 
