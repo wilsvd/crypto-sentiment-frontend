@@ -36,7 +36,7 @@ export default function Login(): JSX.Element {
 	const [loginIsFailure, setLoginIsFailure] = useState(false);
 	const [loginMessage, setLoginMessage] = useState("");
 
-	const [rememberMe, setRememberMe] = useState(false);
+	const [rememberMe, setRememberMe] = useState(true);
 	const [message, setMessage] = useState("Please enter your email address.");
 	const [visible, setVisible] = useState(false);
 
@@ -219,6 +219,7 @@ export default function Login(): JSX.Element {
 				<Spacer y={1} />
 				<Row justify="space-between">
 					<Checkbox
+						isSelected={rememberMe}
 						onClick={() => setRememberMe((oldVal) => !oldVal)}
 					>
 						<Text size={14}>Remember me</Text>
