@@ -89,8 +89,6 @@ export default function CryptoChart({ crypto }: ChartProps): JSX.Element {
 		getNewHistory();
 	}, [rangeSelected, crypto.id]);
 
-	console.log(rangeSelected);
-
 	return (
 		<>
 			<select
